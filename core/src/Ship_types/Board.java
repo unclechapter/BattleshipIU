@@ -1,9 +1,9 @@
 package Ship_types;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
 
@@ -12,7 +12,7 @@ public class Board
     public static final int BOARD_SIZE = 10;    //X and Y size of the board, in tiles
     public static final int TILE_SIZE = 64;     //Size of each tile, in pixels
 
-    private Texture m_txBoardBg;    //Texture for the board background
+    public Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> m_lMissGuessPos;   //Places on the map that have been guessed already, and were misses
@@ -39,7 +39,7 @@ public class Board
         Sprite sCenter = new Sprite(txCenter);
         Sprite sEdge = new Sprite(txEdge);
         //Create ships and add them to our list
-        m_lShips.add(new Ship_Carrier(sCenter, sEdge)); /**teleport*/
+        //m_lShips.add(new Ship_Carrier(sCenter, sEdge)); /**teleport*/
         m_lShips.add(new Ship_Battleship(sCenter, sEdge));
         m_lShips.add(new Ship_Cruiser(sCenter, sEdge));
         m_lShips.add(new Ship_Destroyer(sCenter, sEdge));
@@ -64,7 +64,7 @@ public class Board
     public void draw(boolean bHidden, Batch bBatch)
     {
         //Draw board background image
-        bBatch.draw(m_txBoardBg, 0, 0);
+        bBatch.draw(m_txBoardBg, Gdx.graphics.getWidth() / 2 - m_txBoardBg.getWidth() / 2, Gdx.graphics.getHeight() / 2 - m_txBoardBg.getHeight() / 2);
         //Draw misses
         for(Point p : m_lMissGuessPos)
             bBatch.draw(m_txMissImage, p.x * TILE_SIZE, p.y * TILE_SIZE);

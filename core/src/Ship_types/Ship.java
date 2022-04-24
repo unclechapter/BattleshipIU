@@ -35,6 +35,8 @@ public abstract class Ship
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
 
+    public Ship() {}
+
     //Abstract functions to be instantiated in child classes
     abstract public String getName();
     abstract public int getSize();
