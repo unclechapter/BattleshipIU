@@ -107,19 +107,45 @@ public class Board
     /**
      * PLACING SHIPS MANUALLY AND NOT OVERLAPPING
      */
-    public void placeShips()
+    public void placeShipsRandom()
     {
         //Clear all current ship positions
         for(Ship s : m_lShips)
             s.setPosition(-1, -1);
 
-         //Loop until we find a good spot to place this ship
-        
+        for(int i = 0; i < m_lShips.size; i++)
+        {
+            int xPos = -1, yPos = -1;
+            while(xPos < 0 || yPos < 0) //Loop until we find a good spot to place this ship
+            {
+                m_lShips.get(i).setHorizontal(MathUtils.randomBoolean());
 
-        //Make sure we're not colliding with any other ships in this location
-        //for(Ship sTestCollide : m_lShips)
+                //Generate a new random position for this ship
+                if(m_lShips.get(i).isHorizontal())
+                {
+                    xPos = MathUtils.random(0, BOARD_SIZE - m_lShips.get(i).getSize());
+                    yPos = MathUtils.random(0, BOARD_SIZE - 1);
+                }
+                else
+                {
+                    xPos = MathUtils.random(0, BOARD_SIZE - 1);
+                    yPos = MathUtils.random(0, BOARD_SIZE - m_lShips.get(i).getSize());
+                }
+                m_lShips.get(i).setPosition(xPos, yPos);
 
+                //Make sure we're not colliding with any other ships in this location
+                //for(Ship sTestCollide : m_lShips)
+                for(int j = 0; j < i; j++)
+                {
+                    if(m_lShips.get(i).checkOverlap(m_lShips.get(j)))    //This ship overlaps another one
+                    {
+                        xPos = yPos = -1;
+                        break;
+                    }
+                }
 
+            }
+        }
     }
 
 
