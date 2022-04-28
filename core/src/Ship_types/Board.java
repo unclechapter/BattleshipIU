@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
 
@@ -105,7 +106,7 @@ public class Board
 
 
     /**
-     * PLACING SHIPS MANUALLY AND NOT OVERLAPPING
+     * PLACING SHIPS RANDOMLY FOR BOT AND NON-OVERLAPPING
      */
     public void placeShipsRandom()
     {
