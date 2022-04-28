@@ -14,6 +14,6 @@ public class Ship_Cruiser extends Ship {
         return Ship.TYPE_CRUISER;
     }
     public Ship_Cruiser(Sprite sCenter, Sprite sEdge) {
-        super(sCenter,sEdge) //we get the value from the SHIP CLASS
+        super(sCenter,sEdge); //we get the value from the SHIP CLASS
     }
 }
