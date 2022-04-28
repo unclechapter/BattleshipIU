@@ -15,8 +15,6 @@ public class Ship_Destroyer extends Ship{
     public int getType(){
         return Ship.TYPE_DESTROYER;
     }
-
-
     public Ship_Destroyer(Sprite sCenter, Sprite sEdge) {
         super(sCenter,sEdge);
     }
