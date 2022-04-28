@@ -3,13 +3,13 @@ package Ship_types;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Ship_Cruiser extends Ship {
-    public static getSize(){
+    public getSize(){
         return Ship.SIZE_CRUISER;
     }
-    public static getName(){
+    public getName(){
         return Ship.NAME_CRUISER;
     }
-    public static getSize(){
+    public getSize(){
         return Ship.TYPE_CRUISER;
     }
     public Ship_Cruiser(Sprite sCenter, Sprite sEdge) {
