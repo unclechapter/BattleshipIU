@@ -11,9 +11,9 @@ public class Ship_Battleship extends Ship {
         return Ship.NAME_BATTLESHIP;
     }
 
-    public int getType(){
+    public int getType() {
         return Ship.TYPE_BATTLESHIP;
-
+    }
 
     public Ship_Battleship(Sprite sCenter, Sprite sEdge) {
         super(sCenter,sEdge);
