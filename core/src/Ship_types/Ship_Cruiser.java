@@ -1,15 +1,16 @@
 package Ship_types;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.sun.org.apache.xpath.internal.objects.XString;
 
 public class Ship_Cruiser extends Ship {
-    public getSize(){
+    public int getSize(){
         return Ship.SIZE_CRUISER;
     }
-    public getName(){
+    public String getName(){
         return Ship.NAME_CRUISER;
     }
-    public getSize(){
+    public int getType(){
         return Ship.TYPE_CRUISER;
     }
     public Ship_Cruiser(Sprite sCenter, Sprite sEdge) {
