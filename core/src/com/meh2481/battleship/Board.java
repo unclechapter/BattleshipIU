@@ -1,6 +1,5 @@
-package Ship_types;
+package com.meh2481.battleship;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,17 +7,21 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
 
+/**
+ * Created by Mark on 1/15/2016.
+ *
+ * Defines a class for handling how ships are placed on the Battleship board, and for causing interactions
+ * (such as firing at a ship, placing ships randomly on the board, etc)
+ */
 public class Board
 {
-    public static final int BOARD_SIZE = 10;    //X and Y size of the board, in tiles
-    public static final int TILE_SIZE = 64;     //Size of each tile, in pixels
+    public static final int BOARD_SIZE = 10;    //X and Y size of the board, in tiles 10
+    public static final int TILE_SIZE = 90;     //Size of each tile, in pixels 64
 
-    public Texture m_txBoardBg;    //Texture for the board background
+    private Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> m_lMissGuessPos;   //Places on the map that have been guessed already, and were misses
-
-
 
     /**
      * Constructor for creating a Board class object
@@ -40,9 +43,10 @@ public class Board
         Sprite sCenter = new Sprite(txCenter);
         Sprite sEdge = new Sprite(txEdge);
         //Create ships and add them to our list
-        //m_lShips.add(new Ship_Carrier(sCenter, sEdge)); /**teleport*/
+        m_lShips.add(new Ship_Carrier(sCenter, sEdge));
         m_lShips.add(new Ship_Battleship(sCenter, sEdge));
         m_lShips.add(new Ship_Cruiser(sCenter, sEdge));
+        m_lShips.add(new Ship_Submarine(sCenter, sEdge));   //It's yellow and you live there
         m_lShips.add(new Ship_Destroyer(sCenter, sEdge));
     }
 
@@ -57,15 +61,15 @@ public class Board
         m_lMissGuessPos.clear();
     }
 
-    /** Draw the board and all ships on it onto the specified Batch.
-     *
-     * @param    bHidden     true means hide ships that haven't been hit, false means draw all ships
-     * @param    bBatch      The batch to draw the board onto
-     */
+/** Draw the board and all ships on it onto the specified Batch.
+ *
+ * @param    bHidden     true means hide ships that haven't been hit, false means draw all ships
+ * @param    bBatch      The batch to draw the board onto
+ */
     public void draw(boolean bHidden, Batch bBatch)
     {
         //Draw board background image
-        bBatch.draw(m_txBoardBg, Gdx.graphics.getWidth() / 2 - m_txBoardBg.getWidth() / 2, Gdx.graphics.getHeight() / 2 - m_txBoardBg.getHeight() / 2);
+        bBatch.draw(m_txBoardBg, 0, 0);
         //Draw misses
         for(Point p : m_lMissGuessPos)
             bBatch.draw(m_txMissImage, p.x * TILE_SIZE, p.y * TILE_SIZE);
@@ -103,10 +107,8 @@ public class Board
         return numLeft;
     }
 
-
-
     /**
-     * PLACING SHIPS RANDOMLY FOR BOT AND NON-OVERLAPPING
+     * Position ships randomly around the board (unintelligent, but non-overlapping)
      */
     public void placeShipsRandom()
     {
@@ -148,8 +150,6 @@ public class Board
             }
         }
     }
-
-
 
     /** Test if we've already fired a missile at this position
      *
@@ -194,3 +194,16 @@ public class Board
         return null;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

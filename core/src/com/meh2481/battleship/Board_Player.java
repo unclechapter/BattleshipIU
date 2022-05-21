@@ -1,8 +1,14 @@
-package Ship_types;
+package com.meh2481.battleship;
 
 import com.badlogic.gdx.graphics.Texture;
 import java.awt.*;
 
+/**
+ * Created by Mark on 1/18/2016.
+ *
+ * Child class of Board for facilitating the player placing ships on their board. Includes methods for moving &
+ * rotating ships as you place them.
+ */
 public class Board_Player extends Board
 {
     private Point m_ptCurPos;   //Hold onto the current position of the ship we're placing

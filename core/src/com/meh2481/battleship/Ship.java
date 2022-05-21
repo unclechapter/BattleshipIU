@@ -1,11 +1,16 @@
-package Ship_types;
+package com.meh2481.battleship;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 
-
+/**
+ * Created by Mark on 1/15/2016.
+ *
+ * Abstract class for ships that handles interactions between ships, facilitates launching missiles at ships, etc
+ * See Ship_* classes for implementations of this class that contain ship-specific info (such as size, name, etc)
+ */
 public abstract class Ship
 {
     private Sprite m_sShipHitSprite;    //Image for the ship being hit (inner image)
@@ -18,24 +23,25 @@ public abstract class Ship
     public static final int TYPE_CARRIER = 6;
     public static final int TYPE_BATTLESHIP = 5;
     public static final int TYPE_CRUISER = 4;
+    public static final int TYPE_SUBMARINE = 3;
     public static final int TYPE_DESTROYER = 2;
 
     //Ship sizes (lengths of each ship type)
     public static final int SIZE_CARRIER = 5;
     public static final int SIZE_BATTLESHIP = 4;
     public static final int SIZE_CRUISER = 3;
+    public static final int SIZE_SUBMARINE = 3;
     public static final int SIZE_DESTROYER = 2;
 
     //Names for each ship to display to user
     public static final String NAME_CARRIER = "Carrier";
     public static final String NAME_BATTLESHIP = "Battleship";
     public static final String NAME_CRUISER = "Cruiser";
+    public static final String NAME_SUBMARINE = "Submarine";
     public static final String NAME_DESTROYER = "Destroyer";
 
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
-
-    public Ship() {}
 
     //Abstract functions to be instantiated in child classes
     abstract public String getName();
@@ -128,15 +134,15 @@ public abstract class Ship
         if(isHorizontal())   //Ship aligned horizontally
         {
             if(iYpos == m_iYPos &&  //Has to be on the same Y position
-                    iXpos >= m_iXPos &&  //Has to be equal to or to the right of the left side
-                    iXpos < m_iXPos + getSize()) //and has to be to the left of the right side
+               iXpos >= m_iXPos &&  //Has to be equal to or to the right of the left side
+               iXpos < m_iXPos + getSize()) //and has to be to the left of the right side
                 return true;
         }
         else    //Ship aligned vertically
         {
             if(iXpos == m_iXPos &&  //Has to be on the same X position
-                    iYpos >= m_iYPos &&  //Has to be equal to or lower than the top side
-                    iYpos < m_iYPos + getSize()) //and has to be higher than the bottom side
+               iYpos >= m_iYPos &&  //Has to be equal to or lower than the top side
+               iYpos < m_iYPos + getSize()) //and has to be higher than the bottom side
                 return true;
         }
         return false;
@@ -210,7 +216,7 @@ public abstract class Ship
             if(m_iYPos == sOther.m_iYPos)
             {
                 if((m_iXPos <= sOther.m_iXPos && m_iXPos + getSize() > sOther.m_iXPos) || //To the left of other ship and overlapping
-                        (sOther.m_iXPos + sOther.getSize() > m_iXPos && sOther.m_iXPos <= m_iXPos)) //To the right of other ship and overlapping
+                   (sOther.m_iXPos + sOther.getSize() > m_iXPos && sOther.m_iXPos <= m_iXPos)) //To the right of other ship and overlapping
                     bOverlapping = true;
             }
         }
@@ -221,7 +227,7 @@ public abstract class Ship
             if(m_iXPos == sOther.m_iXPos)
             {
                 if((m_iYPos <= sOther.m_iYPos && m_iYPos + getSize() > sOther.m_iYPos) || //Above other ship and overlapping
-                        (sOther.m_iYPos + sOther.getSize() > m_iYPos && sOther.m_iYPos <= m_iYPos)) //Below other ship and overlapping
+                   (sOther.m_iYPos + sOther.getSize() > m_iYPos && sOther.m_iYPos <= m_iYPos)) //Below other ship and overlapping
                     bOverlapping = true;
             }
         }
@@ -230,9 +236,9 @@ public abstract class Ship
         {
             //Test to see if any square of both ships are colliding
             if(m_iXPos <= sOther.m_iXPos && //Our left side has to be to the left of or colliding with the other ship
-                    m_iXPos + getSize() > sOther.m_iXPos && //Our right side has to be to the right of or colliding with the other ship
-                    sOther.m_iYPos <= m_iYPos && //The other ship's top side has to be above or colliding with our ship
-                    sOther.m_iYPos + sOther.getSize() > m_iYPos) //And the other ship's bottom side has to be below or colliding with our ship
+               m_iXPos + getSize() > sOther.m_iXPos && //Our right side has to be to the right of or colliding with the other ship
+               sOther.m_iYPos <= m_iYPos && //The other ship's top side has to be above or colliding with our ship
+               sOther.m_iYPos + sOther.getSize() > m_iYPos) //And the other ship's bottom side has to be below or colliding with our ship
                 bOverlapping = true;
         }
         //This ship vertical, other ship horizontal
@@ -240,12 +246,38 @@ public abstract class Ship
         {
             //Same as above test, just swap which ship is which
             if(sOther.m_iXPos <= m_iXPos &&
-                    sOther.m_iXPos + sOther.getSize() > m_iXPos &&
-                    m_iYPos <= sOther.m_iYPos &&
-                    m_iYPos + getSize() > sOther.m_iYPos)
+               sOther.m_iXPos + sOther.getSize() > m_iXPos &&
+               m_iYPos <= sOther.m_iYPos &&
+               m_iYPos + getSize() > sOther.m_iYPos)
                 bOverlapping = true;
         }
 
         return bOverlapping;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
