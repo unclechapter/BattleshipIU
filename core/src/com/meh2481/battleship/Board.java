@@ -16,7 +16,7 @@ import java.awt.*;
 public class Board
 {
     public static final int BOARD_SIZE = 10;    //X and Y size of the board, in tiles 10
-    public static final int TILE_SIZE = 90;     //Size of each tile, in pixels 64
+    public static final int TILE_SIZE = 75;     //Size of each tile, in pixels 64
 
     private Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
