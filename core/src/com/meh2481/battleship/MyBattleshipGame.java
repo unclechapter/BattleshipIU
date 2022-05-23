@@ -1,10 +1,6 @@
 package com.meh2481.battleship;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
@@ -16,13 +12,19 @@ import com.badlogic.gdx.utils.Align;
 import java.awt.*;
 
 /**
- * Created by Mark on 1/13/2016.
+ *
  *
  * Handles game information for managing the player/enemy boards, drawing through LibGDX, restarting games,
  * processing input, etc.
  */
-public class MyBattleshipGame extends ApplicationAdapter implements InputProcessor
+public class MyBattleshipGame extends Game implements Screen, InputProcessor
 {
+    //Screens
+    private StartScreen startScreen;
+    private  MainScreen mainScreen;
+
+    //Game Application
+    private MyBattleshipGame app;
     //Variables for image/sound resources
     //Images
 	private Texture m_txShipCenterImage;
@@ -66,8 +68,8 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
     private final double PLAYERHITPAUSE = 1.25; //Pause in seconds after player launches a missile, to let them read the result
 
     //Constants to deal with flashing cursor
-    private final float CURSOR_MIN_ALPHA = 0.45f;   //Minimum cursor alpha (on a scale 0..1) when at its most transparent
-    private final float CURSOR_MAX_ALPHA = 0.7f;    //Maximum cursor alpha (on a scale 0..1) when at its most opaque
+    private final float CURSOR_MIN_ALPHA = 0.4f;   //Minimum cursor alpha (on a scale 0..1) when at its most transparent
+    private final float CURSOR_MAX_ALPHA = 0.8f;    //Maximum cursor alpha (on a scale 0..1) when at its most opaque
     private final double CURSOR_FLASH_FREQ = 1.65;  //How many times per second the cursor flashes
     private final double NANOSEC = 1000000000.0;    //Nanoseconds in a second (used for System.nanoTime() conversions)
     private final double MAX_CROSSHAIR_SCALE = 20.0;    //Multiplying factor for how large the enemy firing cursor starts out
@@ -95,6 +97,11 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
     private long m_iAIMsgCountdown;  //time in nanoseconds left to display message
     private String m_sMsgTxt;
 
+
+    public MyBattleshipGame() {
+        app = this;
+    }
+
     /**
      * Create all the resources for our game. Called by libGDX automagically
      */
@@ -103,6 +110,8 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
 	{
         //Tell GDX this class will be handling input
         Gdx.input.setInputProcessor(this);
+
+
 
 		//Load the game resources
         m_ftTextFont = new BitmapFont(true);
@@ -147,7 +156,17 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
         //Show game controls text
         m_iAIMsgCountdown = System.nanoTime() + (long)(CONTROLS_INTRO_LEN * NANOSEC);   //Show message longer than normal to give player time to read
         m_sMsgTxt = CONTROLS_INTRO_STR;
+
 	}
+
+    //Getter setter for application
+    public MyBattleshipGame getApp() {
+        return app;
+    }
+
+    public void setApp(MyBattleshipGame app) {
+        this.app = app;
+    }
 
     /** Draw a large text message in upper center of screen
      *
@@ -185,10 +204,10 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
 	@Override
 	public void render()
 	{
-		//Tell the camera to update its matrices.
-		m_cCamera.update();
+        //Tell the camera to update its matrices.
+        m_cCamera.update();
 
-		//Set our batch drawing to use this updated camera matrix
+        //Set our batch drawing to use this updated camera matrix
         m_bBatch.setProjectionMatrix(m_cCamera.combined);
         m_rShapeRenderer.setProjectionMatrix(m_cCamera.combined);
 
@@ -222,11 +241,11 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
 
                     //Play the appropriate sound
                     //if(gHit == EnemyAI.Guess.HIT)
-                        m_sHitSound.play();
+                    m_sHitSound.play();
                     //else if(gHit == EnemyAI.Guess.MISS)
-                        m_sMissSound.play();
+                    m_sMissSound.play();
                     /*else*/ if(!m_bPlayerBoard.boardCleared())
-                        m_sSunkSound.play();
+                    m_sSunkSound.play();
 
                     m_iModeCountdown = (long)(System.nanoTime() + MODESWITCHTIME * NANOSEC);    //Start countdown for switching to player's turn
                     m_iEnemyGuessTimer = 0; //Stop counting down
@@ -253,7 +272,7 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
         }
 
         //---------------------------------
-		// Begin drawing loop
+        // Begin drawing loop
         //---------------------------------
         m_bBatch.begin();
 
@@ -327,7 +346,9 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
         // End drawing loop
         //---------------------------------
         m_bBatch.end();
-	}
+
+    }
+
 
     /**
      * Called by LibGDX when a key is pressed
@@ -477,6 +498,21 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
         return false;
     }
 
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
     /**
      * Called by LibGDX on app exit when it's a good time to clean up game resources
      */
@@ -500,6 +536,7 @@ public class MyBattleshipGame extends ApplicationAdapter implements InputProcess
         m_bBatch.dispose();
         m_rShapeRenderer.dispose();
         m_ftTextFont.dispose();
+        startScreen.dispose();
 	}
 
     //Methods we have to override for LibGDX purposes that we don't care about
