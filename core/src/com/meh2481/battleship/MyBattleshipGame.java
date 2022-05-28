@@ -19,6 +19,7 @@ import java.awt.*;
  */
 public class MyBattleshipGame extends Game implements Screen, InputProcessor
 {
+
     //Screens
     private StartScreen startScreen;
     private  MainScreen mainScreen;
@@ -39,6 +40,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private Sound m_sSunkSound;
     private Sound m_sWinSound;
     private Sound m_sLoseSound;
+
+
     //Music
 	private Music m_mPlacingMusic;
     private Music m_mPlayingMusic;
@@ -102,6 +105,14 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         app = this;
     }
 
+    public void setM_mPlacingMusic(Music m_mPlacingMusic) {
+        this.m_mPlacingMusic = m_mPlacingMusic;
+    }
+
+    public Music getM_mPlacingMusic() {
+        return m_mPlacingMusic;
+    }
+
     /**
      * Create all the resources for our game. Called by libGDX automagically
      */
@@ -110,6 +121,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 	{
         //Tell GDX this class will be handling input
         Gdx.input.setInputProcessor(this);
+        startScreen = new StartScreen(this,mainScreen);
+        setScreen(startScreen);
 
 
 
@@ -147,7 +160,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         //Start music
         m_mPlayingMusic.setLooping(true);
 		m_mPlacingMusic.setLooping(true);
-		m_mPlacingMusic.play();
+
 
 		//Set the camera origin 0,0 to be upper-left, not bottom-left like the gdx default (makes math easier)
 		m_cCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -166,6 +179,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     public void setApp(MyBattleshipGame app) {
         this.app = app;
+    }
+    public StartScreen getStartScreen() {
+        return startScreen;
     }
 
     /** Draw a large text message in upper center of screen
@@ -210,6 +226,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         //Set our batch drawing to use this updated camera matrix
         m_bBatch.setProjectionMatrix(m_cCamera.combined);
         m_rShapeRenderer.setProjectionMatrix(m_cCamera.combined);
+
 
         //Update our state machine
         if(m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown > 0)  //Player turn waiting for enemy turn
@@ -346,7 +363,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         // End drawing loop
         //---------------------------------
         m_bBatch.end();
-
+        super.render();
     }
 
 

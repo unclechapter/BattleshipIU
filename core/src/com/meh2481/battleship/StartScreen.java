@@ -1,6 +1,7 @@
 package com.meh2481.battleship;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -25,27 +26,33 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     private Sprite sprite;
     private MyBattleshipGame app;
     private MainScreen mainScreen;
+    private Music startMusic;
 
 
-    public StartScreen(MyBattleshipGame app, final MainScreen mainScreen){
+    public StartScreen(final MyBattleshipGame app, final MainScreen mainScreen){
         this.mainScreen=mainScreen;
         this.app=app;
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());
         table = new Table();
         batch = new SpriteBatch();
-        sprite = new Sprite(new Texture(Gdx.files.internal("pkmblack.png")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("titlescreen.jpg")));
+        startMusic = Gdx.audio.newMusic(Gdx.files.internal("titlemusic.mp3"));
+        startMusic.setLooping(true);
+        startMusic.play();
         table.setWidth(stage.getWidth());
         table.align(Align.center | Align.center);
 
-        table.setPosition(0,Gdx.graphics.getHeight()/2);
+        table.setPosition(0,Gdx.graphics.getHeight()/2-150);
 
         startButton = new TextButton("New Game",skin,"default");
         quitButton = new TextButton("Quit",skin,"default");
         startButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                getApp().setScreen(mainScreen);
+                app.setScreen(mainScreen);
+                app.getM_mPlacingMusic().play();
+                startMusic.dispose();
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -73,7 +80,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
 
     @Override
     public void show() {
-        InputMultiplexer im = new InputMultiplexer(stage,this);
+        InputMultiplexer im = new InputMultiplexer(stage,this,app);
         Gdx.input.setInputProcessor(im);
     }
 
@@ -116,6 +123,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     @Override
     public void dispose() {
         skin.dispose();
+        app.getM_mPlacingMusic().dispose();
     }
 
     @Override

@@ -14,10 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 public class MainScreen extends MyBattleshipGame implements Screen {
     private MyBattleshipGame game;
     private Stage stage;
-    private Skin skin;
-    private Table table;
-    private TextButton startButton;
-    private TextButton quitButton;
     private SpriteBatch batch;
     private Sprite sprite;
     private MyBattleshipGame app;
