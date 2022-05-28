@@ -53,6 +53,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
                 app.setScreen(mainScreen);
                 app.getStartScreen().dispose();
                 startMusic.dispose();
+                app.getM_mPlacingMusic().setLooping(true);
                 app.getM_mPlacingMusic().play();
             }
         });
@@ -127,6 +128,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         app.getM_mPlacingMusic().dispose();
         startButton.remove();
         quitButton.remove();
+        batch.dispose();
     }
 
     @Override

@@ -124,8 +124,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         startScreen = new StartScreen(this,mainScreen);
         setScreen(startScreen);
 
-
-
 		//Load the game resources
         m_ftTextFont = new BitmapFont(true);
 		m_txShipCenterImage = new Texture("ship_center.png");
