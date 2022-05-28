@@ -136,11 +136,11 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_txFireCursorLg = new Texture("crosshair_lg.png");
         m_sMissSound = Gdx.audio.newSound(Gdx.files.internal("miss.ogg"));
         m_sHitSound = Gdx.audio.newSound(Gdx.files.internal("hit.ogg"));
-        m_sLoseSound = Gdx.audio.newSound(Gdx.files.internal("youLose.ogg"));
-        m_sWinSound = Gdx.audio.newSound(Gdx.files.internal("youWin.ogg"));
+        m_sLoseSound = Gdx.audio.newSound(Gdx.files.internal("youLose.mp3"));
+        m_sWinSound = Gdx.audio.newSound(Gdx.files.internal("youWin.mp3"));
         m_sSunkSound = Gdx.audio.newSound(Gdx.files.internal("sunk.ogg"));
-        m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("beginningMusic.ogg"));
-        m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("mainTheme.ogg"));
+        m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("beginningMusic.mp3"));
+        m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("mainTheme.mp3"));
 
         //Create game logic classes
         m_bPlayerBoard = new Board_Player(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
@@ -424,14 +424,13 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         int iTileX, iTileY;
         iTileX = screenX / Board.TILE_SIZE;
         iTileY = screenY / Board.TILE_SIZE;
-
 		if(button == Input.Buttons.LEFT)    //Clicking left mouse button
 		{
             if(m_iGameMode == MODE_PLACESHIP)   //Placing ships; lock this ship's position and go to next ship
             {
                 if(m_bPlayerBoard.placeShip(iTileX, iTileY))
                 {
-                    m_iGameMode = MODE_PLAYERTURN;    //Done placing ships; start playing now. Player always goes first
+                    m_iGameMode = MODE_PLAYERTURN;//Done placing ships; start playing now. Player always goes first
                     m_mPlacingMusic.stop();
                     m_mPlayingMusic.play();
                 }

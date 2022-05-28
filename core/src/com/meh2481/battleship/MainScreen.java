@@ -19,6 +19,7 @@ public class MainScreen extends MyBattleshipGame implements Screen {
     private MyBattleshipGame app;
     public MainScreen (MyBattleshipGame game){
         this.game=game;
+
     }
 
     @Override

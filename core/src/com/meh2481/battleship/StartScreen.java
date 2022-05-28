@@ -51,8 +51,9 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 app.setScreen(mainScreen);
-                app.getM_mPlacingMusic().play();
+                app.getStartScreen().dispose();
                 startMusic.dispose();
+                app.getM_mPlacingMusic().play();
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -124,6 +125,8 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     public void dispose() {
         skin.dispose();
         app.getM_mPlacingMusic().dispose();
+        startButton.remove();
+        quitButton.remove();
     }
 
     @Override
