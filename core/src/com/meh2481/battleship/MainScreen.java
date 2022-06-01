@@ -10,6 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_SCISSOR_TEST;
 
 public class MainScreen extends MyBattleshipGame implements Screen {
     private MyBattleshipGame game;
@@ -34,12 +39,7 @@ public class MainScreen extends MyBattleshipGame implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        sprite.draw(batch);
-        batch.end();
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+
     }
 
     @Override

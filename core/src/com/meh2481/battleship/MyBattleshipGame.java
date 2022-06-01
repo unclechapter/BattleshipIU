@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import java.awt.*;
 
@@ -19,7 +22,6 @@ import java.awt.*;
  */
 public class MyBattleshipGame extends Game implements Screen, InputProcessor
 {
-
     //Screens
     private StartScreen startScreen;
     private  MainScreen mainScreen;
@@ -99,6 +101,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private final int AI_MSG_OFFSET = 20;   //Offset in pixels from top of screen to display this message
     private long m_iAIMsgCountdown;  //time in nanoseconds left to display message
     private String m_sMsgTxt;
+    com.badlogic.gdx.math.Rectangle scissors = new com.badlogic.gdx.math.Rectangle();
+    com.badlogic.gdx.math.Rectangle clipBounds = new Rectangle(0,0,900,900);
 
 
     public MyBattleshipGame() {
@@ -170,6 +174,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
 	}
 
+
+
     //Getter setter for application
     public MyBattleshipGame getApp() {
         return app;
@@ -209,7 +215,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         //Draw gameover text larger and higher up
         m_ftTextFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         m_ftTextFont.getData().setScale(GAMEOVER_STR_PT);
-        m_ftTextFont.draw(m_bBatch, sMsg, 0, Gdx.graphics.getHeight() / 4, Gdx.graphics.getWidth(), Align.center, false);
+        m_ftTextFont.draw(m_bBatch, sMsg, 0, Gdx.graphics.getHeight() / 4, 900, Align.center, false);
     }
 
     /**
@@ -218,6 +224,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 	@Override
 	public void render()
 	{
+        ScissorStack.calculateScissors(m_cCamera, m_bBatch.getTransformMatrix(), clipBounds, scissors);
+        ScissorStack.pushScissors(scissors);
         //Tell the camera to update its matrices.
         m_cCamera.update();
 
@@ -237,6 +245,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                     m_iGameMode = MODE_GAMEOVER;
                     m_iCharWon = PLAYER_WON;
                     //Play winning music
+                    m_mPlayingMusic.stop();
                     m_sWinSound.play();
                 }
                 else
@@ -276,6 +285,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                         m_iGameMode = MODE_GAMEOVER;
                         m_iCharWon = ENEMY_WON;
                         //Play losing sound
+                        m_mPlayingMusic.stop();
                         m_sLoseSound.play();
                     }
                     else
@@ -285,7 +295,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                 }
             }
         }
-
         //---------------------------------
         // Begin drawing loop
         //---------------------------------
@@ -361,7 +370,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         // End drawing loop
         //---------------------------------
         m_bBatch.end();
+        ScissorStack.popScissors();
         super.render();
+
     }
 
 

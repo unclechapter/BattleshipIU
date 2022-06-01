@@ -52,7 +52,6 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
             public void clicked(InputEvent event, float x, float y) {
                 app.setScreen(mainScreen);
                 app.getStartScreen().dispose();
-                startMusic.dispose();
                 app.getM_mPlacingMusic().setLooping(true);
                 app.getM_mPlacingMusic().play();
             }
@@ -73,7 +72,16 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     }
 
-
+    @Override
+    public void dispose() {
+        skin.dispose();
+        app.getM_mPlacingMusic().dispose();
+        startButton.remove();
+        quitButton.remove();
+        batch.dispose();
+        stage.dispose();
+        startMusic.dispose();
+    }
     @Override
     public void create() {
 
@@ -94,6 +102,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         batch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
     }
     @Override
     public void render() {
@@ -122,14 +131,6 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
 
     }
 
-    @Override
-    public void dispose() {
-        skin.dispose();
-        app.getM_mPlacingMusic().dispose();
-        startButton.remove();
-        quitButton.remove();
-        batch.dispose();
-    }
 
     @Override
     public boolean keyDown(int i) {
