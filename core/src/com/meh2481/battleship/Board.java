@@ -150,7 +150,6 @@ public class Board
             }
         }
     }
-
     /** Test if we've already fired a missile at this position
      *
      * @param    xPos     x position to test
