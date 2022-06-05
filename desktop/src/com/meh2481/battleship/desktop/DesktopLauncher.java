@@ -22,7 +22,7 @@ public class DesktopLauncher
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("Battleship");
         //config.width = 640;
-        config.setWindowedMode(900,900);
+        config.setWindowedMode(1200,900);
         config.setResizable(false);
         config.setWindowIcon(Files.FileType.Internal, "icon_128.png");
         config.setWindowIcon(Files.FileType.Internal, "icon_64.png");

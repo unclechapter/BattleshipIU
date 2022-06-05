@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,8 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.awt.*;
 
@@ -32,13 +29,15 @@ import java.awt.*;
  */
 public class MyBattleshipGame extends Game implements Screen, InputProcessor
 {
+    //The menu pane on the right side
     private Stage stage;
     private Skin skin;
     private Table table;
-    private TextButton startButton;
+    private TextButton sonarButton;
     private TextButton quitButton;
     private SpriteBatch batch;
     private Sprite sprite;
+    private TextButton minesButton;
 
     //Screens
     private StartScreen startScreen;
@@ -69,7 +68,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     //Variables to handle rendering
 	private SpriteBatch m_bBatch;
     private ShapeRenderer m_rShapeRenderer;
-	private OrthographicCamera m_cCamera;
+
+
+    private OrthographicCamera m_cCamera;
     private BitmapFont m_ftTextFont;
     private String m_sOverlayTxt;
 
@@ -135,6 +136,15 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         return m_mPlacingMusic;
     }
 
+    public OrthographicCamera getM_cCamera() {
+        return m_cCamera;
+    }
+
+    public void setM_cCamera(OrthographicCamera m_cCamera) {
+        this.m_cCamera = m_cCamera;
+    }
+
+
     public Stage getStage() {
         return stage;
     }
@@ -145,9 +155,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     @Override
 	public void create()
 	{
-
         //Tell GDX this class will be handling input
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer im = new InputMultiplexer(stage,this);
+        Gdx.input.setInputProcessor(im);
         startScreen = new StartScreen(this,mainScreen);
         setScreen(startScreen);
 
@@ -166,19 +176,26 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_sSunkSound = Gdx.audio.newSound(Gdx.files.internal("sunk.ogg"));
         m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("beginningMusic.mp3"));
         m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("mainTheme.mp3"));
+
+        //Set the camera origin 0,0 to be upper-left, not bottom-left like the gdx default (makes math easier)
+        m_cCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        m_cCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        stage = new Stage();
+        stage = startScreen.getStage();
         table = new Table();
         sprite = new Sprite(new Texture(Gdx.files.internal("pkmblack.png")));
 
         table.setWidth(stage.getWidth());
-        table.align(Align.right | Align.right);
+        table.align(Align.right | Align.center);
 
-        table.setPosition(0,Gdx.graphics.getHeight()/2-150);
+        table.setPosition(0,Gdx.graphics.getHeight()/2);
 
-        startButton = new TextButton("New Game",skin,"default");
+        sonarButton = new TextButton("Sonar",skin,"default");
         quitButton = new TextButton("Quit",skin,"default");
-        startButton.addListener(new ClickListener(){
+        minesButton = new TextButton("Mines",skin,"default");
+        sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -190,14 +207,22 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                 Gdx.app.exit();
             }
         });
+        minesButton.addListener(new ClickListener(){
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
 
-        table.padLeft(30);
-        table.add(startButton).padBottom(20);
+        }
+    });
+
+        table.padRight(120);
+        table.add(sonarButton).padBottom(20);
+        table.row();
+        table.add(minesButton).padBottom(20);
         table.row();
         table.add(quitButton);
         stage.addActor(table);
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-
+        table.setVisible(false);
         //Create game logic classes
         m_bPlayerBoard = new Board_Player(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
         m_bEnemyBoard = new Board(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
@@ -216,11 +241,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         //Start music
         m_mPlayingMusic.setLooping(true);
 		m_mPlacingMusic.setLooping(true);
-
-
-		//Set the camera origin 0,0 to be upper-left, not bottom-left like the gdx default (makes math easier)
-		m_cCamera = new OrthographicCamera();
-		m_cCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Show game controls text
         m_iAIMsgCountdown = System.nanoTime() + (long)(CONTROLS_INTRO_LEN * NANOSEC);   //Show message longer than normal to give player time to read
@@ -355,6 +375,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
         if(m_iGameMode == MODE_PLAYERTURN)  //On the player's turn, draw enemy board, guessed positions, and cursor
         {
+            table.setVisible(true);
            // m_bBatch.draw(sprite,Gdx.graphics.getWidth()/3, Gdx.graphics.getWidth()/2);
             //Draw enemy's board and player's guessed positions
             m_bEnemyBoard.draw(!Gdx.input.isKeyPressed(Input.Keys.S), m_bBatch);
@@ -362,13 +383,13 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
             //Cheat code: holding S shows placement of enemy ships
             if(m_iModeCountdown == 0)   //Draw a crosshair on the tile where the mouse cursor currently is hovering
             {
-                //Set the cursor's alpha to sinusoidally increase/decrease for a nice pulsating effect
-                Color cCursorCol = new Color(1, 1, 1, CURSOR_MAX_ALPHA);    //Start at high alpha
-                double fSecondsElapsed = (double) System.nanoTime() / NANOSEC;   //Use current time for sinusoidal alpha multiply
-                cCursorCol.lerp(1, 1, 1, CURSOR_MIN_ALPHA, (float) Math.sin(fSecondsElapsed * Math.PI * CURSOR_FLASH_FREQ));   //Linearly interpolate this color to final value
-                m_bBatch.setColor(cCursorCol);
-                m_bBatch.draw(m_txFireCursorSm, m_ptCurMouseTile.x * Board.TILE_SIZE, m_ptCurMouseTile.y * Board.TILE_SIZE);
-                m_bBatch.setColor(Color.WHITE); //Reset color to default
+                    //Set the cursor's alpha to sinusoidally increase/decrease for a nice pulsating effect
+                    Color cCursorCol = new Color(1, 1, 1, CURSOR_MAX_ALPHA);    //Start at high alpha
+                    double fSecondsElapsed = (double) System.nanoTime() / NANOSEC;   //Use current time for sinusoidal alpha multiply
+                    cCursorCol.lerp(1, 1, 1, CURSOR_MIN_ALPHA, (float) Math.sin(fSecondsElapsed * Math.PI * CURSOR_FLASH_FREQ));   //Linearly interpolate this color to final value
+                    m_bBatch.setColor(cCursorCol);
+                    m_bBatch.draw(m_txFireCursorSm, m_ptCurMouseTile.x * Board.TILE_SIZE, m_ptCurMouseTile.y * Board.TILE_SIZE);
+                    m_bBatch.setColor(Color.WHITE); //Reset color to default
             }
             else
                 drawLgText(m_sOverlayTxt);  //Draw text overlay for hit/miss
@@ -430,8 +451,11 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_bBatch.end();
         m_bBatch.flush();
         ScissorStack.popScissors();
-      //  stage.act(Gdx.graphics.getDeltaTime());
-      //  stage.draw();
+        m_bBatch.begin();
+        m_bBatch.draw(new Texture(Gdx.files.internal("menupane.png")),Gdx.graphics.getWidth()-300,0,300,900);
+        m_bBatch.end();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
         super.render();
     }
 
@@ -487,28 +511,28 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
      * @return          true if input was processed
      */
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button)
-	{
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
         //Find what tile we're clicking on
         int iTileX, iTileY;
         iTileX = screenX / Board.TILE_SIZE;
         iTileY = screenY / Board.TILE_SIZE;
-            if (button == Input.Buttons.LEFT)    //Clicking left mouse button
+        if (button == Input.Buttons.LEFT)    //Clicking left mouse button
+        {
+            if (!quitButton.isPressed()){
+            if (m_iGameMode == MODE_PLACESHIP)   //Placing ships; lock this ship's position and go to next ship
             {
-                if (m_iGameMode == MODE_PLACESHIP)   //Placing ships; lock this ship's position and go to next ship
-                {
-                    if (m_bPlayerBoard.placeShip(iTileX, iTileY)) {
-                        m_iGameMode = MODE_PLAYERTURN;//Done placing ships; start playing now. Player always goes first
-                        m_mPlacingMusic.stop();
-                        m_mPlayingMusic.play();
-                    }
+                if (m_bPlayerBoard.placeShip(iTileX, iTileY)) {
+                    m_iGameMode = MODE_PLAYERTURN;//Done placing ships; start playing now. Player always goes first
+                    m_mPlacingMusic.stop();
+                    m_mPlayingMusic.play();
                 }
-                else if (m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown == 0)   //Playing; fire at a ship
+            } else if (m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown == 0)   //Playing; fire at a ship
+            {
+                if (!m_bEnemyBoard.alreadyFired(iTileX, iTileY))    //If we haven't fired here already
                 {
-                    if (!m_bEnemyBoard.alreadyFired(iTileX, iTileY))    //If we haven't fired here already
-                    {
-                        if (screenX <= 900 && screenY <= 900){
-                            Ship sHit = m_bEnemyBoard.fireAtPos(iTileX, iTileY);    //Fire!
+                    if (screenX<=900 && screenY <= 900) {
+                        Ship sHit = m_bEnemyBoard.fireAtPos(iTileX, iTileY);    //Fire!
                         if (sHit != null)    //If we hit a ship
                         {
                             if (sHit.isSunk())   //Sunk a ship
@@ -529,22 +553,22 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                         m_iModeCountdown = (long) (System.nanoTime() + PLAYERHITPAUSE * NANOSEC);    //Start countdown timer for the start of the enemy turn
                     }
                 }
-                }
-                else if (m_iGameMode == MODE_GAMEOVER) //Game over; start a new game
-                {
-                    //Reset boards and game state
-                    m_iGameMode = MODE_PLACESHIP;
-                    m_bPlayerBoard.reset();
-                    m_bEnemyBoard.reset();
-                    //m_aiEnemy.reset();
-                    m_bPlayerBoard.startPlacingShips();
-                    m_bEnemyBoard.placeShipsRandom();
+            } else if (m_iGameMode == MODE_GAMEOVER) //Game over; start a new game
+            {
+                //Reset boards and game state
+                m_iGameMode = MODE_PLACESHIP;
+                m_bPlayerBoard.reset();
+                m_bEnemyBoard.reset();
+                //m_aiEnemy.reset();
+                m_bPlayerBoard.startPlacingShips();
+                m_bEnemyBoard.placeShipsRandom();
 
-                    //Start playing music
-                    m_mPlayingMusic.stop();
-                    m_mPlacingMusic.play();
-                }
+                //Start playing music
+                m_mPlayingMusic.stop();
+                m_mPlacingMusic.play();
             }
+        }
+    }
             else if (button == Input.Buttons.RIGHT)  //Clicking right mouse button
             {
                 if (m_iGameMode == MODE_PLACESHIP)   //Rotate ships on RMB if we're currently placing them
@@ -582,7 +606,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     @Override
     public void show() {
-
     }
 
     @Override

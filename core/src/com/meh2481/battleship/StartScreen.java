@@ -13,7 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class StartScreen extends MyBattleshipGame implements Screen, InputProcessor {
 
@@ -27,13 +29,23 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     private MyBattleshipGame app;
     private MainScreen mainScreen;
     private Music startMusic;
+    private Viewport vpSt;
 
+
+    @Override
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     public StartScreen(final MyBattleshipGame app, final MainScreen mainScreen){
         this.mainScreen=mainScreen;
         this.app=app;
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage();
         table = new Table();
         batch = new SpriteBatch();
         sprite = new Sprite(new Texture(Gdx.files.internal("titlescreen.jpg")));
@@ -79,7 +91,6 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         startButton.remove();
         quitButton.remove();
         batch.dispose();
-        stage.dispose();
         startMusic.dispose();
     }
     @Override
