@@ -232,7 +232,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
         //Initialize game state
         m_bPlayerBoard.startPlacingShips();
-        m_bEnemyBoard.placeShipsRandom();
+        m_bEnemyBoard.placeAllShips();
         m_iGameMode = MODE_PLACESHIP;
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
@@ -480,7 +480,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
             m_bEnemyBoard.reset();
             //m_aiEnemy.reset();
             m_bPlayerBoard.startPlacingShips();
-            m_bEnemyBoard.placeShipsRandom();
+            m_bEnemyBoard.placeAllShips();
 
             //Start playing music
             m_mPlayingMusic.stop();
@@ -561,7 +561,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                 m_bEnemyBoard.reset();
                 //m_aiEnemy.reset();
                 m_bPlayerBoard.startPlacingShips();
-                m_bEnemyBoard.placeShipsRandom();
+                m_bEnemyBoard.placeAllShips();
 
                 //Start playing music
                 m_mPlayingMusic.stop();

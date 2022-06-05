@@ -110,7 +110,39 @@ public class Board
     /**
      * Position ships randomly around the board (unintelligent, but non-overlapping)
      */
-    public void placeShipsRandom()
+    public void placeShip(Ship ship){
+        int xPos, yPos;
+        ship.setHorizontal(MathUtils.randomBoolean());
+        if (ship.isHorizontal()){
+            xPos = MathUtils.random(0,BOARD_SIZE - ship.getSize());
+            yPos = MathUtils.random(0, BOARD_SIZE - 1);
+        }
+        else {
+            xPos = MathUtils.random(0,BOARD_SIZE-1);
+            yPos = MathUtils.random(0, BOARD_SIZE - ship.getSize());
+        }
+        ship.setPosition(xPos, yPos);
+    }
+
+    public void placeAllShips(){
+        for (Ship s : m_lShips)
+            s.setPosition(-1, -1);
+        for (int i = 0; i < m_lShips.size; i++){
+            boolean placing = true; 
+            while (placing==true){
+                placeShip(m_lShips.get(i));
+                placing = false;
+                for(int j = 0; j < i; j++){
+                    if(m_lShips.get(i).checkOverlap(m_lShips.get(j))){    //This ship overlaps another one
+                        placing = true;
+                        break;
+                    }
+                }
+            }     
+        }
+    }
+
+   /* public void placeShipsRandom()
     {
         //Clear all current ship positions
         for(Ship s : m_lShips)
@@ -149,7 +181,8 @@ public class Board
 
             }
         }
-    }
+    } */
+
     /** Test if we've already fired a missile at this position
      *
      * @param    xPos     x position to test
@@ -191,6 +224,24 @@ public class Board
         //Miss; add to our miss positions and return nothing
         m_lMissGuessPos.add(new Point(xPos, yPos));
         return null;
+    }
+    public void teleport(Ship ship){
+        if (ship.beenHit = false){
+            boolean placing = true;
+            while (placing == true){
+                placeShip(ship);
+                placing = false;
+                for(int j = 0; j < m_lShips.size; j++){
+                   // if (j == ship.placingNumber)
+                     //   continue;
+                    if(ship.checkOverlap(m_lShips.get(j))){    //This ship overlaps another one
+                        placing = true;
+                        break;
+                    }
+                }
+            }
+            
+        }
     }
 }
 

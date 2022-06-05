@@ -48,7 +48,6 @@ public class Sonar {
     }
     public void placeSonar(int xPos, int yPos){
         moveSonar(xPos, yPos);
+        findShip(xPos, yPos);
     }
-
-    
 }

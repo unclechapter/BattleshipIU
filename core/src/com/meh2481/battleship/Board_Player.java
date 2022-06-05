@@ -105,4 +105,5 @@ public class Board_Player extends Board
             moveShip(m_ptCurPos.x, m_ptCurPos.y);
         }
     }
+    public void teleportShip(){}
 }

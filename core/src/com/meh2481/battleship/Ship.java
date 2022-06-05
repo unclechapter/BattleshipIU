@@ -18,6 +18,7 @@ public abstract class Ship
     private boolean m_bHorizontal;  //If the ship is currently aligned horizontally or vertically
     private int m_iXPos, m_iYPos;   //x,y position of the ship on the map
     private Array<Integer> m_iHitPositions; //Positions on this ship that have been hit (order doesn't matter)
+    public boolean beenHit; //if ship has been hit by a bomb
 
     //Ship types
     public static final int TYPE_CARRIER = 6;
@@ -74,6 +75,7 @@ public abstract class Ship
     {
         m_iXPos = m_iYPos = -1;
         m_bHorizontal = true;
+        beenHit = false;
         m_iHitPositions = new Array<Integer>();
     }
 
@@ -87,6 +89,7 @@ public abstract class Ship
     {
         if(isHit(iXpos, iYpos))
         {
+            beenHit = true;
             if(isHorizontal())
                 m_iHitPositions.add(iXpos - m_iXPos);
             else
