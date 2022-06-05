@@ -1,24 +1,40 @@
 package com.meh2481.battleship;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import java.awt.*;
 
 public class Sonar {
     private Sprite sonarSprite;
     private Array<Integer> foundShipPositions;
-    private int SONAR_SIZE = 2;
+    private int SONAR_SIZE = 3;
     private int xPos, yPos;
+    private Array<Ship> ships;
 
     public void setPosition(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
     }
     
-    private Sonar(Sprite sonar){
+    public Sonar(Sprite sonar, Array<Ship> ships){
         this.sonarSprite = sonar;
+        this.ships = ships;
     }
 
-    private void findShip(int xPos, int yPos){
-        
+    private Array<Integer> findShip(int xPos, int yPos){
+        for (Ship ship : ships){
+            int radius = (SONAR_SIZE-1)/2;
+            for (int i = -radius; i <= radius; i++){
+                for (int j = -radius; j<= radius; j++){
+                    if (ship.isHit(xPos + i, yPos+j)){
+                        Array<Integer> result = new Array<>();
+                        result.add(xPos + i);
+                        result.add(yPos + j);
+                        return result;
+                    }     
+                }
+            }
+        }
+        return null;
     }
 
     public void moveSonar(int xPos, int yPos){
