@@ -166,18 +166,17 @@ public class Board
         }
     }
 
-    public boolean checkOK(int xPos, int yPos, Ship ship){
-        for (Point point : ship.getPosition()){
-            if (xPos < 0 || yPos > BOARD_SIZE 
-                || yPos < 0 || yPos > BOARD_SIZE){
-                return false;
-            }
+    public boolean checkOK(Ship ship, int xPos, int yPos){
+        if (xPos < 0 || xPos + ship.getHorizontal().x > BOARD_SIZE
+            || yPos < 0 || yPos + ship.getHorizontal().y > BOARD_SIZE){
+            return false;
         }
-        for (int i = 0; i < ship.type.size; i++){
-            Point point = ship.isHorizontal() ? new Point(xPos + i, yPos) : new Point(xPos, yPos + i);
-            if (shipPositions.get(point.x).get(point.y) != null)
+
+        for (int i = 0; i < ship.type.size; i++)
+            if (shipPositions.get(xPos + ship.getHorizontal().x * i).get(yPos + ship.getHorizontal().y * i) != null)
                 return false;
-        }
+
+
         return true;
     }
 }

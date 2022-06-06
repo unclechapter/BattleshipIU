@@ -22,14 +22,14 @@ public class BoardBot extends Board{
     public void placeShipRandom(Ship ship){
         int xPos, yPos;
         if (ship.isHorizontal()){
-            xPos = MathUtils.random(0,BOARD_SIZE - ship.getSize());
+            xPos = MathUtils.random(0,BOARD_SIZE - ship.type.size);
             yPos = MathUtils.random(0, BOARD_SIZE - 1);
         }
         else {
             xPos = MathUtils.random(0,BOARD_SIZE-1);
-            yPos = MathUtils.random(0, BOARD_SIZE - ship.getSize());
+            yPos = MathUtils.random(0, BOARD_SIZE - ship.type.size);
         }
-        ship.setPosition(xPos, yPos, MathUtils.randomBoolean());
+        ship.updatePosition(xPos, yPos, MathUtils.randomBoolean());
     }
 
     public void placeAllShips(){

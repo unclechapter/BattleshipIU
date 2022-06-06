@@ -20,7 +20,7 @@ public class Ship
     private Array<Point> m_iHitPositions;
     private Array<Point> position;
     protected ShipType type;
-    private boolean horizontal = true;
+    private Point horizontal = new Point(1, 0);
     public boolean beenHit; //if ship has been hit by a bomb
 
     //How faded out a sunk ship looks
@@ -28,20 +28,25 @@ public class Ship
 
     //Getter/setter methods
     public void updatePosition(int x, int y, boolean horizontal) { //Sets the ship position
-        this.horizontal = horizontal;
+        this.horizontal = horizontal ? new Point(1, 0) : new Point(0, 1);
         for (int i = 0; i < type.size; i++) {
             position.clear();
             position.add(horizontal ? new Point(x + i, y) : new Point(x, y + i));
         }
     }
 
-    public boolean isHorizontal(){
+    public Point getHorizontal(){
         return horizontal;
     }
+
     public boolean isSunk() { return m_iHitPositions.size == type.size; }   //Returns true if this ship has been sunk, false otherwise
 
     public Array<Point> getPosition() {
         return position;
+    }
+
+    public ShipType getType() {
+        return type;
     }
 
     /**
