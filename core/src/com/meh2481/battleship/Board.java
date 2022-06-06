@@ -22,6 +22,7 @@ public class Board
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> m_lMissGuessPos;   //Places on the map that have been guessed already, and were misses
+    protected Array<Array<Ship>> shipPositions;
 
     /**
      * Constructor for creating a Board class object
@@ -163,6 +164,21 @@ public class Board
             }
             
         }
+    }
+
+    public boolean checkOK(int xPos, int yPos, Ship ship){
+        for (Point point : ship.getPosition()){
+            if (xPos < 0 || yPos > BOARD_SIZE 
+                || yPos < 0 || yPos > BOARD_SIZE){
+                return false;
+            }
+        }
+        for (int i = 0; i < ship.type.size; i++){
+            Point point = ship.isHorizontal() ? new Point(xPos + i, yPos) : new Point(xPos, yPos + i);
+            if (shipPositions.get(point.x).get(point.y) != null)
+                return false;
+        }
+        return true;
     }
 }
 
