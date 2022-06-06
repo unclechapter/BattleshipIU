@@ -13,7 +13,7 @@ import java.awt.*;
  * Defines a class for handling how ships are placed on the Battleship board, and for causing interactions
  * (such as firing at a ship, placing ships randomly on the board, etc)
  */
-public class Board
+public abstract class Board
 {
     public static final int BOARD_SIZE = 12;    //X and Y size of the board, in tiles 12
     public static final int TILE_SIZE = 75;     //Size of each tile, in pixels 64
@@ -147,6 +147,13 @@ public class Board
         m_lMissGuessPos.add(new Point(xPos, yPos));
         return null;
     }
+
+    public void placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
+        if (checkOK(ship, xPos, yPos)){
+            ship.updatePosition(xPos, yPos, horizontal);
+        }
+    }
+
     public void teleport(Ship ship){
         if (ship.beenHit = false){
             boolean placing = true;
