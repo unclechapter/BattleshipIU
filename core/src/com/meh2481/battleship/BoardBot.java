@@ -16,10 +16,30 @@ public class BoardBot extends Board{
         super(txBg, txMiss, txCenter, txEdge);
     }
 
+    public void placeShipRandom(){
+        int xPos, yPos;
+        boolean horizontal;
+        for (Ship ship : m_lShips){
+            horizontal = MathUtils.randomBoolean();
+            if (horizontal){
+                xPos = MathUtils.random(0,BOARD_SIZE - ship.type.size);
+                yPos = MathUtils.random(0, BOARD_SIZE - 1);
+            }
+            else {
+                xPos = MathUtils.random(0, BOARD_SIZE - 1);
+                yPos = MathUtils.random(0, BOARD_SIZE - ship.type.size);
+            }
+            placeShip(xPos, yPos, ship, horizontal);
+        }
+    }
+
+}
+
+
     /**
      * Position ships randomly around the board (unintelligent, but non-overlapping)
      */
-    public void placeShipRandom(Ship ship){
+    /*public void placeShipRandom(Ship ship){
         int xPos, yPos;
         if (ship.isHorizontal()){
             xPos = MathUtils.random(0,BOARD_SIZE - ship.type.size);
@@ -48,5 +68,4 @@ public class BoardBot extends Board{
                 }
             }
         }
-    }
-}
+    }*/

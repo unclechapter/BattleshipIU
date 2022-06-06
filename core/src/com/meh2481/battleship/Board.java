@@ -3,7 +3,6 @@ package com.meh2481.battleship;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
 
@@ -147,13 +146,38 @@ public abstract class Board
         m_lMissGuessPos.add(new Point(xPos, yPos));
         return null;
     }
+    public Ship fireHorizontalBomb(int xPos, int yPos){
+        for (Ship ship : m_lShips){
+            if(true)
+                return ship;
+        }
+        return null;
+    }
 
+    public Ship fireVerticalBomb(int xPos, int yPos){
+        for (Ship ship : m_lShips){
+            if(true)
+                return ship;
+        }
+        return null;
+    }
+    /**To place a ship at a certain position. It checks if the position is placeable then save the position of the ship
+     * @param xPos x position to place ship
+     * @param yPos y position to place ship
+     * @param ship ship to place
+     * @param horizontal ship orientation
+    */
     public void placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
         if (checkOK(ship, xPos, yPos)){
             ship.updatePosition(xPos, yPos, horizontal);
         }
     }
-
+    /**Special feature - ship is allowed to teleport to a different position on the board if it has not been hit and the new position has not been hit 
+     * @param xPos new x position
+     * @param yPos new y position
+     * @param ship the ship to teleport
+     * @param horizontal new orientation
+    */
     public void teleport(int xPos, int yPos, Ship ship, boolean horizontal){
         if (ship.beenHit = false){
             if (!alreadyFired(xPos, yPos)){
@@ -161,7 +185,7 @@ public abstract class Board
             }
         }
     }
-
+    /** Checks if ship at certain position is outside the border or overlaps with other ships */
     public boolean checkOK(Ship ship, int xPos, int yPos){
         if (xPos < 0 || xPos + ship.getHorizontal().x > BOARD_SIZE
             || yPos < 0 || yPos + ship.getHorizontal().y > BOARD_SIZE){
@@ -178,7 +202,7 @@ public abstract class Board
     }
 
     public void placeShield(int xPos, int yPos){
-        
+
     }
 }
 
