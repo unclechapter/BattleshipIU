@@ -154,22 +154,11 @@ public abstract class Board
         }
     }
 
-    public void teleport(Ship ship){
+    public void teleport(int xPos, int yPos, Ship ship, boolean horizontal){
         if (ship.beenHit = false){
-            boolean placing = true;
-            while (placing == true){
-                placeShipRandom(ship);
-                placing = false;
-                for(int j = 0; j < m_lShips.size; j++){
-                   // if (j == ship.placingNumber)
-                     //   continue;
-                    if(ship.checkOverlap(m_lShips.get(j))){    //This ship overlaps another one
-                        placing = true;
-                        break;
-                    }
-                }
+            if (!alreadyFired(xPos, yPos)){
+                placeShip(xPos, yPos, ship, horizontal);
             }
-            
         }
     }
 
@@ -178,13 +167,18 @@ public abstract class Board
             || yPos < 0 || yPos + ship.getHorizontal().y > BOARD_SIZE){
             return false;
         }
-
         for (int i = 0; i < ship.type.size; i++)
             if (shipPositions.get(xPos + ship.getHorizontal().x * i).get(yPos + ship.getHorizontal().y * i) != null)
                 return false;
-
-
         return true;
+    }
+
+    public void placeSonar(int xPos, int yPos){
+        
+    }
+
+    public void placeShield(int xPos, int yPos){
+        
     }
 }
 

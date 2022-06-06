@@ -94,6 +94,17 @@ public class Ship
 
         return false;
     }
+    /*used in already alreadyFired function in board to check if a certain position has been fired (used in teleport) 
+    as the ship is keeping track of the positions of the ship that was hit and the board keeps track of the missed positions*/
+    
+    public boolean alreadyHit(int x, int y){
+        for (Point point : m_iHitPositions){
+            if (x == point.x && y == point.y){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Draw the ship to the specified SpriteBatch
