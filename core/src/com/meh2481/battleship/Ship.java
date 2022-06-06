@@ -13,24 +13,36 @@ import java.awt.*;
  * Abstract class for ships that handles interactions between ships, facilitates launching missiles at ships, etc
  * See Ship_* classes for implementations of this class that contain ship-specific info (such as size, name, etc)
  */
-public abstract class Ship
+public class Ship
 {
     private Sprite m_sShipHitSprite;    //Image for the ship being hit (inner image)
     private Sprite m_sShipOKSprite; //Image for the ship being ok (outer image)
     private Array<Point> m_iHitPositions;
     private Array<Point> position;
     protected ShipType type;
+    private boolean horizontal = true;
     public boolean beenHit; //if ship has been hit by a bomb
 
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
 
     //Getter/setter methods
-    public void setPosition(int x, int y, boolean horizontal) {
-        for(int i = 0; i < type.size; i++)
+    public void updatePosition(int x, int y, boolean horizontal) { //Sets the ship position
+        this.horizontal = horizontal;
+        for (int i = 0; i < type.size; i++) {
+            position.clear();
             position.add(horizontal ? new Point(x + i, y) : new Point(x, y + i));
-    } //Sets the ship position
+        }
+    }
+
+    public boolean isHorizontal(){
+        return horizontal;
+    }
     public boolean isSunk() { return m_iHitPositions.size == type.size; }   //Returns true if this ship has been sunk, false otherwise
+
+    public Array<Point> getPosition() {
+        return position;
+    }
 
     /**
      * Constructor. Requires a sprite for the hit image and one for the non-hit image

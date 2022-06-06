@@ -43,11 +43,8 @@ public class Board
         Sprite sCenter = new Sprite(txCenter);
         Sprite sEdge = new Sprite(txEdge);
         //Create ships and add them to our list
-        m_lShips.add(new ShipCarrier(sCenter, sEdge));
-        m_lShips.add(new ShipBattleship(sCenter, sEdge));
-        m_lShips.add(new ShipCruiser(sCenter, sEdge));
-        m_lShips.add(new ShipSubmarine(sCenter, sEdge));   //It's yellow and you live there
-        m_lShips.add(new ShipDestroyer(sCenter, sEdge));
+        for(int i = 0; i < 5; i ++)
+            m_lShips.add(new Ship(sCenter, sEdge));
     }
 
     /**
@@ -105,41 +102,6 @@ public class Board
                 numLeft++;
         }
         return numLeft;
-    }
-
-    /**
-     * Position ships randomly around the board (unintelligent, but non-overlapping)
-     */
-    public void placeShipRandom(Ship ship){
-        int xPos, yPos;
-        ship.setHorizontal(MathUtils.randomBoolean());
-        if (ship.isHorizontal()){
-            xPos = MathUtils.random(0,BOARD_SIZE - ship.getSize());
-            yPos = MathUtils.random(0, BOARD_SIZE - 1);
-        }
-        else {
-            xPos = MathUtils.random(0,BOARD_SIZE-1);
-            yPos = MathUtils.random(0, BOARD_SIZE - ship.getSize());
-        }
-        ship.setPosition(xPos, yPos);
-    }
-
-    public void placeAllShips(){
-        for (Ship s : m_lShips)
-            s.setPosition(-1, -1);
-        for (int i = 0; i < m_lShips.size; i++){
-            boolean placing = true; 
-            while (placing==true){
-                placeShipRandom(m_lShips.get(i));
-                placing = false;
-                for(int j = 0; j < i; j++){
-                    if(m_lShips.get(i).checkOverlap(m_lShips.get(j))){    //This ship overlaps another one
-                        placing = true;
-                        break;
-                    }
-                }
-            }     
-        }
     }
 
     /** Test if we've already fired a missile at this position
