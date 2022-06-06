@@ -75,8 +75,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private String m_sOverlayTxt;
 
     //Classes that hold game information
-	private Board_Player m_bPlayerBoard;        //Board the player places ships on and the enemy guesses onto
-    private Board m_bEnemyBoard;                //Board the enemy places ships on and the player guesses onto
+	private BoardPlayer m_bPlayerBoard;        //Board the player places ships on and the enemy guesses onto
+    private BoardBot m_bEnemyBoard;                //Board the enemy places ships on and the player guesses onto
     //private EnemyAI m_aiEnemy;                  //Enemy player AI
     private Point m_ptCurMouseTile;   //Current tile the mouse is hovering over
 
@@ -224,8 +224,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         table.setVisible(false);
         //Create game logic classes
-        m_bPlayerBoard = new Board_Player(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
-        m_bEnemyBoard = new Board(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
+        m_bPlayerBoard = new BoardPlayer(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
+        m_bEnemyBoard = new BoardBot(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
         //m_aiEnemy = new EnemyAI();
         m_bBatch = new SpriteBatch();
         m_rShapeRenderer = new ShapeRenderer();

@@ -9,7 +9,7 @@ import java.awt.*;
  * Child class of Board for facilitating the player placing ships on their board. Includes methods for moving &
  * rotating ships as you place them.
  */
-public class Board_Player extends Board
+public class BoardPlayer extends Board
 {
     private Point m_ptCurPos;   //Hold onto the current position of the ship we're placing
     private int m_iPlacing;    //For handling ship placement - current ship we're placing
@@ -21,7 +21,7 @@ public class Board_Player extends Board
      * @param txCenter  Texture for drawing the center of ships when they are hit
      * @param txEdge    Texture for drawing the edge of ships
      */
-    public Board_Player(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge)
+    public BoardPlayer(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge)
     {
         super(txBg, txMiss, txCenter, txEdge);  //Construct default class
         m_ptCurPos = new Point(-1,-1);          //Reset current position we're placing a ship
