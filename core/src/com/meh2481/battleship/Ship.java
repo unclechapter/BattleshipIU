@@ -95,22 +95,9 @@ public class Ship
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
      * @return  true on hit, false on miss
      */
-    public boolean fireAtShip(Point point) {
-        beenHit = true;
-        if(isHit(point)) {
+    public void fireAtShip(Point point) {
+            beenHit = true;
             m_iHitPositions.add(new Point(point));
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isHit(Point point) {
-        for(int i = 0; i < type.size; i++)
-            if(pointsOfShip.contains(point, false))
-                return true;
-
-        return false;
     }
 
     /**

@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.meh2481.battleship.specialAttack.Shield;
+import com.meh2481.battleship.specialAttack.Sonar;
+
 import java.awt.*;
 
 /**
@@ -23,6 +26,8 @@ public class Board
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
     public Array<Array<Ship>> shipPositions;
+    public Array<Shield> shields;
+    public Sonar sonar;
 
     /**
      * Constructor for creating a Board class object
@@ -94,7 +99,6 @@ public class Board
             ship.fireAtShip(point);
             return ship;
         }
-
         return null;
     }
 
@@ -140,22 +144,6 @@ public class Board
         return numLeft;
     }
 
-    public Ship fireHorizontalBomb(int xPos, int yPos){
-        for (Ship ship : m_lShips){
-            if(true)
-                return ship;
-        }
-        return null;
-    }
-
-    public Ship fireVerticalBomb(int xPos, int yPos){
-        for (Ship ship : m_lShips){
-            if(true)
-                return ship;
-        }
-        return null;
-    }
-
     /**Special feature - ship is allowed to teleport to a different position on the board if it has not been hit and the new position has not been hit 
      * @param xPos new x position
      * @param yPos new y position
@@ -169,12 +157,16 @@ public class Board
             }
         }
     }
-    public void placeSonar(int xPos, int yPos){
-        
+    public Array<Point> placeSonar(Point point){
+        sonar.moveSonar(point);
+        return sonar.findShip(point);
     }
 
-    public void placeShield(int xPos, int yPos){
-
+    public void placeShield(Point point, Shield shield){
+        if (shipPositions.get(point.x).get(point.y)!=null){
+            shield.setPosition(point);
+            shields.add(shield);
+        }
     }
 
     /** Draw the board and all ships on it onto the specified Batch.

@@ -8,49 +8,43 @@ import java.awt.*;
 
 public class Sonar {
     private Sprite sonarSprite;
-    private Array<Integer> foundShipPositions;
-    private int SONAR_SIZE = 3;
-    private int xPos, yPos;
-    private Array<Ship> ships;
-
-    public void setPosition(int xPos, int yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
-    }
+    private Array<Point> foundShipPositions;
+    private int SONAR_RADIUS = 1;
+    private Point point;
+    private Array<Array<Ship>> shipPositions;
     
-    public Sonar(Sprite sonar, Array<Ship> ships){
+    public Sonar(Sprite sonar, Array<Array<Ship>> ships){
         this.sonarSprite = sonar;
-        this.ships = ships;
+        this.shipPositions = ships;
     }
 
-    private Array<Integer> findShip(int xPos, int yPos){
-        for (Ship ship : ships){
-            int radius = (SONAR_SIZE-1)/2;
-            for (int i = -radius; i <= radius; i++){
-                for (int j = -radius; j<= radius; j++){
-//                    if (ship.isHit(xPos + i, yPos+j)){
-//                        Array<Integer> result = new Array<>();
-//                        result.add(xPos + i);
-//                        result.add(yPos + j);
-//                        return result;
-//                    }
-                }
+    public void setPosition(Point point) {
+        this.point = point;
+    }
+
+    public Array<Point> findShip(Point point){
+        for (int i = -SONAR_RADIUS; i <= SONAR_RADIUS; i++){
+            for (int j = -SONAR_RADIUS; j<= SONAR_RADIUS; j++){
+                if (shipPositions.get(point.x).get(point.y)!= null)
+                    foundShipPositions.add(point);
             }
         }
-        return null;
+        return foundShipPositions;
     }
 
-    public void moveSonar(int xPos, int yPos){
-       if (SONAR_SIZE + xPos > Board.BOARD_SIZE){
-           xPos = Board.BOARD_SIZE - SONAR_SIZE;
+    public void moveSonar(Point point){
+       if (SONAR_RADIUS + point.x > Board.BOARD_SIZE){
+           point.x = Board.BOARD_SIZE - SONAR_RADIUS;
        }
-       if (SONAR_SIZE + yPos > Board.BOARD_SIZE){
-           yPos = Board.BOARD_SIZE - SONAR_SIZE;
+       if (SONAR_RADIUS + point.y > Board.BOARD_SIZE){
+           point.x = Board.BOARD_SIZE - SONAR_RADIUS;
        }
-       setPosition(xPos, yPos);
-    }
-    public void placeSonar(int xPos, int yPos){
-        moveSonar(xPos, yPos);
-        findShip(xPos, yPos);
+       if (point.x - SONAR_RADIUS < 0){
+           point.x = SONAR_RADIUS;
+       }
+       if (point.y - SONAR_RADIUS < 0){
+           point.y = SONAR_RADIUS;
+       }
+       setPosition(point);
     }
 }
