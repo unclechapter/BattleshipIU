@@ -93,24 +93,21 @@ public class Ship
 
     /**
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
-     * @param x board x position to test and see if on ship
-     * @param y board y position to test and see if on ship
      * @return  true on hit, false on miss
      */
-    public boolean fireAtShip(int x, int y) {
+    public boolean fireAtShip(Point point) {
         beenHit = true;
-        if(isHit(x, y)) {
-            m_iHitPositions.add(new Point(x, y));
+        if(isHit(point)) {
+            m_iHitPositions.add(new Point(point));
             return true;
         }
 
         return false;
     }
 
-    private boolean isHit(int x, int y) {
-        System.out.println(pointsOfShip + " " + x + " " + y);
+    private boolean isHit(Point point) {
         for(int i = 0; i < type.size; i++)
-            if(pointsOfShip.contains(new Point(x, y), false))
+            if(pointsOfShip.contains(point, false))
                 return true;
 
         return false;
@@ -121,7 +118,7 @@ public class Ship
      * @param bHidden   if ship should be considered "hidden," that is only tiles that have previously been hit should be drawn
      * @param bBatch    LibGDX batch to draw the ship to
      */
-    public void draw(boolean bHidden, Batch bBatch) {
+    public void draw(boolean bHidden, Batch bBatch, Point offset) {
         if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
 
         //Change ship's appearance slightly if it's been sunk
@@ -134,8 +131,8 @@ public class Ship
         if(bHidden) {
             for(Point point : m_iHitPositions) {
                 //Draw both center and edge for hit tiles
-                float x = point.x * m_sShipHitSprite.getWidth();
-                float y = point.y * m_sShipHitSprite.getHeight();
+                float x = point.x * m_sShipHitSprite.getWidth() + offset.x;
+                float y = point.y * m_sShipHitSprite.getHeight() + offset.y;
                 m_sShipOKSprite.setPosition(x, y);
                 m_sShipOKSprite.draw(bBatch);
                 m_sShipHitSprite.setPosition(x, y);
@@ -147,12 +144,12 @@ public class Ship
             //Draw all ship tiles first
             for (Point point : pointsOfShip) {
                 //Draw horizontally or vertically depending on our rotation
-                m_sShipOKSprite.setPosition(point.x * m_sShipOKSprite.getWidth(), point.y * m_sShipOKSprite.getHeight());
+                m_sShipOKSprite.setPosition(point.x * m_sShipOKSprite.getWidth() + offset.x, point.y * m_sShipOKSprite.getHeight() + offset.y);
                 m_sShipOKSprite.draw(bBatch);
             }
             //Draw image for tiles on the ship that have been hit
             for(Point point : m_iHitPositions) {
-                m_sShipHitSprite.setPosition(point.x * m_sShipHitSprite.getWidth(), point.y * m_sShipHitSprite.getHeight());
+                m_sShipHitSprite.setPosition(point.x * m_sShipHitSprite.getWidth() + offset.x, point.y * m_sShipHitSprite.getHeight() + offset.y);
                 m_sShipHitSprite.draw(bBatch);
             }
         }

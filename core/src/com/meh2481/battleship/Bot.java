@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
+import java.awt.*;
+
 public class Bot extends BoardController{
     /**
      * Constructor for creating a Board class object
@@ -14,7 +16,7 @@ public class Bot extends BoardController{
      * @param txEdge   Texture used for drawing the edge of ships
      */
     public Bot(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
-        super(txBg, txMiss, txCenter, txEdge);
+        super(txBg, txMiss, txCenter, txEdge, MyBattleshipGame.playerBoardOffset);
     }
 
     public void placeShipRandom(){
@@ -27,17 +29,8 @@ public class Bot extends BoardController{
                 xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) *ship.type.size - 1);
                 yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1)* ship.type.size - 1);
 
-            }while(!board.placeShip(xPos, yPos, ship, horizontal));
-            System.out.println(ship.getPosition() + " " + ship.isHorizontal());
+            }while(!board.placeShip(new Point(xPos, yPos), ship, horizontal));
+            System.out.println(ship.getPosition() + " " + ship.getType().size + " " + ship.isHorizontal());
         }
-
-        for(Array<Ship> array : board.shipPositions) {
-            for (Ship ship1 : array)
-                System.out.print((ship1 != null ? 1 : 0) + " ");
-
-            System.out.println();
-        }
-
-        System.out.println();
     }
 }
