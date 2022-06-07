@@ -9,6 +9,7 @@ import com.battleship.specialAttack.Shield;
 import com.battleship.specialAttack.Sonar;
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Created by Mark on 1/15/2016.
@@ -24,7 +25,7 @@ public class Board
 
     private Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
-    protected Array<Ship> m_lShips;   //Ships on this board
+    protected HashMap<ShipType, Ship> m_lShips;   //Ships on this board
     private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
     public Array<Array<Ship>> shipPositions;
     public Shield shield;
@@ -36,7 +37,7 @@ public class Board
      * @param txBg     Background board texture to use as the backdrop when drawing the board
      * @param txMiss   Texture used for drawing guesses that missed
      */
-    public Board(Texture txBg, Texture txMiss, Point offset, Array<Ship> ships) {
+    public Board(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Point offset) {
         this.offset = offset;
         //Hang onto the board background and miss tile textures
         m_txBoardBg = txBg;
@@ -44,7 +45,7 @@ public class Board
 
         //Create arrays
         guessPos = new Array<Point>();
-        m_lShips = ships;
+        m_lShips = new HashMap<>();
 
         shipPositions = new Array<>();
         for (int i = 0; i < BOARD_SIZE; i++){
@@ -52,18 +53,23 @@ public class Board
             temp.setSize(BOARD_SIZE);
             shipPositions.add(temp);
         }
+
+        //Create ships and add them to our list
+        for(int i = 0; i < 5; i ++)
+            m_lShips.put(ShipType.values()[i], new Ship(new Sprite(txCenter), new Sprite(txEdge), ShipType.values()[i]));
     }
 
     /**To place a ship at a certain position. It checks if the position is placeable then save the position of the ship
      * @param ship ship to place
      * @param horizontal ship orientation
      */
-    public boolean placeShip(Point point, Ship ship, boolean horizontal){
+    public boolean placeShip(Point point, ShipType type, boolean horizontal){
+        Ship ship = m_lShips.get(type);
         if (checkOK(ship, point)){
             ship.updatePosition(point, horizontal);
 
             for(int i = 0; i < ship.type.size; i++)
-                shipPositions.get(point.x + ship.getHorizontal().x * i).set(point.y + ship.getHorizontal().y * i, ship);
+                shipPositions.get(point.x + ship.getOrientation().x * i).set(point.y + ship.getOrientation().y * i, ship);
 
             return true;
         }
@@ -75,12 +81,12 @@ public class Board
      * @param ship ship to check
      */
     public boolean checkOK(Ship ship, Point point){
-        if (point.x < 0 || point.x + ship.getHorizontal().x * ship.getType().size > BOARD_SIZE
-                || point.x < 0 || point.y + ship.getHorizontal().y * ship.getType().size > BOARD_SIZE){
+        if (point.x < 0 || point.x + ship.getOrientation().x * ship.getType().size > BOARD_SIZE
+                || point.x < 0 || point.y + ship.getOrientation().y * ship.getType().size > BOARD_SIZE){
             System.out.println("Out of BOund " + point);
             return false;
         } else for (int i = 0; i < ship.type.size; i++)
-            if (shipPositions.get(point.x + ship.getHorizontal().x * i).get(point.y + ship.getHorizontal().y * i) != null) {
+            if (shipPositions.get(point.x + ship.getOrientation().x * i).get(point.y + ship.getOrientation().y * i) != null) {
                 System.out.println("OVerlap");
                 return false;
             }
@@ -116,7 +122,7 @@ public class Board
      * Reset the board to uninitialized state
      */
     public void reset() {
-        for(Ship s : m_lShips)
+        for(Ship s : m_lShips.values())
             s.reset();
 
         guessPos.clear();
@@ -127,7 +133,7 @@ public class Board
      * @return true if every ship on the board is sunk, false otherwise
      */
     public boolean boardCleared() {
-        for(Ship s : m_lShips)
+        for(Ship s : m_lShips.values())
             if(s.isSunk() == null)
                 return false;
 
@@ -140,7 +146,7 @@ public class Board
      */
     public int shipsLeft() {
         int numLeft = 0;
-        for(Ship s : m_lShips) {
+        for(Ship s : m_lShips.values()) {
             if(s.isSunk() == null)
                 numLeft++;
         }
@@ -156,7 +162,7 @@ public class Board
     public void teleport(Point point, Ship ship, boolean horizontal){
         if (ship.beenHit = false){
             if (!alreadyFired(point)){
-                placeShip(point, ship, horizontal);
+                placeShip(point, ship.type, horizontal);
             }
         }
     }
@@ -167,7 +173,7 @@ public class Board
     }
     public Array<Point> placeSonar(Point point){
         sonar.moveSonar(point);
-        return sonar.findShip(point);
+        return sonar.findShip(point);s
     }
 
     public void placeShield(Point point){
@@ -191,7 +197,7 @@ public class Board
         for(Point p : guessPos)
             bBatch.draw(m_txMissImage, p.x * TILE_SIZE + offset.x, p.y * TILE_SIZE + offset.y);
         //Draw ships
-        for(Ship s : m_lShips)
+        for(Ship s : m_lShips.values())
             s.draw(bHidden, bBatch, offset);
     }
 }
