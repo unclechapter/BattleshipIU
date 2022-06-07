@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.specialAttack.Sonar;
+import com.battleship.specialAttack.Bomb;
 import com.battleship.specialAttack.Shield;
 
 import java.awt.*;
@@ -27,8 +28,9 @@ public class Board
     protected HashMap<ShipType, Ship> m_lShips;   //Ships on this board
     private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
     public Array<Array<Ship>> shipPositions;
-    public Array<Shield> shields;
+    public Shield shield;
     public Sonar sonar;
+    public Bomb bomb;
 
     /**
      * Constructor for creating a Board class object
@@ -97,15 +99,25 @@ public class Board
      * @param       point     position to fire to
      * @return      Ship that was hit or null on miss
      */
-    public Ship fireAtPos(Point point) {
+    public ShotState fireAtPos(Point point) {
         Ship ship = shipPositions.get(point.x).get(point.y);
         guessPos.add(new Point(point)); //Miss; add to our miss positions and return nothing
-
         if(ship != null) {
-            ship.fireAtShip(point);
-            return ship;
+            if (ship.fireAtShip(point) == ShotState.SUNK){
+                return ShotState.SUNK;
+            }
+            else return ShotState.HIT;
         }
-        return null;
+        else
+            return ShotState.MISS;
+    }
+
+    public Array<ShotState> fireBomb(){
+        Array<ShotState> fireResult = new Array<ShotState>();
+        for (Point bombPoint : bomb.bomb){
+            fireResult.add(fireAtPos(bombPoint));
+        }
+        return fireResult;
     }
 
     /** Test if we've already fired a missile at this position
@@ -129,25 +141,17 @@ public class Board
      * Test to see if every ship is sunk
      * @return true if every ship on the board is sunk, false otherwise
      */
-    public boolean boardCleared() {
+    /*public boolean boardCleared() {
         for(Ship s : m_lShips.values())
-            if(!s.isSunk())
+            if(s.isSunk() == null)
                 return false;
 
         return true;
-    }
-
-    /**
-     * Get the number of ships that haven't been sunk yet
-     * @return  Number of ships that are still afloat
-     */
-    public int shipsLeft() {
-        int numLeft = 0;
-        for(Ship s : m_lShips.values()) {
-            if(!s.isSunk())
-                numLeft++;
-        }
-        return numLeft;
+    }*/
+    public boolean boardCleared() {
+        if (Ship.sunkShipCount == m_lShips.size())
+                return false;
+        return true;
     }
 
     /**Special feature - ship is allowed to teleport to a different position on the board if it has not been hit and the new position has not been hit 
@@ -168,10 +172,9 @@ public class Board
         return sonar.findShip(point);
     }
 
-    public void placeShield(Point point, Shield shield){
+    public void placeShield(Point point){
         if (shipPositions.get(point.x).get(point.y)!=null){
             shield.setPosition(point);
-            shields.add(shield);
         }
     }
 

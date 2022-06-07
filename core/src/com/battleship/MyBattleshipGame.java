@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Queue;
 
 import java.awt.*;
 
@@ -27,8 +28,9 @@ import java.awt.*;
  * Handles game information for managing the player/enemy boards, drawing through LibGDX, restarting games,
  * processing input, etc.
  */
-public class MyBattleshipGame extends Game implements Screen, InputProcessor
+public class MyBattleshipGame extends Game implements Screen, InputProcessor, Observer
 {
+    public static MyBattleshipGame game;
     //The menu pane on the right side
     private Stage stage;
     private Skin skin;
@@ -83,6 +85,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     public final static Point playerBoardOffset = new Point(75, 75);
     private Bot m_bBot;                //Board the enemy places ships on and the player guesses onto
     private Board botBoard;
+    private Queue<ShipType> sunkShip;
 
 
 
@@ -115,7 +118,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private final String ENEMY_WON_STR = "You Lose";
     private final String PLAYER_WON_STR = "You Win";
     private final String MISS_STR = "Miss";
-    private final String HIT_STR = "Hit ";
+    private final String HIT_STR = "Hit";
     private final String SUNK_STR = "Sunk ";
     private final int GAMEOVER_STR_PT = 5;  //Scale fac for gameover and large info text
     private final int GAMEOVER_SUBSTR_PT = 4;   //Scale fac for smaller "player/enemy won" text
@@ -135,6 +138,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     public MyBattleshipGame() {
         app = this;
+        if (game == null){
+            game = this;
+        }
     }
 
     public void setM_mPlacingMusic(Music m_mPlacingMusic) {
@@ -540,22 +546,24 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                     m_mPlacingMusic.stop();
                     m_mPlayingMusic.play();
                 }
-            } else if (m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown == 0)   //Playing; fire at a ship
-            {
+            } else if (m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown == 0){   //Playing; fire at a ship
                 if (!botBoard.alreadyFired(m_ptCurMouseTile))    //If we haven't fired here already
                 {
-                        Ship sHit = m_bBot.fireAtPos(m_ptCurMouseTile);    //Fire!
-                        if (sHit != null)    //If we hit a ship
+                        ShotState shipState = m_bBot.fireAtPos(m_ptCurMouseTile);    //Fire!
+                        if (shipState != ShotState.MISS)    //If we hit a ship
                         {
-                            if (sHit.isSunk())   //Sunk a ship
+                            if (sunkShip != null)   //Sunk a ship
                             {
                                 if (!botBoard.boardCleared())
                                     m_sSunkSound.play();
-                                m_sOverlayTxt = SUNK_STR + sHit.getType().name;
-                            } else    //Hit a ship
-                            {
+                                    for (ShipType type : sunkShip){
+                                        m_sOverlayTxt = SUNK_STR + type.name;
+                                        sunkShip.removeFirst();
+                                    }
+                            } 
+                            else{    //Hit a ship
                                 m_sHitSound.play();
-                                m_sOverlayTxt = HIT_STR + sHit.getType().name;
+                                m_sOverlayTxt = HIT_STR;
                             }
                         } else    //Missed a ship
                         {
@@ -666,4 +674,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     @Override
     public boolean keyTyped(char character) { return false; }
+
+    @Override
+    public void updateSunkShip(ShipType shipType){
+        sunkShip.addLast(shipType);
+    }
 }

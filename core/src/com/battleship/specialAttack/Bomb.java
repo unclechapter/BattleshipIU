@@ -10,7 +10,6 @@ public class Bomb {
     private Sprite bombSprite;
     public Array<Point> bomb;
     private Point orientation;
-    private Point position;
     private static final int BOMB_SIZE = 4;
 
     public Bomb(Sprite bombSprite){

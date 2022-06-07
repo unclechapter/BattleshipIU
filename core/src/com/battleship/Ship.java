@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 
+
 import java.awt.*;
 
 /**
@@ -23,7 +24,8 @@ public class Ship
     private Point position; // the start position of the ship
     private Point orientation; // orientation vector
     public boolean beenHit; //if ship has been hit by a bomb
-
+    public Observer observer;
+    public static int sunkShipCount;
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
 
@@ -37,6 +39,7 @@ public class Ship
         m_sShipHitSprite = sShipHit;
         m_sShipOKSprite = sShipOK;
         this.type = type;
+        attachObserver();
         reset();    //Set default values
     }
 
@@ -50,8 +53,13 @@ public class Ship
     }
 
     //Returns true if this ship has been sunk, false otherwise
-    public boolean isSunk() {
-        return m_iHitPositions.size == type.size;
+    public ShotState isSunk() {
+        if (m_iHitPositions.size == type.size){
+            notifyObserver();
+            sunkShipCount++;
+            return ShotState.SUNK;
+        }
+        else return null;  
     }
 
     public Point getPosition() {
@@ -88,11 +96,19 @@ public class Ship
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
      * @return  true on hit, false on miss
      */
-    public void fireAtShip(Point point) {
-            beenHit = true;
-            m_iHitPositions.add(new Point(point));
+    public ShotState fireAtShip(Point point) {
+        beenHit = true;
+        m_iHitPositions.add(new Point(point));
+        return isSunk();
+}
+
+    public void attachObserver(){
+        this.observer = MyBattleshipGame.game;
     }
 
+    public void notifyObserver(){
+        observer.updateSunkShip(this.type);
+    }
     /**
      * Draw the ship to the specified SpriteBatch
      * @param bHidden   if ship should be considered "hidden," that is only tiles that have previously been hit should be drawn
@@ -102,7 +118,7 @@ public class Ship
         if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
 
         //Change ship's appearance slightly if it's been sunk
-        if(isSunk()) {
+        if(isSunk() == ShotState.SUNK) {
             m_sShipHitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
             m_sShipOKSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
         }
@@ -134,7 +150,7 @@ public class Ship
             }
         }
 
-        if(isSunk()) {
+        if(isSunk() == ShotState.SUNK) {
             m_sShipOKSprite.setColor(Color.WHITE);  //Reset to default color since other ships share this sprite
             m_sShipHitSprite.setColor(Color.WHITE);
         }
