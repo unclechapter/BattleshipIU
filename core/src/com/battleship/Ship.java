@@ -23,7 +23,7 @@ public class Ship
     private Array<Point> m_iHitPositions; //Array of positions that have been hit
     private Array<Point> pointsOfShip; //Array of the all the points of the ship
     private Point position; // the start position of the ship
-    private Point orientation; // orientation vector
+    private Point horizontal; // orientation vector
     public boolean beenHit; //if ship has been hit by a bomb
 
     //How faded out a sunk ship looks
@@ -43,12 +43,12 @@ public class Ship
     }
 
     //Getter/setter methods
-    public Point getOrientation(){
-        return orientation;
+    public Point getHorizontal(){
+        return horizontal;
     }
 
     public boolean isHorizontal(){
-        return orientation.x == 1;
+        return horizontal.x == 1;
     }
 
     //Returns true if this ship has been sunk, false otherwise
@@ -68,16 +68,23 @@ public class Ship
         return type;
     }
 
+    public void updatePosition(int x, int y, boolean horizontal) { //Sets the ship position
+        position = new Point(x, y);
+        setPointsAndOrientation(horizontal);
+    }
+
     public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
         this.position = position;
+        setPointsAndOrientation(horizontal);
+    }
 
-        this.orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
+    private void setPointsAndOrientation(boolean horizontal) { //Set the orientation and translate from start position to the points of the ship
+        this.horizontal = horizontal ? new Point(1, 0) : new Point(0, 1);
 
         pointsOfShip= new Array<>();
         for (int i = 0; i < type.size; i++)
-            pointsOfShip.add(new Point(this.position.x + this.orientation.x * i, this.position.y + this.orientation.y * i));
+            pointsOfShip.add(new Point(this.position.x + this.horizontal.x * i, this.position.y + this.horizontal.y * i));
     }
-
 
     /**
      * Resets this ship to default state (off board and not hit)
@@ -87,7 +94,7 @@ public class Ship
         m_iHitPositions = new Array<>();
         position = new Point();
         pointsOfShip = new Array<>();
-        orientation =  new Point(1, 0);
+        horizontal =  new Point(1, 0);
     }
 
     /**

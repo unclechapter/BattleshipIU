@@ -606,7 +606,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor, Ob
         m_ptCurMouseTile.y = screenY < playerBoardOffset.y ? 0 : (screenY - playerBoardOffset.y) / Board.TILE_SIZE;
 
         if (m_iGameMode == MODE_PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
-            m_bPlayer.previewShip(m_ptCurMouseTile);
+            m_bPlayer.previewShip(m_ptCurMouseTile.x, m_ptCurMouseTile.y);
         return false;
 
 	}

@@ -21,14 +21,15 @@ public class Bot extends BoardController{
     public void placeShipRandom(){
         int xPos, yPos;
         boolean horizontal;
-        for (ShipType type : ShipType.values()){
+        for (Ship ship : m_lShips){
             do {
                 horizontal = MathUtils.randomBoolean();
 
-                xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) * type.size - 1);
-                yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1) * type.size - 1);
+                xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) *ship.type.size - 1);
+                yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1)* ship.type.size - 1);
 
-            }while(!board.placeShip(new Point(xPos, yPos), type, horizontal));
+            }while(!board.placeShip(new Point(xPos, yPos), ship, horizontal));
+            System.out.println(ship.getPosition() + " " + ship.getType().size + " " + ship.isHorizontal());
         }
     }
 }
