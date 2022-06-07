@@ -32,31 +32,19 @@ public class Player extends BoardController
         m_iPlacing = 0;
     }   //Init ship placement by placing ship 0 (first ship)
 
+    public void previewPlacing(int xPos, int yPos) {
+        m_lShips.get(m_iPlacing).updatePosition(xPos, yPos, m_lShips.get(m_iPlacing).isHorizontal());
+    }
+
     /**
      * Place a ship on the board and prepare to place next ship
      * @param xPos  X board position to place the upper left of the ship
      * @param yPos  Y board position to place the upper left of the ship
      * @return      true if this is the last ship and placement should stop, false otherwise
      */
-    public boolean placeShip(int xPos, int yPos)
-    {
-        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size)
-        {
-            moveShip(xPos, yPos);
-            boolean bOKPlace = true;
-            //Make sure this isn't overlapping other ships
-            for(int i = 0; i < m_lShips.size; i++)
-            {
-                if(i == m_iPlacing)
-                    continue;
-//                if(m_lShips.get(i).checkOverlap(m_lShips.get(m_iPlacing)))
-//                {
-//                    bOKPlace = false;
-//                    break;
-//                }
-            }
-            //We're good
-            if(bOKPlace)
+    public boolean placeShip(int xPos, int yPos) {
+        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size) {
+            if(board.placeShip(xPos, yPos, m_lShips.get(m_iPlacing), m_lShips.get(m_iPlacing).isHorizontal()));
                 m_iPlacing++;   //Go to next ship
         }
         if(m_iPlacing >= m_lShips.size)

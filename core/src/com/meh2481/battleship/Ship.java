@@ -121,7 +121,6 @@ public class Ship
      * @param bBatch    LibGDX batch to draw the ship to
      */
     public void draw(boolean bHidden, Batch bBatch) {
-        System.out.println("Hello");
         if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
 
         //Change ship's appearance slightly if it's been sunk

@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.meh2481.battleship.Ship;
 
-public class BoardController {
+public abstract class BoardController {
     protected Array<Ship> m_lShips;   //Ships on this board
     protected Board board;
     protected int boardSize = Board.BOARD_SIZE;
 
     public BoardController(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
-        board = new Board(txBg, txMiss);
         m_lShips = new Array();
+        board = new Board(txBg, txMiss, m_lShips);
 
         //Create ships and add them to our list
         for(int i = 0; i < 5; i ++)

@@ -30,14 +30,14 @@ public class Board
      * @param txCenter  Texture used for drawing the central portion of ships that have been hit
      * @param txEdge    Texture used for drawing the edge of ships
      */
-    public Board(Texture txBg, Texture txMiss) {
+    public Board(Texture txBg, Texture txMiss, Array<Ship> ships) {
         //Hang onto the board background and miss tile textures
         m_txBoardBg = txBg;
         m_txMissImage = txMiss;
 
         //Create arrays
         guessPos = new Array<Point>();
-        m_lShips = new Array<>();
+        m_lShips = ships;
 
         shipPositions = new Array<>();
         for (int i = 0; i < BOARD_SIZE; i++){
@@ -56,7 +56,6 @@ public class Board
     public boolean placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
         if (checkOK(ship, xPos, yPos)){
             ship.updatePosition(xPos, yPos, horizontal);
-            m_lShips.add(ship);
 
             for(int i = 0; i < ship.type.size; i++)
                 shipPositions.get(xPos + ship.getHorizontal().x).insert(yPos + ship.getHorizontal().y, ship);
