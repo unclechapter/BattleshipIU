@@ -1,4 +1,4 @@
-package com.meh2481.battleship;
+package com.meh2481.battleship.specialAttack;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;

@@ -1,6 +1,9 @@
-package com.meh2481.battleship;
+package com.meh2481.battleship.specialAttack;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.meh2481.battleship.Board;
+import com.meh2481.battleship.Ship;
+
 import java.awt.*;
 
 public class Sonar {

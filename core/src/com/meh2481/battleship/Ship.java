@@ -15,54 +15,17 @@ import java.awt.*;
  */
 public class Ship
 {
+    protected ShipType type;
     private Sprite m_sShipHitSprite;    //Image for the ship being hit (inner image)
     private Sprite m_sShipOKSprite; //Image for the ship being ok (outer image)
-    private Array<Point> m_iHitPositions;
-    private Array<Point> pointsOfShip;
-    private Point position;
-    protected ShipType type;
-    private Point horizontal = new Point(1, 0);
+    private Array<Point> m_iHitPositions; //Array of positions that have been hit
+    private Array<Point> pointsOfShip; //Array of the all the points of the ship
+    private Point position; // the start position of the ship
+    private Point horizontal; // orientation vector
     public boolean beenHit; //if ship has been hit by a bomb
 
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
-
-    //Getter/setter methods
-    public void updatePosition(int x, int y, boolean horizontal) { //Sets the ship position
-        position = new Point(x, y);
-        setPointsAndOrientation(horizontal);
-    }
-
-    public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
-        this.position = position;
-        setPointsAndOrientation(horizontal);
-    }
-
-    private void setPointsAndOrientation(boolean horizontal) {
-        this.horizontal = horizontal ? new Point(1, 0) : new Point(0, 1);
-
-        pointsOfShip= new Array<>();
-        for (int i = 0; i < type.size; i++)
-            pointsOfShip.add(new Point(this.position.x + this.horizontal.x * i, this.position.y + this.horizontal.y * i));
-    }
-
-    public Point getHorizontal(){
-        return horizontal;
-    }
-
-    public boolean isHorizontal(){
-        return horizontal.x == 1;
-    }
-
-    public boolean isSunk() { return m_iHitPositions.size == type.size; }   //Returns true if this ship has been sunk, false otherwise
-
-    public Point getPosition() {
-        return position;
-    }
-
-    public ShipType getType() {
-        return type;
-    }
 
     /**
      * Constructor. Requires a sprite for the hit image and one for the non-hit image
@@ -77,13 +40,55 @@ public class Ship
         reset();    //Set default values
     }
 
+    //Getter/setter methods
+    public Point getHorizontal(){
+        return horizontal;
+    }
+
+    public boolean isHorizontal(){
+        return horizontal.x == 1;
+    }
+
+    //Returns true if this ship has been sunk, false otherwise
+    public boolean isSunk() {
+        return m_iHitPositions.size == type.size;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public ShipType getType() {
+        return type;
+    }
+
+    public void updatePosition(int x, int y, boolean horizontal) { //Sets the ship position
+        position = new Point(x, y);
+        setPointsAndOrientation(horizontal);
+    }
+
+    public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
+        this.position = position;
+        setPointsAndOrientation(horizontal);
+    }
+
+    private void setPointsAndOrientation(boolean horizontal) { //Set the orientation and translate from start position to the points of the ship
+        this.horizontal = horizontal ? new Point(1, 0) : new Point(0, 1);
+
+        pointsOfShip= new Array<>();
+        for (int i = 0; i < type.size; i++)
+            pointsOfShip.add(new Point(this.position.x + this.horizontal.x * i, this.position.y + this.horizontal.y * i));
+    }
+
     /**
      * Resets this ship to default state (off board and not hit)
      */
-    public void reset()
-    {
+    public void reset() {
         beenHit = false;
         m_iHitPositions = new Array<>();
+        position = new Point();
+        pointsOfShip = new Array<>();
+        horizontal =  new Point(1, 0);
     }
 
     /**
@@ -92,8 +97,7 @@ public class Ship
      * @param y board y position to test and see if on ship
      * @return  true on hit, false on miss
      */
-    public boolean fireAtShip(int x, int y)
-    {
+    public boolean fireAtShip(int x, int y) {
         beenHit = true;
         if(isHit(x, y)) {
             m_iHitPositions.add(new Point(x, y));
@@ -110,37 +114,25 @@ public class Ship
 
         return false;
     }
-    /*used in already alreadyFired function in board to check if a certain position has been fired (used in teleport) 
-    as the ship is keeping track of the positions of the ship that was hit and the board keeps track of the missed positions*/
-    
-    public boolean alreadyHit(int x, int y){
-        for (Point point : m_iHitPositions){
-            if (x == point.x && y == point.y){
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Draw the ship to the specified SpriteBatch
      * @param bHidden   if ship should be considered "hidden," that is only tiles that have previously been hit should be drawn
      * @param bBatch    LibGDX batch to draw the ship to
      */
-    public void draw(boolean bHidden, Batch bBatch)
-    {
+    public void draw(boolean bHidden, Batch bBatch) {
+        System.out.println("Hello");
         if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
 
-        if(isSunk())    //Change ship's appearance slightly if it's been sunk
-        {
+        //Change ship's appearance slightly if it's been sunk
+        if(isSunk()) {
             m_sShipHitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
             m_sShipOKSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
         }
 
-        if(bHidden) //Only draw ship tiles that have been hit (enemy board generally)
-        {
-            for(Point point : m_iHitPositions)
-            {
+        //Only draw ship tiles that have been hit (enemy board generally)
+        if(bHidden) {
+            for(Point point : m_iHitPositions) {
                 //Draw both center and edge for hit tiles
                 float x = point.x * m_sShipHitSprite.getWidth();
                 float y = point.y * m_sShipHitSprite.getHeight();
@@ -150,24 +142,23 @@ public class Ship
                 m_sShipHitSprite.draw(bBatch);
             }
         }
-        else    //Draw all tiles, including ones that haven't been hit (generally player board)
-        {
+        //Draw all tiles, including ones that haven't been hit (generally player board)
+        else {
             //Draw all ship tiles first
             for (Point point : pointsOfShip) {
+                System.out.println("Hello");
                 //Draw horizontally or vertically depending on our rotation
                 m_sShipOKSprite.setPosition(point.x * m_sShipOKSprite.getWidth(), point.y * m_sShipOKSprite.getHeight());
                 m_sShipOKSprite.draw(bBatch);
             }
             //Draw image for tiles on the ship that have been hit
-            for(Point point : m_iHitPositions)
-            {
+            for(Point point : m_iHitPositions) {
                 m_sShipHitSprite.setPosition(point.x * m_sShipHitSprite.getWidth(), point.y * m_sShipHitSprite.getHeight());
                 m_sShipHitSprite.draw(bBatch);
             }
         }
 
-        if(isSunk())
-        {
+        if(isSunk()) {
             m_sShipOKSprite.setColor(Color.WHITE);  //Reset to default color since other ships share this sprite
             m_sShipHitSprite.setColor(Color.WHITE);
         }

@@ -9,7 +9,7 @@ import java.awt.*;
  * Child class of Board for facilitating the player placing ships on their board. Includes methods for moving &
  * rotating ships as you place them.
  */
-public class BoardPlayer extends Board
+public class Player extends BoardController
 {
     private Point m_ptCurPos;   //Hold onto the current position of the ship we're placing
     private int m_iPlacing;    //For handling ship placement - current ship we're placing
@@ -21,9 +21,8 @@ public class BoardPlayer extends Board
      * @param txCenter  Texture for drawing the center of ships when they are hit
      * @param txEdge    Texture for drawing the edge of ships
      */
-    public BoardPlayer(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge)
-    {
-        super(txBg, txMiss, txCenter, txEdge);  //Construct default class
+    public Player(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
+        super(txBg, txMiss, txCenter, txEdge);//Construct default class
         m_ptCurPos = new Point(-1,-1);          //Reset current position we're placing a ship
         m_iPlacing = -1;    //Not currently placing a ship
     }
@@ -70,24 +69,23 @@ public class BoardPlayer extends Board
      * @param xPos  x board position to move the upper left of the ship to
      * @param yPos  y board position to move the upper left of the ship to
      */
-    public void moveShip(int xPos, int yPos)
-    {
+    public void moveShip(int xPos, int yPos) {
         m_ptCurPos.x = xPos;
         m_ptCurPos.y = yPos;
-        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size)
-        {
+
+        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size) {
             //Check and be sure we're not off the edge of the map.
             Ship sPlace = m_lShips.get(m_iPlacing);
             int size = sPlace.getType().size;
             if(sPlace.getHorizontal().x == 1)
             {
-                if(size + xPos > BOARD_SIZE)
-                    xPos = BOARD_SIZE - size;   //Set position in the map if we're off it
+                if(size + xPos > boardSize)
+                    xPos = boardSize - size;   //Set position in the map if we're off it
             }
             else
             {
-                if(size + yPos > BOARD_SIZE)
-                    yPos = BOARD_SIZE - size;
+                if(size + yPos > boardSize)
+                    yPos = boardSize - size;
             }
             sPlace.updatePosition(xPos, yPos, sPlace.isHorizontal());
         }
@@ -96,10 +94,8 @@ public class BoardPlayer extends Board
     /**
      * Rotate the current ship we're placing (rotate horizontal if vertical & vice versa)
      */
-    public void rotateShip()
-    {
-        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size)
-        {
+    public void rotateShip() {
+        if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size) {
             Ship sPlace = m_lShips.get(m_iPlacing);
             sPlace.updatePosition(sPlace.getPosition(), !sPlace.isHorizontal());
             //Make sure we're not off the map after rotating by moving to the current position
