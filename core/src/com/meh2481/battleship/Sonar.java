@@ -25,12 +25,12 @@ public class Sonar {
             int radius = (SONAR_SIZE-1)/2;
             for (int i = -radius; i <= radius; i++){
                 for (int j = -radius; j<= radius; j++){
-                    if (ship.isHit(xPos + i, yPos+j)){
-                        Array<Integer> result = new Array<>();
-                        result.add(xPos + i);
-                        result.add(yPos + j);
-                        return result;
-                    }     
+//                    if (ship.isHit(xPos + i, yPos+j)){
+//                        Array<Integer> result = new Array<>();
+//                        result.add(xPos + i);
+//                        result.add(yPos + j);
+//                        return result;
+//                    }
                 }
             }
         }

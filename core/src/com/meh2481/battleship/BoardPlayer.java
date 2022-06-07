@@ -50,11 +50,11 @@ public class BoardPlayer extends Board
             {
                 if(i == m_iPlacing)
                     continue;
-                if(m_lShips.get(i).checkOverlap(m_lShips.get(m_iPlacing)))
-                {
-                    bOKPlace = false;
-                    break;
-                }
+//                if(m_lShips.get(i).checkOverlap(m_lShips.get(m_iPlacing)))
+//                {
+//                    bOKPlace = false;
+//                    break;
+//                }
             }
             //We're good
             if(bOKPlace)
@@ -78,17 +78,18 @@ public class BoardPlayer extends Board
         {
             //Check and be sure we're not off the edge of the map.
             Ship sPlace = m_lShips.get(m_iPlacing);
-            if(sPlace.isHorizontal())
+            int size = sPlace.getType().size;
+            if(sPlace.getHorizontal().x == 1)
             {
-                if(sPlace.getSize() + xPos > BOARD_SIZE)
-                    xPos = BOARD_SIZE - sPlace.getSize();   //Set position in the map if we're off it
+                if(size + xPos > BOARD_SIZE)
+                    xPos = BOARD_SIZE - size;   //Set position in the map if we're off it
             }
             else
             {
-                if(sPlace.getSize() + yPos > BOARD_SIZE)
-                    yPos = BOARD_SIZE - sPlace.getSize();
+                if(size + yPos > BOARD_SIZE)
+                    yPos = BOARD_SIZE - size;
             }
-            m_lShips.get(m_iPlacing).setPosition(xPos, yPos);
+            sPlace.updatePosition(xPos, yPos, sPlace.isHorizontal());
         }
     }
 
@@ -100,7 +101,7 @@ public class BoardPlayer extends Board
         if(m_iPlacing >= 0 && m_iPlacing < m_lShips.size)
         {
             Ship sPlace = m_lShips.get(m_iPlacing);
-            sPlace.setHorizontal(sPlace.isVertical());
+            sPlace.updatePosition(sPlace.getPosition(), !sPlace.isHorizontal());
             //Make sure we're not off the map after rotating by moving to the current position
             moveShip(m_ptCurPos.x, m_ptCurPos.y);
         }

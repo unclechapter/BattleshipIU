@@ -232,7 +232,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
         //Initialize game state
         m_bPlayerBoard.startPlacingShips();
-        m_bEnemyBoard.placeAllShips();
+        m_bEnemyBoard.placeShipRandom();
         m_iGameMode = MODE_PLACESHIP;
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
@@ -480,7 +480,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
             m_bEnemyBoard.reset();
             //m_aiEnemy.reset();
             m_bPlayerBoard.startPlacingShips();
-            m_bEnemyBoard.placeAllShips();
+            m_bEnemyBoard.placeShipRandom();
 
             //Start playing music
             m_mPlayingMusic.stop();
@@ -539,11 +539,11 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                             {
                                 if (!m_bEnemyBoard.boardCleared())
                                     m_sSunkSound.play();
-                                m_sOverlayTxt = SUNK_STR + sHit.getName();
+                                m_sOverlayTxt = SUNK_STR + sHit.getType().name;
                             } else    //Hit a ship
                             {
                                 m_sHitSound.play();
-                                m_sOverlayTxt = HIT_STR + sHit.getName();
+                                m_sOverlayTxt = HIT_STR + sHit.getType().name;
                             }
                         } else    //Missed a ship
                         {
@@ -561,7 +561,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                 m_bEnemyBoard.reset();
                 //m_aiEnemy.reset();
                 m_bPlayerBoard.startPlacingShips();
-                m_bEnemyBoard.placeAllShips();
+                m_bEnemyBoard.placeShipRandom();
 
                 //Start playing music
                 m_mPlayingMusic.stop();
@@ -641,7 +641,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_bBatch.dispose();
         m_rShapeRenderer.dispose();
         m_ftTextFont.dispose();
-        startScreen.dispose();
 	}
 
     //Methods we have to override for LibGDX purposes that we don't care about

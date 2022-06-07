@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by Mark on 1/15/2016.
@@ -30,8 +31,7 @@ public abstract class Board
      * @param txCenter  Texture used for drawing the central portion of ships that have been hit
      * @param txEdge    Texture used for drawing the edge of ships
      */
-    public Board(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge)
-    {
+    public Board(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
         //Hang onto the board background and miss tile textures
         m_txBoardBg = txBg;
         m_txMissImage = txMiss;
@@ -40,18 +40,24 @@ public abstract class Board
         m_lShips = new Array<Ship>();
         m_lMissGuessPos = new Array<Point>();
 
+        shipPositions = new Array<>();
+        for (int i = 0; i < BOARD_SIZE; i++){
+            Array<Ship> temp = new Array();
+            temp.setSize(BOARD_SIZE);
+            shipPositions.add(temp);
+        }
+
         Sprite sCenter = new Sprite(txCenter);
         Sprite sEdge = new Sprite(txEdge);
         //Create ships and add them to our list
         for(int i = 0; i < 5; i ++)
-            m_lShips.add(new Ship(sCenter, sEdge));
+            m_lShips.add(new Ship(sCenter, sEdge, ShipType.values()[i]));
     }
 
     /**
      * Reset the board to uninitialized state
      */
-    public void reset()
-    {
+    public void reset() {
         for(Ship s : m_lShips)
             s.reset();
 
@@ -63,8 +69,7 @@ public abstract class Board
  * @param    bHidden     true means hide ships that haven't been hit, false means draw all ships
  * @param    bBatch      The batch to draw the board onto
  */
-    public void draw(boolean bHidden, Batch bBatch)
-    {
+    public void draw(boolean bHidden, Batch bBatch) {
         //Draw board background image
         bBatch.draw(m_txBoardBg, 0, 0);
         //Draw misses
@@ -79,13 +84,11 @@ public abstract class Board
      * Test to see if every ship is sunk
      * @return true if every ship on the board is sunk, false otherwise
      */
-    public boolean boardCleared()
-    {
+    public boolean boardCleared() {
         for(Ship s : m_lShips)
-        {
             if(!s.isSunk())
                 return false;
-        }
+
         return true;
     }
 
@@ -93,8 +96,7 @@ public abstract class Board
      * Get the number of ships that haven't been sunk yet
      * @return  Number of ships that are still afloat
      */
-    public int shipsLeft()
-    {
+    public int shipsLeft() {
         int numLeft = 0;
         for(Ship s : m_lShips)
         {
@@ -167,10 +169,17 @@ public abstract class Board
      * @param ship ship to place
      * @param horizontal ship orientation
     */
-    public void placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
+    public boolean placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
         if (checkOK(ship, xPos, yPos)){
             ship.updatePosition(xPos, yPos, horizontal);
+
+            for(int i = 0; i < ship.type.size; i++)
+                shipPositions.get(xPos + ship.getHorizontal().x).insert(yPos + ship.getHorizontal().y, ship);
+
+            return true;
         }
+
+        return false;
     }
     /**Special feature - ship is allowed to teleport to a different position on the board if it has not been hit and the new position has not been hit 
      * @param xPos new x position
@@ -187,13 +196,13 @@ public abstract class Board
     }
     /** Checks if ship at certain position is outside the border or overlaps with other ships */
     public boolean checkOK(Ship ship, int xPos, int yPos){
-        if (xPos < 0 || xPos + ship.getHorizontal().x > BOARD_SIZE
-            || yPos < 0 || yPos + ship.getHorizontal().y > BOARD_SIZE){
+        if (xPos < 0 || xPos + ship.getHorizontal().x + ship.getType().size >= BOARD_SIZE
+            || yPos < 0 || yPos + ship.getHorizontal().y * ship.getType().size >= BOARD_SIZE){
             return false;
-        }
-        for (int i = 0; i < ship.type.size; i++)
+        } else for (int i = 0; i < ship.type.size; i++)
             if (shipPositions.get(xPos + ship.getHorizontal().x * i).get(yPos + ship.getHorizontal().y * i) != null)
                 return false;
+
         return true;
     }
 

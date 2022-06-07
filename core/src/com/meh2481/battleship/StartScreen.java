@@ -92,6 +92,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         quitButton.remove();
         batch.dispose();
         startMusic.dispose();
+        System.out.println("Heya");
     }
     @Override
     public void create() {

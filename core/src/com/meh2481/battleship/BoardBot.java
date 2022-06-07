@@ -20,16 +20,20 @@ public class BoardBot extends Board{
         int xPos, yPos;
         boolean horizontal;
         for (Ship ship : m_lShips){
-            horizontal = MathUtils.randomBoolean();
-            if (horizontal){
-                xPos = MathUtils.random(0,BOARD_SIZE - ship.type.size);
-                yPos = MathUtils.random(0, BOARD_SIZE - 1);
-            }
-            else {
-                xPos = MathUtils.random(0, BOARD_SIZE - 1);
-                yPos = MathUtils.random(0, BOARD_SIZE - ship.type.size);
-            }
-            placeShip(xPos, yPos, ship, horizontal);
+            do {
+                horizontal = MathUtils.randomBoolean();
+                if (horizontal) {
+                    xPos = MathUtils.random(0, BOARD_SIZE - ship.type.size);
+                    yPos = MathUtils.random(0, BOARD_SIZE - 1);
+                } else {
+                    xPos = MathUtils.random(0, BOARD_SIZE - 1);
+                    yPos = MathUtils.random(0, BOARD_SIZE - ship.type.size);
+                }
+            }while(!placeShip(xPos, yPos, ship, horizontal));
+        }
+
+        for (Ship ship : m_lShips){
+            System.out.println(ship.getPosition());
         }
     }
 
@@ -52,20 +56,4 @@ public class BoardBot extends Board{
         ship.updatePosition(xPos, yPos, MathUtils.randomBoolean());
     }
 
-    public void placeAllShips(){
-        for (Ship s : m_lShips)
-            s.setPosition(-1, -1);
-        for (int i = 0; i < m_lShips.size; i++){
-            boolean placing = true;
-            while (placing==true){
-                placeShipRandom(m_lShips.get(i));
-                placing = false;
-                for(int j = 0; j < i; j++){
-                    if(m_lShips.get(i).checkOverlap(m_lShips.get(j))){    //This ship overlaps another one
-                        placing = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }*/
+    */
