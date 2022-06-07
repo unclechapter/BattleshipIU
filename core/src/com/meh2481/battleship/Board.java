@@ -16,6 +16,7 @@ public class Board
 {
     public static final int BOARD_SIZE = 12;    //X and Y size of the board, in tiles 12
     public static final int TILE_SIZE = 75;     //Size of each tile, in pixels 64
+    public final Point offset;
 
     private Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
@@ -25,12 +26,12 @@ public class Board
 
     /**
      * Constructor for creating a Board class object
-     * @param txBg  Background board texture to use as the backdrop when drawing the board
-     * @param txMiss    Texture used for drawing guesses that missed
-     * @param txCenter  Texture used for drawing the central portion of ships that have been hit
-     * @param txEdge    Texture used for drawing the edge of ships
+     * @param offset
+     * @param txBg     Background board texture to use as the backdrop when drawing the board
+     * @param txMiss   Texture used for drawing guesses that missed
      */
-    public Board(Texture txBg, Texture txMiss, Array<Ship> ships) {
+    public Board(Texture txBg, Texture txMiss, Point offset, Array<Ship> ships) {
+        this.offset = offset;
         //Hang onto the board background and miss tile textures
         m_txBoardBg = txBg;
         m_txMissImage = txMiss;
@@ -48,17 +49,15 @@ public class Board
     }
 
     /**To place a ship at a certain position. It checks if the position is placeable then save the position of the ship
-     * @param xPos x position to place ship
-     * @param yPos y position to place ship
      * @param ship ship to place
      * @param horizontal ship orientation
      */
-    public boolean placeShip(int xPos, int yPos, Ship ship, boolean horizontal){
-        if (checkOK(ship, xPos, yPos)){
-            ship.updatePosition(xPos, yPos, horizontal);
+    public boolean placeShip(Point point, Ship ship, boolean horizontal){
+        if (checkOK(ship, point)){
+            ship.updatePosition(point, horizontal);
 
             for(int i = 0; i < ship.type.size; i++)
-                shipPositions.get(xPos + ship.getHorizontal().x).insert(yPos + ship.getHorizontal().y, ship);
+                shipPositions.get(point.x + ship.getHorizontal().x * i).set(point.y + ship.getHorizontal().y * i, ship);
 
             return true;
         }
@@ -68,31 +67,31 @@ public class Board
 
     /** Checks if ship at certain position is outside the border or overlaps with other ships
      * @param ship ship to check
-     * @param xPos the x position to move the ship to
-     * @param yPos the y position to move the ship to
      */
-    public boolean checkOK(Ship ship, int xPos, int yPos){
-        if (xPos < 0 || xPos + ship.getHorizontal().x + ship.getType().size >= BOARD_SIZE
-                || yPos < 0 || yPos + ship.getHorizontal().y * ship.getType().size >= BOARD_SIZE){
+    public boolean checkOK(Ship ship, Point point){
+        if (point.x < 0 || point.x + ship.getHorizontal().x * ship.getType().size > BOARD_SIZE
+                || point.x < 0 || point.y + ship.getHorizontal().y * ship.getType().size > BOARD_SIZE){
+            System.out.println("Out of BOund " + point);
             return false;
         } else for (int i = 0; i < ship.type.size; i++)
-            if (shipPositions.get(xPos + ship.getHorizontal().x * i).get(yPos + ship.getHorizontal().y * i) != null)
+            if (shipPositions.get(point.x + ship.getHorizontal().x * i).get(point.y + ship.getHorizontal().y * i) != null) {
+                System.out.println("OVerlap");
                 return false;
+            }
 
         return true;
     }
 
     /** Fire at this position, returning ship that was hit or null on miss
-     * @param       xPos     x position to fire to
-     * @param       yPos     y position to fire to
+     * @param       point     position to fire to
      * @return      Ship that was hit or null on miss
      */
-    public Ship fireAtPos(int xPos, int yPos) {
-        Ship ship = shipPositions.get(xPos).get(yPos);
-        guessPos.add(new Point(yPos, xPos)); //Miss; add to our miss positions and return nothing
+    public Ship fireAtPos(Point point) {
+        Ship ship = shipPositions.get(point.x).get(point.y);
+        guessPos.add(new Point(point)); //Miss; add to our miss positions and return nothing
 
         if(ship != null) {
-            ship.fireAtShip(xPos, yPos);
+            ship.fireAtShip(point);
             return ship;
         }
 
@@ -100,12 +99,10 @@ public class Board
     }
 
     /** Test if we've already fired a missile at this position
-     * @param    xPos     x position to test
-     * @param    yPos     y position to test
      * @return  true if we have fired at this position already, false if not
      */
-    public boolean alreadyFired(int xPos, int yPos) {
-        return guessPos.contains(new Point(yPos, xPos), false);
+    public boolean alreadyFired(Point point) {
+        return guessPos.contains(point, false);
     }
 
     /**
@@ -165,10 +162,10 @@ public class Board
      * @param ship the ship to teleport
      * @param horizontal new orientation
     */
-    public void teleport(int xPos, int yPos, Ship ship, boolean horizontal){
+    public void teleport(Point point, Ship ship, boolean horizontal){
         if (ship.beenHit = false){
-            if (!alreadyFired(xPos, yPos)){
-                placeShip(xPos, yPos, ship, horizontal);
+            if (!alreadyFired(point)){
+                placeShip(point, ship, horizontal);
             }
         }
     }
@@ -187,13 +184,16 @@ public class Board
      */
     public void draw(boolean bHidden, Batch bBatch) {
         //Draw board background image
-        bBatch.draw(m_txBoardBg, 0, 0);
+        Sprite bg = new Sprite(m_txBoardBg);
+        bg.flip(false, true);
+        bg.setPosition(0, 0);
+        bg.draw(bBatch);
         //Draw misses
         for(Point p : guessPos)
-            bBatch.draw(m_txMissImage, p.y * TILE_SIZE, p.x * TILE_SIZE);
+            bBatch.draw(m_txMissImage, p.x * TILE_SIZE + offset.x, p.y * TILE_SIZE + offset.y);
         //Draw ships
         for(Ship s : m_lShips)
-            s.draw(bHidden, bBatch);
+            s.draw(bHidden, bBatch, offset);
     }
 }
 

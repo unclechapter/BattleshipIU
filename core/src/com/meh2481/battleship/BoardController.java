@@ -3,16 +3,17 @@ package com.meh2481.battleship;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.meh2481.battleship.Ship;
+
+import java.awt.*;
 
 public abstract class BoardController {
     protected Array<Ship> m_lShips;   //Ships on this board
     protected Board board;
     protected int boardSize = Board.BOARD_SIZE;
 
-    public BoardController(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
+    public BoardController(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Point boardOffset) {
         m_lShips = new Array();
-        board = new Board(txBg, txMiss, m_lShips);
+        board = new Board(txBg, txMiss, boardOffset, m_lShips);
 
         //Create ships and add them to our list
         for(int i = 0; i < 5; i ++)
@@ -23,7 +24,7 @@ public abstract class BoardController {
         return board;
     }
 
-    public Ship fireAtPos(int xPos, int yPos) {
-        return board.fireAtPos(xPos, yPos);
+    public Ship fireAtPos(Point point) {
+        return board.fireAtPos(point);
     }
 }

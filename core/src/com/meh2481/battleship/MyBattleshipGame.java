@@ -74,16 +74,21 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private BitmapFont m_ftTextFont;
     private String m_sOverlayTxt;
 
+
+
     //Classes that hold game information
 	private Player m_bPlayer;        //Board the player places ships on and the enemy guesses onto
     private Board playerBoard;
+    public final static Point playerBoardOffset = new Point(75, 75);
     private Bot m_bBot;                //Board the enemy places ships on and the player guesses onto
     private Board botBoard;
+
+
 
     //private EnemyAI m_aiEnemy;                  //Enemy player AI
     private Point m_ptCurMouseTile;   //Current tile the mouse is hovering over
 
-	//Variables & constants to handle current game state
+    //Variables & constants to handle current game state
     private int m_iGameMode;    //State machine value for current game mode
     private final int MODE_PLACESHIP = 0;
     private final int MODE_PLAYERTURN = 1;
@@ -225,6 +230,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         stage.addActor(table);
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         table.setVisible(false);
+
+
         //Create game logic classes
         m_bPlayer = new Player(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
         playerBoard = m_bPlayer.getBoard();
@@ -394,7 +401,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                     double fSecondsElapsed = (double) System.nanoTime() / NANOSEC;   //Use current time for sinusoidal alpha multiply
                     cCursorCol.lerp(1, 1, 1, CURSOR_MIN_ALPHA, (float) Math.sin(fSecondsElapsed * Math.PI * CURSOR_FLASH_FREQ));   //Linearly interpolate this color to final value
                     m_bBatch.setColor(cCursorCol);
-                    m_bBatch.draw(m_txFireCursorSm, m_ptCurMouseTile.x * Board.TILE_SIZE, m_ptCurMouseTile.y * Board.TILE_SIZE);
+                    m_bBatch.draw(m_txFireCursorSm, playerBoardOffset.x + m_ptCurMouseTile.x * Board.TILE_SIZE, playerBoardOffset.y + m_ptCurMouseTile.y * Board.TILE_SIZE);
                     m_bBatch.setColor(Color.WHITE); //Reset color to default
             }
             else
@@ -406,11 +413,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
             playerBoard.draw(false, m_bBatch);
             if(m_iEnemyGuessTimer > 0)  //Draw enemy homing in on their shot
             {
-                //Find pixel coordinates of the center of where the crosshair will be
-                //Point ptEnemyGuessPos = m_aiEnemy.nextGuessPos();
-                //double xCrosshairCenter = ptEnemyGuessPos.x * Board.TILE_SIZE + (double)Board.TILE_SIZE / 2.0;
-                //double yCrosshairCenter = ptEnemyGuessPos.y * Board.TILE_SIZE + (double)Board.TILE_SIZE / 2.0;
-
                 //Scale this crosshair inwards as time elapses
                 double fCrosshairScale = ((double)(m_iEnemyGuessTimer - System.nanoTime()) / NANOSEC) * MODESWITCHTIME * MAX_CROSSHAIR_SCALE + ((double)Board.TILE_SIZE / (double)m_txFireCursorLg.getHeight());
                 double fDrawSize = fCrosshairScale * m_txFireCursorLg.getHeight();
@@ -458,7 +460,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_bBatch.flush();
         ScissorStack.popScissors();
         m_bBatch.begin();
-        m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,900);
+        m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,975);
         m_bBatch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -518,27 +520,21 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
      */
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        //Find what tile we're clicking on
-        int iTileX, iTileY;
-        iTileX = screenX / Board.TILE_SIZE;
-        iTileY = screenY / Board.TILE_SIZE;
         if (button == Input.Buttons.LEFT)    //Clicking left mouse button
         {
             if (!quitButton.isPressed()){
             if (m_iGameMode == MODE_PLACESHIP)   //Placing ships; lock this ship's position and go to next ship
             {
-                if (m_bPlayer.placeShip(iTileX, iTileY)) {
+                if (m_bPlayer.placeShip(m_ptCurMouseTile)) {
                     m_iGameMode = MODE_PLAYERTURN;//Done placing ships; start playing now. Player always goes first
                     m_mPlacingMusic.stop();
                     m_mPlayingMusic.play();
                 }
             } else if (m_iGameMode == MODE_PLAYERTURN && m_iModeCountdown == 0)   //Playing; fire at a ship
             {
-                if (!botBoard.alreadyFired(iTileX, iTileY))    //If we haven't fired here already
+                if (!botBoard.alreadyFired(m_ptCurMouseTile))    //If we haven't fired here already
                 {
-                    if (screenX<=900 && screenY <= 900) {
-                        Ship sHit = m_bBot.fireAtPos(iTileX, iTileY);    //Fire!
+                        Ship sHit = m_bBot.fireAtPos(m_ptCurMouseTile);    //Fire!
                         if (sHit != null)    //If we hit a ship
                         {
                             if (sHit.isSunk())   //Sunk a ship
@@ -557,7 +553,6 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                             m_sOverlayTxt = MISS_STR;
                         }
                         m_iModeCountdown = (long) (System.nanoTime() + PLAYERHITPAUSE * NANOSEC);    //Start countdown timer for the start of the enemy turn
-                    }
                 }
             } else if (m_iGameMode == MODE_GAMEOVER) //Game over; start a new game
             {
@@ -593,15 +588,12 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 	public boolean mouseMoved(int screenX, int screenY)
 	{
         //Find the tile the player moved the mouse to
-        int iTileX, iTileY;
-        iTileX = screenX / Board.TILE_SIZE;
-        iTileY = screenY / Board.TILE_SIZE;
-            //Save this tile position for later
-            m_ptCurMouseTile.x = iTileX;
-            m_ptCurMouseTile.y = iTileY;
-            if (m_iGameMode == MODE_PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
-                m_bPlayer.moveShip(iTileX, iTileY);
-            return false;
+        m_ptCurMouseTile.x = screenX < playerBoardOffset.x ? 0 : (screenX - playerBoardOffset.x) / Board.TILE_SIZE;
+        m_ptCurMouseTile.y = screenY < playerBoardOffset.y ? 0 : (screenY - playerBoardOffset.y) / Board.TILE_SIZE;
+
+        if (m_iGameMode == MODE_PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
+            m_bPlayer.previewShip(m_ptCurMouseTile.x, m_ptCurMouseTile.y);
+        return false;
 
 	}
 
