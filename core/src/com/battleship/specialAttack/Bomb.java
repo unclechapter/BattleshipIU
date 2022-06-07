@@ -1,8 +1,8 @@
-package com.meh2481.battleship.specialAttack;
+package com.battleship.specialAttack;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.meh2481.battleship.Board;
+import com.battleship.Board;
 
 import java.awt.*;
 

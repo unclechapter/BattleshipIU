@@ -1,9 +1,9 @@
-package com.meh2481.battleship.client;
+package com.battleship.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.meh2481.battleship.MyBattleshipGame;
+import com.battleship.MyBattleshipGame;
 
 public class HtmlLauncher extends GwtApplication {
 

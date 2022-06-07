@@ -1,4 +1,4 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import java.util.HashMap;
 

@@ -1,9 +1,9 @@
-package com.meh2481.battleship.desktop;
+package com.battleship.desktop;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.meh2481.battleship.MyBattleshipGame;
+import com.battleship.MyBattleshipGame;
 
 /**
  * Created by Mark on 1/13/2016.

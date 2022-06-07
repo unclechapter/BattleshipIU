@@ -1,4 +1,4 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
@@ -602,7 +602,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_ptCurMouseTile.y = screenY < playerBoardOffset.y ? 0 : (screenY - playerBoardOffset.y) / Board.TILE_SIZE;
 
         if (m_iGameMode == MODE_PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
-            m_bPlayer.previewShip(m_ptCurMouseTile.x, m_ptCurMouseTile.y);
+            m_bPlayer.previewShip(m_ptCurMouseTile);
         return false;
 
 	}
