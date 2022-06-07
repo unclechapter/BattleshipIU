@@ -6,7 +6,7 @@
 	<inherits name='com.badlogic.gdx.controllers.controllers-gwt' />
 
 	<inherits name='MyBattleshipGame' />
-	<entry-point class='com.meh2481.battleship.client.HtmlLauncher' />
+	<entry-point class='com.battleship.client.HtmlLauncher' />
 	
 	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
 </module>

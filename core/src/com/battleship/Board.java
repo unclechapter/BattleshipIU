@@ -1,11 +1,12 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.meh2481.battleship.specialAttack.Shield;
-import com.meh2481.battleship.specialAttack.Sonar;
+import com.battleship.specialAttack.Bomb;
+import com.battleship.specialAttack.Shield;
+import com.battleship.specialAttack.Sonar;
 
 import java.awt.*;
 
@@ -26,9 +27,9 @@ public class Board
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
     public Array<Array<Ship>> shipPositions;
-    public Array<Shield> shields;
+    public Shield shield;
     public Sonar sonar;
-
+    public Bomb bomb;
     /**
      * Constructor for creating a Board class object
      * @param offset
@@ -91,15 +92,17 @@ public class Board
      * @param       point     position to fire to
      * @return      Ship that was hit or null on miss
      */
-    public Ship fireAtPos(Point point) {
+    public ShotState fireAtPos(Point point) {
         Ship ship = shipPositions.get(point.x).get(point.y);
         guessPos.add(new Point(point)); //Miss; add to our miss positions and return nothing
 
         if(ship != null) {
-            ship.fireAtShip(point);
-            return ship;
+            if (ship.fireAtShip(point) == ShotState.SUNK)
+                return ShotState.SUNK;
+            else return ShotState.HIT;
         }
-        return null;
+        else
+            return ShotState.MISS;
     }
 
     /** Test if we've already fired a missile at this position
@@ -125,7 +128,7 @@ public class Board
      */
     public boolean boardCleared() {
         for(Ship s : m_lShips)
-            if(!s.isSunk())
+            if(s.isSunk() == null)
                 return false;
 
         return true;
@@ -138,7 +141,7 @@ public class Board
     public int shipsLeft() {
         int numLeft = 0;
         for(Ship s : m_lShips) {
-            if(!s.isSunk())
+            if(s.isSunk() == null)
                 numLeft++;
         }
         return numLeft;
@@ -157,15 +160,19 @@ public class Board
             }
         }
     }
+    public Array<ShotState> fireBomb(Point point){
+        for (Point bombPoint : bomb.bomb){
+            fireAtPos(point);
+        }
+    }
     public Array<Point> placeSonar(Point point){
         sonar.moveSonar(point);
         return sonar.findShip(point);
     }
 
-    public void placeShield(Point point, Shield shield){
+    public void placeShield(Point point){
         if (shipPositions.get(point.x).get(point.y)!=null){
             shield.setPosition(point);
-            shields.add(shield);
         }
     }
 

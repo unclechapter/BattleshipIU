@@ -1,8 +1,8 @@
-package com.meh2481.battleship.specialAttack;
+package com.battleship.specialAttack;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.meh2481.battleship.Board;
+import com.battleship.Board;
 
 import java.awt.*;
 
@@ -10,7 +10,6 @@ public class Bomb {
     private Sprite bombSprite;
     public Array<Point> bomb;
     private Point orientation;
-    private Point position;
     private static final int BOMB_SIZE = 4;
 
     public Bomb(Sprite bombSprite){

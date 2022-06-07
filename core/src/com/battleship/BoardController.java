@@ -1,4 +1,4 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;

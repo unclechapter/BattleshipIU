@@ -1,9 +1,10 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.meh2481.Observer;
 
 import java.awt.*;
 
@@ -15,6 +16,7 @@ import java.awt.*;
  */
 public class Ship
 {
+    private Observer observer;
     protected ShipType type;
     private Sprite m_sShipHitSprite;    //Image for the ship being hit (inner image)
     private Sprite m_sShipOKSprite; //Image for the ship being ok (outer image)
@@ -50,8 +52,12 @@ public class Ship
     }
 
     //Returns true if this ship has been sunk, false otherwise
-    public boolean isSunk() {
-        return m_iHitPositions.size == type.size;
+    public ShotState isSunk() {
+        if (m_iHitPositions.size == type.size){
+            sunkShip.addFirst();
+            return ShotState.SUNK;
+        }
+        return null;
     }
 
     public Point getPosition() {
@@ -95,9 +101,10 @@ public class Ship
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
      * @return  true on hit, false on miss
      */
-    public void fireAtShip(Point point) {
+    public ShotState fireAtShip(Point point) {
             beenHit = true;
             m_iHitPositions.add(new Point(point));
+            return isSunk();
     }
 
     /**
@@ -109,7 +116,7 @@ public class Ship
         if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
 
         //Change ship's appearance slightly if it's been sunk
-        if(isSunk()) {
+        if(isSunk() == ShotState.SUNK) {
             m_sShipHitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
             m_sShipOKSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
         }
@@ -141,7 +148,7 @@ public class Ship
             }
         }
 
-        if(isSunk()) {
+        if(isSunk() == ShotState.SUNK) {
             m_sShipOKSprite.setColor(Color.WHITE);  //Reset to default color since other ships share this sprite
             m_sShipHitSprite.setColor(Color.WHITE);
         }

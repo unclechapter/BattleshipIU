@@ -1,4 +1,4 @@
-package com.meh2481.battleship;
+package com.battleship;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
+import com.meh2481.Observer;
 
 import java.awt.*;
 
@@ -27,8 +28,8 @@ import java.awt.*;
  * Handles game information for managing the player/enemy boards, drawing through LibGDX, restarting games,
  * processing input, etc.
  */
-public class MyBattleshipGame extends Game implements Screen, InputProcessor
-{
+public class MyBattleshipGame extends Game implements Screen, InputProcessor, Observer{
+    public static MyBattleshipGame game;
     //The menu pane on the right side
     private Stage stage;
     private Skin skin;
@@ -135,6 +136,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     public MyBattleshipGame() {
         app = this;
+        if (game == null){
+            game = this;
+        }
     }
 
     public void setM_mPlacingMusic(Music m_mPlacingMusic) {
@@ -547,7 +551,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                         Ship sHit = m_bBot.fireAtPos(m_ptCurMouseTile);    //Fire!
                         if (sHit != null)    //If we hit a ship
                         {
-                            if (sHit.isSunk())   //Sunk a ship
+                            if (sHit.isSunk() == ShotState.SUNK)   //Sunk a ship
                             {
                                 if (!botBoard.boardCleared())
                                     m_sSunkSound.play();
@@ -555,7 +559,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                             } else    //Hit a ship
                             {
                                 m_sHitSound.play();
-                                m_sOverlayTxt = HIT_STR + sHit.getType().name;
+                                m_sOverlayTxt = HIT_STR;
                             }
                         } else    //Missed a ship
                         {
@@ -666,4 +670,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
     @Override
     public boolean keyTyped(char character) { return false; }
+    
+    @Override
+    public void update(){
+
+    }
 }
