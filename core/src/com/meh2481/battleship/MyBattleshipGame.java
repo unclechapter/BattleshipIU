@@ -37,7 +37,8 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private TextButton quitButton;
     private SpriteBatch batch;
     private Sprite sprite;
-    private TextButton minesButton;
+    private TextButton bombButton;
+    private TextButton shieldButton;
 
     //Screens
     private StartScreen startScreen;
@@ -201,7 +202,14 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
         sonarButton = new TextButton("Sonar",skin,"default");
         quitButton = new TextButton("Quit",skin,"default");
-        minesButton = new TextButton("Mines",skin,"default");
+        bombButton = new TextButton("Bomb",skin,"default");
+        shieldButton = new TextButton("Shield",skin,"default");
+        shieldButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
         sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -214,7 +222,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
                 Gdx.app.exit();
             }
         });
-        minesButton.addListener(new ClickListener(){
+        bombButton.addListener(new ClickListener(){
         @Override
         public void clicked(InputEvent event, float x, float y) {
 
@@ -224,7 +232,9 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         table.padRight(120);
         table.add(sonarButton).padBottom(20);
         table.row();
-        table.add(minesButton).padBottom(20);
+        table.add(bombButton).padBottom(20);
+        table.row();
+        table.add(shieldButton).padBottom(20);
         table.row();
         table.add(quitButton);
         stage.addActor(table);
