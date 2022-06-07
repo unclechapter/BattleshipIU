@@ -108,8 +108,9 @@ public class Ship
     }
 
     private boolean isHit(int x, int y) {
+        System.out.println(pointsOfShip + " " + x + " " + y);
         for(int i = 0; i < type.size; i++)
-            if(pointsOfShip.get(i).x == x && pointsOfShip.get(i).y == y)
+            if(pointsOfShip.contains(new Point(x, y), false))
                 return true;
 
         return false;
@@ -145,7 +146,6 @@ public class Ship
         else {
             //Draw all ship tiles first
             for (Point point : pointsOfShip) {
-                System.out.println("Hello");
                 //Draw horizontally or vertically depending on our rotation
                 m_sShipOKSprite.setPosition(point.x * m_sShipOKSprite.getWidth(), point.y * m_sShipOKSprite.getHeight());
                 m_sShipOKSprite.draw(bBatch);

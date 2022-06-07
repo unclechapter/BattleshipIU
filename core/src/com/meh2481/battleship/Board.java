@@ -21,7 +21,7 @@ public class Board
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
     protected Array<Ship> m_lShips;   //Ships on this board
     private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
-    protected Array<Array<Ship>> shipPositions;
+    public Array<Array<Ship>> shipPositions;
 
     /**
      * Constructor for creating a Board class object
@@ -89,7 +89,7 @@ public class Board
      */
     public Ship fireAtPos(int xPos, int yPos) {
         Ship ship = shipPositions.get(xPos).get(yPos);
-        guessPos.add(new Point(xPos, yPos)); //Miss; add to our miss positions and return nothing
+        guessPos.add(new Point(yPos, xPos)); //Miss; add to our miss positions and return nothing
 
         if(ship != null) {
             ship.fireAtShip(xPos, yPos);
@@ -105,7 +105,7 @@ public class Board
      * @return  true if we have fired at this position already, false if not
      */
     public boolean alreadyFired(int xPos, int yPos) {
-        return guessPos.contains(new Point(xPos, yPos), false);
+        return guessPos.contains(new Point(yPos, xPos), false);
     }
 
     /**
@@ -190,7 +190,7 @@ public class Board
         bBatch.draw(m_txBoardBg, 0, 0);
         //Draw misses
         for(Point p : guessPos)
-            bBatch.draw(m_txMissImage, p.x * TILE_SIZE, p.y * TILE_SIZE);
+            bBatch.draw(m_txMissImage, p.y * TILE_SIZE, p.x * TILE_SIZE);
         //Draw ships
         for(Ship s : m_lShips)
             s.draw(bHidden, bBatch);

@@ -124,7 +124,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
     private long m_iAIMsgCountdown;  //time in nanoseconds left to display message
     private String m_sMsgTxt;
     com.badlogic.gdx.math.Rectangle scissors = new com.badlogic.gdx.math.Rectangle();
-    com.badlogic.gdx.math.Rectangle clipBounds = new Rectangle(0,0,900,900);
+    com.badlogic.gdx.math.Rectangle clipBounds = new Rectangle(0,0,975,975);
 
 
     public MyBattleshipGame() {
@@ -165,10 +165,10 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
 
 		//Load the game resources
         m_ftTextFont = new BitmapFont(true);
-		m_txShipCenterImage = new Texture("ship_center.png");
+		m_txShipCenterImage = new Texture("hit.png");
 		m_txShipEdgeImage = new Texture("ship_edge.png");
         m_txMissImage = new Texture("miss.png");
-        m_txBoardBg = new Texture("board.png");
+        m_txBoardBg = new Texture("map.png");
         m_txFireCursorSm = new Texture("crosshair.png");
         m_txFireCursorLg = new Texture("crosshair_lg.png");
         m_sMissSound = Gdx.audio.newSound(Gdx.files.internal("miss.ogg"));
@@ -458,7 +458,7 @@ public class MyBattleshipGame extends Game implements Screen, InputProcessor
         m_bBatch.flush();
         ScissorStack.popScissors();
         m_bBatch.begin();
-        m_bBatch.draw(new Texture(Gdx.files.internal("menupane.png")),Gdx.graphics.getWidth()-300,0,300,900);
+        m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,900);
         m_bBatch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
