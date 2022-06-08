@@ -17,10 +17,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.battleship.Board.Board;
+import com.battleship.Manager.Game.GameManager;
+import com.battleship.Manager.Game.GameMode;
+import com.battleship.Manager.InputHandler;
+import com.battleship.Screen.MainScreen;
+import com.battleship.Screen.StartScreen;
+import com.battleship.UI.TextPrompt;
 
 import java.awt.*;
 
-import static com.battleship.GameManager.*;
+import static com.battleship.Manager.Game.GameManager.*;
 
 /**
  *
@@ -48,7 +54,7 @@ public class MyBattleshipGame extends Game implements Screen {
 
     //Screens
     private StartScreen startScreen;
-    private  MainScreen mainScreen;
+    private MainScreen mainScreen;
 
     //Variables for image/sound resources
     //Images

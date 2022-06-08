@@ -2,7 +2,7 @@ package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.battleship.Board.Board;
-import com.battleship.ShotState;
+import com.battleship.Board.Ship.ShotState;
 
 import java.awt.*;
 

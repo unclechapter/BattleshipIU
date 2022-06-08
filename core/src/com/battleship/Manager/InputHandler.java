@@ -1,9 +1,11 @@
-package com.battleship;
+package com.battleship.Manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.battleship.Board.Board;
+import com.battleship.Manager.Game.GameManager;
+import com.battleship.MyBattleshipGame;
 
 import java.awt.*;
 

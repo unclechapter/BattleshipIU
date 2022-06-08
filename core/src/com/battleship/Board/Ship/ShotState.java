@@ -1,4 +1,4 @@
-package com.battleship;
+package com.battleship.Board.Ship;
 
 public enum ShotState {
     HIT,

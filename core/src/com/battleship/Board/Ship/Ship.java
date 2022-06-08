@@ -1,4 +1,4 @@
-package com.battleship;
+package com.battleship.Board.Ship;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.battleship.Manager.Game.GameManager;
+import com.battleship.Interface.Observer;
 
 
 import java.awt.*;

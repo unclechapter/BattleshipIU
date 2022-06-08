@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.battleship.Ship;
-import com.battleship.ShipType;
-import com.battleship.ShotState;
+import com.battleship.Board.Ship.Ship;
+import com.battleship.Board.Ship.ShipType;
+import com.battleship.Board.Ship.ShotState;
 import com.battleship.specialAttack.Sonar;
 import com.battleship.specialAttack.Bomb;
 import com.battleship.specialAttack.Shield;
@@ -85,17 +85,29 @@ public class Board
     /** Checks if ship at certain position is outside the border or overlaps with other ships
      * @param ship ship to check
      */
-    private boolean checkOK(ShipType type, Point point, boolean horizontal){
+    protected boolean checkOK(ShipType type, Point point, boolean horizontal){
         Point orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
 
         if (point.x < 0 || point.x + orientation.x * type.getSize() > BOARD_SIZE
                 || point.x < 0 || point.y + orientation.y * type.getSize() > BOARD_SIZE){
-            System.out.println("Out of Bound " + point);
+            //System.out.println("Out of Bound " + point);
             return false;
         } else for (int i = 0; i < type.getSize(); i++)
-            if (!(shipPositions.get(point.x + orientation.x * i).get(point.y + orientation.y * i) == null)) {
-                System.out.println("OVerlap");
-                return false;
+            for(int j = -1; j <= 1; j++)
+                for(int k = -1; k <= 1; k++) {
+                    int x = point.x + orientation.x * i + k;
+                    int y = point.y + orientation.y * i + j;
+
+                    if (x < 0) x = 0;
+                    if (x >= BOARD_SIZE) x = BOARD_SIZE - 1;
+
+                    if (y < 0) y = 0;
+                    if (y >= BOARD_SIZE) y = BOARD_SIZE - 1;
+
+                    if (!(shipPositions.get(x).get(y) == null)) {
+                        //System.out.println("OVerlap");
+                        return false;
+                    }
             }
 
         return true;

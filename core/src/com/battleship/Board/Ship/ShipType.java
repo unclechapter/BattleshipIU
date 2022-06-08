@@ -1,4 +1,4 @@
-package com.battleship;
+package com.battleship.Board.Ship;
 
 import java.util.HashMap;
 
@@ -20,5 +20,9 @@ public enum ShipType {
 
     public int getSize() {
         return size;
+    }
+
+    public String getName() {
+        return name;
     }
 }

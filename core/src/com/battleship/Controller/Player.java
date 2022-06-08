@@ -2,10 +2,9 @@ package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.battleship.Board.BoardPlayer;
-import com.battleship.Controller.BoardController;
 import com.battleship.MyBattleshipGame;
-import com.battleship.ShipType;
-import com.battleship.ShotState;
+import com.battleship.Board.Ship.ShipType;
+import com.battleship.Board.Ship.ShotState;
 
 import java.awt.*;
 

@@ -1,8 +1,8 @@
 package com.battleship.Board;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.battleship.Ship;
-import com.battleship.ShipType;
+import com.battleship.Board.Ship.Ship;
+import com.battleship.Board.Ship.ShipType;
 
 import java.awt.*;
 
@@ -44,8 +44,8 @@ public class BoardPlayer extends Board {
         if(point.y + sPlace.getOrientation().y * size > BOARD_SIZE)
             point.y = BOARD_SIZE - sPlace.getOrientation().y * size;
 
-
-        sPlace.updatePosition(point, sPlace.isHorizontal());
+        if(checkOK(type, point, sPlace.isHorizontal()))
+            sPlace.updatePosition(point, sPlace.isHorizontal());
 
         return point;
     }

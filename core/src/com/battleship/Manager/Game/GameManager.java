@@ -1,20 +1,25 @@
-package com.battleship;
+package com.battleship.Manager.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Queue;
+import com.battleship.*;
 import com.battleship.Board.Board;
 import com.battleship.Board.BoardPlayer;
+import com.battleship.Board.Ship.ShipType;
+import com.battleship.Board.Ship.ShotState;
 import com.battleship.Controller.Bot;
 import com.battleship.Controller.Player;
+import com.battleship.Interface.Observer;
+import com.battleship.UI.TextPrompt;
 
 import java.awt.*;
 
 import static com.battleship.MyBattleshipGame.*;
 
-public class GameManager implements Observer{
+public class GameManager implements Observer {
     private static GameManager manager;
     public static Point mouseCursorTile;
     public static GameMode currentMode;
@@ -203,7 +208,7 @@ public class GameManager implements Observer{
                         m_sSunkSound.play();
 
                     for (ShipType type : sunkShip) {
-                        TextPrompt.updateMessage(SUNK_STR + type.name);
+                        TextPrompt.updateMessage(SUNK_STR + type.getName());
                         sunkShip.removeFirst();
                     }
                 } else {    //Hit a ship
