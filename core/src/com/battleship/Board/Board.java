@@ -1,9 +1,12 @@
-package com.battleship;
+package com.battleship.Board;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.battleship.Ship;
+import com.battleship.ShipType;
+import com.battleship.ShotState;
 import com.battleship.specialAttack.Sonar;
 import com.battleship.specialAttack.Bomb;
 import com.battleship.specialAttack.Shield;
@@ -69,7 +72,7 @@ public class Board
         if (checkOK(ship, point)){
             ship.updatePosition(point, horizontal);
 
-            for(int i = 0; i < ship.type.size; i++)
+            for(int i = 0; i < ship.getType().getSize(); i++)
                 shipPositions.get(point.x + ship.getOrientation().x * i).set(point.y + ship.getOrientation().y * i, ship);
 
             return true;
@@ -82,11 +85,13 @@ public class Board
      * @param ship ship to check
      */
     public boolean checkOK(Ship ship, Point point){
-        if (point.x < 0 || point.x + ship.getOrientation().x * ship.getType().size > BOARD_SIZE
-                || point.x < 0 || point.y + ship.getOrientation().y * ship.getType().size > BOARD_SIZE){
+        int size = ship.getType().getSize();
+
+        if (point.x < 0 || point.x + ship.getOrientation().x * size > BOARD_SIZE
+                || point.x < 0 || point.y + ship.getOrientation().y * size > BOARD_SIZE){
             System.out.println("Out of BOund " + point);
             return false;
-        } else for (int i = 0; i < ship.type.size; i++)
+        } else for (int i = 0; i < size; i++)
             if (shipPositions.get(point.x + ship.getOrientation().x * i).get(point.y + ship.getOrientation().y * i) != null) {
                 System.out.println("OVerlap");
                 return false;
@@ -149,8 +154,10 @@ public class Board
         return true;
     }*/
     public boolean boardCleared() {
-        if (Ship.sunkShipCount == m_lShips.size())
-                return false;
+        for(Ship ship : m_lShips.values())
+            if (ship.isSunk() == null)
+                    return false;
+
         return true;
     }
 
@@ -163,7 +170,7 @@ public class Board
     public void teleport(Point point, Ship ship, boolean horizontal){
         if (ship.beenHit = false){
             if (!alreadyFired(point)){
-                placeShip(point, ship.type, horizontal);
+                placeShip(point, ship.getType(), horizontal);
             }
         }
     }

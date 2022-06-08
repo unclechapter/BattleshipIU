@@ -1,10 +1,12 @@
-package com.battleship;
+package com.battleship.Board;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.battleship.Ship;
+import com.battleship.ShipType;
 
 import java.awt.*;
 
-public class BoardPlayer extends Board{
+public class BoardPlayer extends Board {
     private Point m_ptCurPos;   //Hold onto the current position of the ship we're placing
 
     /**
@@ -34,7 +36,7 @@ public class BoardPlayer extends Board{
 
         //Check and be sure we're not off the edge of the map.
         Ship sPlace = m_lShips.get(type);
-        int size = sPlace.getType().size;
+        int size = sPlace.getType().getSize();
 
         if(point.x + sPlace.getOrientation().x * size > BOARD_SIZE)
             point.x = BOARD_SIZE - sPlace.getOrientation().x * size;

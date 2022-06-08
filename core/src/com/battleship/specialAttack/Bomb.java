@@ -2,7 +2,7 @@ package com.battleship.specialAttack;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.battleship.Board;
+import com.battleship.Board.Board;
 
 import java.awt.*;
 

@@ -25,7 +25,7 @@ public class Ship
     private Point orientation; // orientation vector
     public boolean beenHit; //if ship has been hit by a bomb
     public Observer observer;
-    public static int sunkShipCount;
+
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
 
@@ -34,12 +34,10 @@ public class Ship
      * @param sShipHit  LibGDX sprite to use when drawing the center part of the ship (hit image)
      * @param sShipOK   LibGDX sprite to use when drawing the outside edge of the ship
      */
-    public Ship(Sprite sShipHit, Sprite sShipOK, ShipType type)
-    {
+    public Ship(Sprite sShipHit, Sprite sShipOK, ShipType type) {
         m_sShipHitSprite = sShipHit;
         m_sShipOKSprite = sShipOK;
         this.type = type;
-        attachObserver();
         reset();    //Set default values
     }
 
@@ -54,11 +52,9 @@ public class Ship
 
     //Returns true if this ship has been sunk, false otherwise
     public ShotState isSunk() {
-        if (m_iHitPositions.size == type.size){
-            notifyObserver();
-            sunkShipCount++;
+        if (m_iHitPositions.size == type.size)
             return ShotState.SUNK;
-        }
+
         else return null;  
     }
 
@@ -71,6 +67,7 @@ public class Ship
     }
 
     public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
+        attachObserver();
         this.position = position;
 
         this.orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
@@ -99,11 +96,15 @@ public class Ship
     public ShotState fireAtShip(Point point) {
         beenHit = true;
         m_iHitPositions.add(new Point(point));
+
+        if(isSunk() == ShotState.SUNK)
+            notifyObserver();
+
         return isSunk();
 }
 
     public void attachObserver(){
-        this.observer = MyBattleshipGame.game;
+        this.observer = GameManager.getManager();
     }
 
     public void notifyObserver(){

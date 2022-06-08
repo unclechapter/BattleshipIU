@@ -62,8 +62,8 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
             public void clicked(InputEvent event, float x, float y) {
                 app.setScreen(mainScreen);
                 app.getStartScreen().dispose();
-                app.getM_mPlacingMusic().setLooping(true);
-                app.getM_mPlacingMusic().play();
+                GameManager.getManager().getM_mPlacingMusic().setLooping(true);
+                GameManager.getManager().getM_mPlacingMusic().play();
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -85,7 +85,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     @Override
     public void dispose() {
         skin.dispose();
-        app.getM_mPlacingMusic().dispose();
+        GameManager.getManager().getM_mPlacingMusic().dispose();
         startButton.remove();
         quitButton.remove();
         batch.dispose();
@@ -100,7 +100,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
 
     @Override
     public void show() {
-        InputMultiplexer im = new InputMultiplexer(stage,this,app);
+        InputMultiplexer im = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(im);
     }
 

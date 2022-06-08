@@ -1,6 +1,11 @@
-package com.battleship;
+package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.battleship.Board.BoardPlayer;
+import com.battleship.Controller.BoardController;
+import com.battleship.MyBattleshipGame;
+import com.battleship.ShipType;
+
 import java.awt.*;
 
 /**
@@ -28,8 +33,7 @@ public class Player extends BoardController {
         m_iPlacing = -1;    //Not currently placing a ship
     }
 
-    public void startPlacingShips()
-    {
+    public void startPlacingShips() {
         m_iPlacing = 0;
     }   //Init ship placement by placing ship 0 (first ship)
 

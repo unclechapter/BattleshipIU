@@ -1,11 +1,14 @@
-package com.battleship;
+package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.battleship.Controller.BoardController;
+import com.battleship.MyBattleshipGame;
+import com.battleship.ShipType;
 
 import java.awt.*;
 
-public class Bot extends BoardController{
+public class Bot extends BoardController {
     /**
      * Constructor for creating a Board class object
      *
@@ -25,8 +28,8 @@ public class Bot extends BoardController{
             do {
                 horizontal = MathUtils.randomBoolean();
 
-                xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) * type.size - 1);
-                yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1) * type.size - 1);
+                xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) * type.getSize() - 1);
+                yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1) * type.getSize() - 1);
 
             }while(!board.placeShip(new Point(xPos, yPos), type, horizontal));
         }

@@ -1,8 +1,8 @@
-package com.battleship;
+package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.Array;
+import com.battleship.Board.Board;
+import com.battleship.ShotState;
 
 import java.awt.*;
 
@@ -20,5 +20,9 @@ public abstract class BoardController {
 
     public ShotState fireAtPos(Point point) {
         return board.fireAtPos(point);
+    }
+
+    public void reset() {
+        board.reset();
     }
 }
