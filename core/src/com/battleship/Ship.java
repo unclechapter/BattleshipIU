@@ -138,12 +138,12 @@ public class Ship
                         //Draw horizontally or vertically depending on our rotation
                         if (!isHorizontal()){
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-vertical.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y+2) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+2) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(1,5);
                         }
                         else{
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-horizontal.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x+2) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+2) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(5,1);
                         }
                         m_sShipOKSprite.draw(bBatch);
@@ -152,12 +152,12 @@ public class Ship
                     if (type.id==5) {
                         if (!isHorizontal()){
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-vertical.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((m_iHitPositions.get(0).y+1.5) * m_sShipOKSprite.getHeight() + offset.y));
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((pointsOfShip.get(0).y+1.5) * m_sShipOKSprite.getHeight() + offset.y));
                             m_sShipOKSprite.setScale(1,4);
                         }
                         else{
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-horizontal.png")));
-                            m_sShipOKSprite.setPosition((float) ((m_iHitPositions.get(0).x+1.5) * m_sShipOKSprite.getWidth() + offset.x), (m_iHitPositions.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((float) ((pointsOfShip.get(0).x+1.5) * m_sShipOKSprite.getWidth() + offset.x), (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(4,1);
                         }
                         m_sShipOKSprite.draw(bBatch);
@@ -167,12 +167,12 @@ public class Ship
                         //Draw horizontally or vertically depending on our rotation
                         if (!isHorizontal()){
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-vertical.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(1,3);
                         }
                         else{
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-horizontal.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(3,1);
                         }
                         m_sShipOKSprite.draw(bBatch);
@@ -182,12 +182,12 @@ public class Ship
                         //Draw horizontally or vertically depending on our rotation
                         if (!isHorizontal()){
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-vertical.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(1,3);
                         }
                         else{
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-horizontal.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (m_iHitPositions.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(3,1);
                         }
                         m_sShipOKSprite.draw(bBatch);
@@ -197,12 +197,12 @@ public class Ship
                         //Draw horizontally or vertically depending on our rotation
                         if (!isHorizontal()){
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-vertical.png")));
-                            m_sShipOKSprite.setPosition((m_iHitPositions.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((m_iHitPositions.get(0).y+0.5) * m_sShipOKSprite.getHeight() + offset.y));
+                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((pointsOfShip.get(0).y+0.5) * m_sShipOKSprite.getHeight() + offset.y));
                             m_sShipOKSprite.setScale(1,2);
                         }
                         else{
                             m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-horizontal.png")));
-                            m_sShipOKSprite.setPosition((float) ((m_iHitPositions.get(0).x+0.5) * m_sShipOKSprite.getWidth() + offset.x), (m_iHitPositions.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
+                            m_sShipOKSprite.setPosition((float) ((pointsOfShip.get(0).x+0.5) * m_sShipOKSprite.getWidth() + offset.x), (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
                             m_sShipOKSprite.setScale(2,1);
                         }
                         m_sShipOKSprite.draw(bBatch);
