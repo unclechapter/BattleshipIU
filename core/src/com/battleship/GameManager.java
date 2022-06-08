@@ -199,9 +199,14 @@ public class GameManager implements Observer{
         if (currentMode == GameMode.PLACESHIP)   //Placing ships; lock this ship's position and go to next ship
             playerPlacing();
         else if (currentMode == GameMode.PLAYERTURN && m_iModeCountdown == 0){   //Playing; fire at a ship
-            playerTurn();
-        } else if (currentMode == GameMode.GAMEOVER) //Game over; start a new game
-        {
+            if (playerTurnState == null)
+                playerTurn();
+            if (playerTurnState == PlayerTurnState.PLACESHIELD){
+                player.placeShield(mouseCursorTile);
+                playerTurnState = null;
+            }
+        } 
+        else if (currentMode == GameMode.GAMEOVER) {//Game over; start a new game
             //Reset boards and game state
             currentMode = GameMode.PLACESHIP;
             player.reset();
@@ -219,29 +224,16 @@ public class GameManager implements Observer{
     public void rightClick() {
         if (currentMode == GameMode.PLACESHIP)   //Rotate ships on RMB if we're currently placing them
             player.rotateShip();
-        if (currentMode == GameMode.PLAYERTURN && playerTurnState == PlayerTurnState.SHIPTELEPORT)
-            player.rotateShip();
     }
 
     private void mouseHover(){
         if (currentMode == GameMode.PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
             player.previewShip(mouseCursorTile);
-        if (currentMode == GameMode.PLAYERTURN){
-            switch(playerTurnState){
-                case PLACESHIELD:
-                    player.previewShield(mouseCursorTile);
-                    break;
-                case PLACESONAR:
-                    player.previewSonar(mouseCursorTile);
-                    break;
-                case PLACEBOMB:
-                    player.previewBomb(mouseCursorTile);
-                    break;
-                default:
-                    break;
+        if (currentMode == GameMode.PLAYERTURN && playerTurnState!=null){
+            if (playerTurnState == PlayerTurnState.PLACESHIELD)
+                player.previewShield(mouseCursorTile);
             }
         }
-    }
 
     private void playerPlacing() {
         if (player.placeShip(mouseCursorTile)) {

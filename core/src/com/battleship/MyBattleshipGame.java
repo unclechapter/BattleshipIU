@@ -171,7 +171,7 @@ public class MyBattleshipGame extends Game implements Screen {
         sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                GameManager.playerTurnState = PlayerTurnState.PLACESONAR;
+           //     GameManager.playerTurnState = PlayerTurnState.PLACESONAR;
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -183,7 +183,7 @@ public class MyBattleshipGame extends Game implements Screen {
         bombButton.addListener(new ClickListener(){
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            GameManager.playerTurnState = PlayerTurnState.PLACEBOMB;
+        //    GameManager.playerTurnState = PlayerTurnState.PLACEBOMB;
         }
     });
 
@@ -206,6 +206,7 @@ public class MyBattleshipGame extends Game implements Screen {
         //Initialize game state
         manager.reset();
         currentMode = GameMode.PLACESHIP;
+        playerTurnState = null;
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
         mouseCursorTile = new Point(-1,-1);

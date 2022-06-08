@@ -61,6 +61,8 @@ public class Board
         //Create ships and add them to our list
         for(int i = 0; i < 5; i ++)
             m_lShips.put(ShipType.values()[i], new Ship(new Sprite(txCenter), new Sprite(txEdge), ShipType.values()[i]));
+        
+        shield = new Shield(new Sprite());
     }
 
     /**To place a ship at a certain position. It checks if the position is placeable then save the position of the ship
@@ -184,12 +186,11 @@ public class Board
         return sonar.findShip();
     }
 
-    public boolean placeShield(Point point){
+    public void placeShield(Point point){
         if (shipPositions.get(point.x).get(point.y)!=null){
             shield.setPosition(point);
-            return true;
+            shield.activateShield();
         }
-        return false;
     }
 
     /** Draw the board and all ships on it onto the specified Batch.

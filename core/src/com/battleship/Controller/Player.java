@@ -55,13 +55,12 @@ public class Player extends BoardController {
         playerBoard.teleportRotate();
     }
 
-    public boolean placeShield(Point point){
+    public void placeShield(Point point){
         int shieldPlaced = 0;
         if (shieldPlaced < 2) {
             shieldPlaced++;
-            return playerBoard.placeShield(point);
+            playerBoard.placeShield(point);
         }
-        else return false;
     }
     public void previewShield(Point point){
         playerBoard.previewShield(point);

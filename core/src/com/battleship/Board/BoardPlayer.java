@@ -105,7 +105,4 @@ public class BoardPlayer extends Board {
     public void teleportRotate(){
 
     }
-    public boolean playerPlaceShield(Point point){
-        return this.placeShield(point);
-    }
 }
