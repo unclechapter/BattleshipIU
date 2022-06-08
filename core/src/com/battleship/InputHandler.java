@@ -70,6 +70,8 @@ public class InputHandler implements InputProcessor {
         mouseCursorTile.x = screenX < offset.x ? 0 : (screenX - offset.x) / Board.TILE_SIZE;
         mouseCursorTile.y = screenY < offset.y ? 0 : (screenY - offset.y) / Board.TILE_SIZE;
 
+        GameManager.getManager().updateMouse(mouseCursorTile);
+
         return true;
     }
 
