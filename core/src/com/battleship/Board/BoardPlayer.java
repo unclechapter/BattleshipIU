@@ -3,6 +3,9 @@ package com.battleship.Board;
 import com.badlogic.gdx.graphics.Texture;
 import com.battleship.Ship;
 import com.battleship.ShipType;
+import com.battleship.specialAttack.Bomb;
+import com.battleship.specialAttack.Shield;
+import com.battleship.specialAttack.Sonar;
 
 import java.awt.*;
 
@@ -50,6 +53,35 @@ public class BoardPlayer extends Board {
         return point;
     }
 
+    public void previewShield(Point point){
+        m_ptCurPos = point;
+        if (point.x < BOARD_SIZE)
+            point.x = 0;
+        if (point.y < BOARD_SIZE)
+            point.y = 0;
+        if (point.x > BOARD_SIZE)
+            point.x = BOARD_SIZE;
+        if (point.y > BOARD_SIZE)
+            point.y = BOARD_SIZE;
+        shield.setPosition(point);
+    }
+
+    public void previewSonar(Point point){
+        if (Sonar.SONAR_RADIUS + point.x > Board.BOARD_SIZE){
+            point.x = Board.BOARD_SIZE - Sonar.SONAR_RADIUS;
+        }
+        if (Sonar.SONAR_RADIUS + point.y > Board.BOARD_SIZE){
+            point.x = Board.BOARD_SIZE - Sonar.SONAR_RADIUS;
+        }
+        if (point.x - Sonar.SONAR_RADIUS < 0){
+            point.x = Sonar.SONAR_RADIUS;
+        }
+        if (point.y - Sonar.SONAR_RADIUS < 0){
+            point.y = Sonar.SONAR_RADIUS;
+        }
+        sonar.setPosition(point);
+     }
+
     /**
      * Rotate the current ship we're placing (rotate horizontal if vertical & vice versa)
      */
@@ -58,5 +90,22 @@ public class BoardPlayer extends Board {
             sPlace.updatePosition(sPlace.getPosition(), !sPlace.isHorizontal());
             //Make sure we're not off the map after rotating by moving to the current position
             previewShip(type, m_ptCurPos);
+    }
+
+    public void previewBomb(Point point){
+        if (point.x + Bomb.BOMB_SIZE > Board.BOARD_SIZE){
+            point.x = Board.BOARD_SIZE - bomb.getOrientation().x*Bomb.BOMB_SIZE;
+        }
+        if (point.y + Bomb.BOMB_SIZE > Board.BOARD_SIZE){
+            point.y = Board.BOARD_SIZE - bomb.getOrientation().y*Bomb.BOMB_SIZE;
+        }
+        bomb.updateBombPosition(point);
+    }
+
+    public void teleportRotate(){
+
+    }
+    public boolean playerPlaceShield(Point point){
+        return this.placeShield(point);
     }
 }

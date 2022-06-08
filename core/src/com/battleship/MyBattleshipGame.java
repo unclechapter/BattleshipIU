@@ -165,13 +165,13 @@ public class MyBattleshipGame extends Game implements Screen {
         shieldButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                GameManager.playerTurnState = PlayerTurnState.PLACESHIELD;
             }
         });
         sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                GameManager.playerTurnState = PlayerTurnState.PLACESONAR;
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -183,7 +183,7 @@ public class MyBattleshipGame extends Game implements Screen {
         bombButton.addListener(new ClickListener(){
         @Override
         public void clicked(InputEvent event, float x, float y) {
-
+            GameManager.playerTurnState = PlayerTurnState.PLACEBOMB;
         }
     });
 

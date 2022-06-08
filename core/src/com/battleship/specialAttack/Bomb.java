@@ -13,7 +13,7 @@ public class Bomb {
     public Array<Point> bomb;
     private Point orientation;
     private Point position;
-    private static final int BOMB_SIZE = 4;
+    public static final int BOMB_SIZE = 4;
 
     public Bomb(Sprite bombSprite){
         this.bombSprite = bombSprite;
@@ -35,16 +35,6 @@ public class Bomb {
 
     public void setPosition(Point position) {
         this.position = position;
-    }
-
-    public void moveBomb(Point point){
-        if (point.x + BOMB_SIZE > Board.BOARD_SIZE){
-            point.x = Board.BOARD_SIZE - orientation.x*BOMB_SIZE;
-        }
-        if (point.y + BOMB_SIZE > Board.BOARD_SIZE){
-            point.y = Board.BOARD_SIZE - orientation.y*BOMB_SIZE;
-        }
-        updateBombPosition(point);
     }
 
     public void updateBombPosition(Point point){

@@ -107,15 +107,19 @@ public class Board
      */
     public ShotState fireAtPos(Point point) {
         Ship ship = shipPositions.get(point.x).get(point.y);
-        guessPos.add(new Point(point)); //Miss; add to our miss positions and return nothing
+        guessPos.add(new Point(point)); //Miss; add to our miss positions and return miss
         if(ship != null) {
-            if (ship.fireAtShip(point) == ShotState.SUNK){
+            if(shield.fireAtPos(point)){
+                    guessPos.removeValue(point, false);
+                    return ShotState.SHIELDED;
+            } 
+            else if (ship.fireAtShip(point) == ShotState.SUNK){
                 return ShotState.SUNK;
             }
-            else return ShotState.HIT;
+            else return ShotState.HIT;   
         }
         else
-            return ShotState.MISS;
+            return ShotState.MISS;  
     }
 
     public Array<ShotState> fireBomb(){
@@ -176,14 +180,16 @@ public class Board
         }
     }
     public Array<Point> placeSonar(Point point){
-        sonar.moveSonar(point);
-        return sonar.findShip(point);
+        sonar.setPosition(point);
+        return sonar.findShip();
     }
 
-    public void placeShield(Point point){
+    public boolean placeShield(Point point){
         if (shipPositions.get(point.x).get(point.y)!=null){
             shield.setPosition(point);
+            return true;
         }
+        return false;
     }
 
     /** Draw the board and all ships on it onto the specified Batch.

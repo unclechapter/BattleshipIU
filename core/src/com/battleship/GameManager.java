@@ -18,6 +18,7 @@ public class GameManager implements Observer{
     private static GameManager manager;
     public static Point mouseCursorTile;
     public static GameMode currentMode;
+    public static PlayerTurnState playerTurnState;
 
     private Player player;
     private Bot bot;
@@ -168,6 +169,7 @@ public class GameManager implements Observer{
     public void reset() {
         //Reset boards and game state
         currentMode = GameMode.PLACESHIP;
+        playerTurnState = null;
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
         player.reset();
@@ -217,11 +219,28 @@ public class GameManager implements Observer{
     public void rightClick() {
         if (currentMode == GameMode.PLACESHIP)   //Rotate ships on RMB if we're currently placing them
             player.rotateShip();
+        if (currentMode == GameMode.PLAYERTURN && playerTurnState == PlayerTurnState.SHIPTELEPORT)
+            player.rotateShip();
     }
 
     private void mouseHover(){
         if (currentMode == GameMode.PLACESHIP)   //If the player is currently placing ships, move ship preview to this location
             player.previewShip(mouseCursorTile);
+        if (currentMode == GameMode.PLAYERTURN){
+            switch(playerTurnState){
+                case PLACESHIELD:
+                    player.previewShield(mouseCursorTile);
+                    break;
+                case PLACESONAR:
+                    player.previewSonar(mouseCursorTile);
+                    break;
+                case PLACEBOMB:
+                    player.previewBomb(mouseCursorTile);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private void playerPlacing() {

@@ -51,4 +51,25 @@ public class Player extends BoardController {
     public void rotateShip() {
             playerBoard.rotateShip(ShipType.values()[m_iPlacing]);
     }
+    public void teleportRotate(){
+        playerBoard.teleportRotate();
+    }
+
+    public boolean placeShield(Point point){
+        int shieldPlaced = 0;
+        if (shieldPlaced < 2) {
+            shieldPlaced++;
+            return playerBoard.placeShield(point);
+        }
+        else return false;
+    }
+    public void previewShield(Point point){
+        playerBoard.previewShield(point);
+    }
+    public void previewSonar(Point point){
+        playerBoard.previewSonar(point);
+    }
+    public void previewBomb(Point point){
+        playerBoard.previewBomb(point);
+    }
 }

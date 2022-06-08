@@ -6,28 +6,38 @@ import java.awt.*;
 
 public class Shield {
     public Sprite shieldSprite;
-    private Array<Point> shieldPosition;
+    private Point shieldPosition;
     private boolean shieldActivate;
 
     public Shield(Sprite shieldSprite){
         this.shieldSprite = shieldSprite;
     }
 
-    public void setPosition(Point point){
-        shieldPosition.add(point);
+    public Point getShieldPosition(){
+        return shieldPosition;
     }
 
-    public boolean activateShield(){
-        shieldActivate = true;
-        return true;
+    public void setPosition(Point point){
+        shieldPosition.x = point.x;
+        shieldPosition.y = point.y;
     }
-    public boolean deactivateShield(Point point){
-        for (Point shieldPoint : shieldPosition){
-            if (shieldPoint.equals(point)){
-                shieldPosition.removeValue(point, false);
-            }
+
+    public void activateShield(){
+        shieldActivate = true;
+    }
+
+    private void deactivateShield(Point point){
+        if(shieldPosition.x == point.x && shieldPosition.y == point.y){
+            shieldPosition = new Point (-1, -1);
+            shieldActivate = false;
         }
-        shieldActivate = false;
-        return true;
+    }
+
+    public boolean fireAtPos(Point point){
+        if(shieldPosition.x == point.x && shieldPosition.y == point.y && shieldActivate == true){
+            deactivateShield(point);
+            return true;
+        }
+        return false;
     }
 }
