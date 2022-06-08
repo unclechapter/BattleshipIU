@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -20,8 +23,8 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     private Stage stage;
     private Skin skin;
     private Table table;
-    private TextButton startButton;
-    private TextButton quitButton;
+    private ImageButton startButton;
+    private ImageButton menuButton;
     private SpriteBatch batch;
     private Sprite sprite;
     private MyBattleshipGame app;
@@ -46,17 +49,21 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         stage = new Stage();
         table = new Table();
         batch = new SpriteBatch();
-        sprite = new Sprite(new Texture(Gdx.files.internal("titlescreen.jpg")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("mainscreen - no button.png")));
         startMusic = Gdx.audio.newMusic(Gdx.files.internal("titlemusic.mp3"));
         startMusic.setLooping(true);
         startMusic.play();
         table.setWidth(stage.getWidth());
-        table.align(Align.center | Align.center);
+        table.align(Align.right | Align.center);
 
-        table.setPosition(0,Gdx.graphics.getHeight()/2-150);
+        table.setPosition(0,Gdx.graphics.getHeight()-150);
 
-        startButton = new TextButton("New Game",skin,"default");
-        quitButton = new TextButton("Quit",skin,"default");
+        Drawable playDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("play button.png"))));
+        startButton = new ImageButton(playDraw);
+
+        Drawable menuDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("menu button.png"))));
+        menuButton = new ImageButton(menuDraw);
+
         startButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -66,17 +73,17 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
                 GameManager.getManager().getM_mPlacingMusic().play();
             }
         });
-        quitButton.addListener(new ClickListener(){
+        menuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
             }
         });
 
-        table.padLeft(30);
-        table.add(startButton).padBottom(20);
+        table.padRight(50);
+        table.add(startButton).padTop(100);
         table.row();
-        table.add(quitButton);
+        table.add(menuButton).padTop(-150);
         stage.addActor(table);
 
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
@@ -87,7 +94,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         skin.dispose();
         GameManager.getManager().getM_mPlacingMusic().dispose();
         startButton.remove();
-        quitButton.remove();
+        menuButton.remove();
         batch.dispose();
         startMusic.dispose();
         System.out.println("Heya");
