@@ -67,13 +67,24 @@ public class Bomb {
                     bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
                     bombSprite.setScale(4,1);
                 }
+                bombSprite.draw(bBatch);
+                break;
             }
         }
         else{
             for (Point point : bomb){
-                if(!isHorizontal()){
-              //      bombSprite.setTexture(new Texture());
+                if(!isHorizontal()) {
+                    bombSprite.setTexture(new Texture("verticalBomb.png"));
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setScale(1,4);
                 }
+                else{
+                    bombSprite.setTexture(new Texture("verticalBomb.png"));
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setScale(4,1);
+                }
+                bombSprite.draw(bBatch);
+                break;
             }
         }
     }
