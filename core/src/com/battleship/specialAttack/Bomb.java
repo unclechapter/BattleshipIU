@@ -59,12 +59,12 @@ public class Bomb {
             for (Point point : bomb){
                 if(!isHorizontal()) {
                     bombSprite.setTexture(new Texture("verticalBomb.png"));
-                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, (float) ((point.y+1.5) * bombSprite.getHeight() + offset.y));
                     bombSprite.setScale(1,4);
                 }
                 else{
-                    bombSprite.setTexture(new Texture("verticalBomb.png"));
-                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setTexture(new Texture("horizontalBomb.png"));
+                    bombSprite.setPosition((float) ((point.x+1.5) * bombSprite.getWidth() + offset.x), point.y * bombSprite.getHeight() + offset.y);
                     bombSprite.setScale(4,1);
                 }
                 bombSprite.draw(bBatch);
@@ -75,12 +75,12 @@ public class Bomb {
             for (Point point : bomb){
                 if(!isHorizontal()) {
                     bombSprite.setTexture(new Texture("verticalBomb.png"));
-                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, (float) ((point.y+1.5) * bombSprite.getHeight() + offset.y));
                     bombSprite.setScale(1,4);
                 }
                 else{
-                    bombSprite.setTexture(new Texture("verticalBomb.png"));
-                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setTexture(new Texture("horizontalBomb.png"));
+                    bombSprite.setPosition((float) ((point.x+1.5) * bombSprite.getWidth() + offset.x), point.y * bombSprite.getHeight() + offset.y);
                     bombSprite.setScale(4,1);
                 }
                 bombSprite.draw(bBatch);
