@@ -1,5 +1,7 @@
 package com.battleship.specialAttack;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.Board.Board;
@@ -10,11 +12,29 @@ public class Bomb {
     private Sprite bombSprite;
     public Array<Point> bomb;
     private Point orientation;
+    private Point position;
     private static final int BOMB_SIZE = 4;
 
     public Bomb(Sprite bombSprite){
         this.bombSprite = bombSprite;
         this.bomb = new Array<Point>();
+    }
+
+
+    public Point getOrientation() {
+        return orientation;
+    }
+
+    public boolean isHorizontal(){
+        return orientation.x == 1;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
     public void moveBomb(Point point){
@@ -33,5 +53,28 @@ public class Bomb {
             bomb.add(new Point(point.x + orientation.x*i, point.y + orientation.y*i));
         }
     }
-
+    public void draw(boolean bHidden, Batch bBatch, Point offset){
+        if(position == null || bombSprite == null) return;
+        if(bHidden){
+            for (Point point : bomb){
+                if(!isHorizontal()) {
+                    bombSprite.setTexture(new Texture("verticalBomb.png"));
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setScale(1,4);
+                }
+                else{
+                    bombSprite.setTexture(new Texture("verticalBomb.png"));
+                    bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, point.y * bombSprite.getHeight() + offset.y);
+                    bombSprite.setScale(4,1);
+                }
+            }
+        }
+        else{
+            for (Point point : bomb){
+                if(!isHorizontal()){
+              //      bombSprite.setTexture(new Texture());
+                }
+            }
+        }
+    }
 }
