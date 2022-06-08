@@ -68,8 +68,9 @@ public class Board
      * @param horizontal ship orientation
      */
     public boolean placeShip(Point point, ShipType type, boolean horizontal){
-        Ship ship = m_lShips.get(type);
-        if (checkOK(ship, point)){
+
+        if (checkOK(type, point, horizontal)){
+            Ship ship = m_lShips.get(type);
             ship.updatePosition(point, horizontal);
 
             for(int i = 0; i < ship.getType().getSize(); i++)
@@ -84,15 +85,15 @@ public class Board
     /** Checks if ship at certain position is outside the border or overlaps with other ships
      * @param ship ship to check
      */
-    public boolean checkOK(Ship ship, Point point){
-        int size = ship.getType().getSize();
+    public boolean checkOK(ShipType type, Point point, boolean horizontal){
+        Point orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
 
-        if (point.x < 0 || point.x + ship.getOrientation().x * size > BOARD_SIZE
-                || point.x < 0 || point.y + ship.getOrientation().y * size > BOARD_SIZE){
-            System.out.println("Out of BOund " + point);
+        if (point.x < 0 || point.x + orientation.x * type.getSize() > BOARD_SIZE
+                || point.x < 0 || point.y + orientation.y * type.getSize() > BOARD_SIZE){
+            System.out.println("Out of Bound " + point);
             return false;
-        } else for (int i = 0; i < size; i++)
-            if (shipPositions.get(point.x + ship.getOrientation().x * i).get(point.y + ship.getOrientation().y * i) != null) {
+        } else for (int i = 0; i < type.getSize(); i++)
+            if (!(shipPositions.get(point.x + orientation.x * i).get(point.y + orientation.y * i) == null)) {
                 System.out.println("OVerlap");
                 return false;
             }

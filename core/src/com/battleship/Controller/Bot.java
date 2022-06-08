@@ -31,7 +31,19 @@ public class Bot extends BoardController {
                 xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) * type.getSize() - 1);
                 yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1) * type.getSize() - 1);
 
+                System.out.println(new Point(xPos, yPos) + " " + horizontal + " " + type.getSize());
+
             }while(!board.placeShip(new Point(xPos, yPos), type, horizontal));
+
+            for(int i = 0; i < 12 ; i ++) {
+                for (int j = 0; j < 12; j++) {
+                    System.out.print((board.shipPositions.get(j).get(i) == null ? "*" : board.shipPositions.get(j).get(i).getType().id) + " ");
+                }
+                System.out.println();
+            }
+
+            System.out.println();
+            System.out.println();
         }
     }
 }

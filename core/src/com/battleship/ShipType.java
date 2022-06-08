@@ -9,7 +9,7 @@ public enum ShipType {
     SUBMARINE   (3, "Submarine", 3),
     DESTROYER   (2, "Destroyer", 2);
 
-    int id;
+    public int id;
     int size;
     String name;
     ShipType(int id, String name, int size) {
