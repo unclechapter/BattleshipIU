@@ -198,7 +198,6 @@ public class GameManager implements Observer{
         if (!botBoard.alreadyFired(mouseCursorTile)) {   //If we haven't fired here already
             ShotState shipState = player.fireAtOpponent(bot, mouseCursorTile);    //Fire!
             if (shipState != ShotState.MISS) {   //If we hit a ship
-                System.out.println(sunkShip);
                 if (sunkShip.size != 0) {  //Sunk a ship
                     if (!bot.getBoard().boardCleared())
                         m_sSunkSound.play();
