@@ -83,9 +83,9 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
         });
 
         table.padRight(50);
-        table.add(startButton).padTop(100);
+        table.add(startButton).padTop(200);
         table.row();
-        table.add(menuButton).padTop(-150);
+        table.add(menuButton);
         stage.addActor(table);
 
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
@@ -109,7 +109,7 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
 
     @Override
     public void show() {
-        InputMultiplexer im = new InputMultiplexer(stage, this);
+        InputMultiplexer im = new InputMultiplexer(stage,this);
         Gdx.input.setInputProcessor(im);
     }
 

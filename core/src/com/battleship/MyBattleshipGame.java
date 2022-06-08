@@ -299,12 +299,16 @@ public class MyBattleshipGame extends Game implements Screen {
             textPrompt.drawLgText(GAMEOVER_STR);
 
             //Draw player won/lost text green, slightly smaller, and lower down
-            if(m_iCharWon == 0)
+            if(m_iCharWon == 0){
                 m_ftTextFont.setColor(0.25f, 1.0f, 0.25f, 1.0f);    //Green if won
-            else
+             //   m_bBatch.draw(new Texture(Gdx.files.internal("win.png")),0,0,1200,975);
+            }
+            else {
                 m_ftTextFont.setColor(1.0f, 0.1f, 0.1f, 1.0f);      //Red if lost
-            m_ftTextFont.getData().setScale(GAMEOVER_SUBSTR_PT);
-            m_ftTextFont.draw(m_bBatch, (m_iCharWon == 0)?(PLAYER_WON_STR):(ENEMY_WON_STR), 0, Gdx.graphics.getHeight() / 2, 900, Align.center, false);
+             //   m_bBatch.draw(new Texture(Gdx.files.internal("game-over.png")),0,0,1200,975);
+        }
+                m_ftTextFont.getData().setScale(GAMEOVER_SUBSTR_PT);
+                m_ftTextFont.draw(m_bBatch, (m_iCharWon == 0) ? (PLAYER_WON_STR) : (ENEMY_WON_STR), 0, Gdx.graphics.getHeight() / 2, 900, Align.center, false);
         }
 
 
@@ -325,6 +329,12 @@ public class MyBattleshipGame extends Game implements Screen {
         ScissorStack.popScissors();
         m_bBatch.begin();
         m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,975);
+/*        if (currentMode==GameMode.GAMEOVER){
+            if (m_iCharWon==0){
+                m_bBatch.draw(new Texture(Gdx.files.internal("win.png")),0,0);
+            }
+            else m_bBatch.draw(new Texture(Gdx.files.internal("game-over.png")),0,0);
+        }*/
         m_bBatch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
