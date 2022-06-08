@@ -1,5 +1,7 @@
 package com.battleship.specialAttack;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import java.awt.*;
@@ -29,5 +31,24 @@ public class Shield {
         }
         shieldActivate = false;
         return true;
+    }
+    public void draw(boolean bHidden, Batch bBatch, Point offset){
+        if(shieldPosition == null || shieldSprite == null) return;
+        if(bHidden){
+            for (Point point : shieldPosition){
+                    shieldSprite.setTexture(new Texture("shield.png"));
+                    shieldSprite.setPosition(point.x * shieldSprite.getWidth() + offset.x, (point.y) * shieldSprite.getHeight() + offset.y);
+                    shieldSprite.draw(bBatch);
+                break;
+            }
+        }
+        else{
+            for (Point point : shieldPosition){
+                shieldSprite.setTexture(new Texture("shield.png"));
+                shieldSprite.setPosition(point.x * shieldSprite.getWidth() + offset.x, (point.y) * shieldSprite.getHeight() + offset.y);
+                shieldSprite.draw(bBatch);
+                break;
+            }
+        }
     }
 }
