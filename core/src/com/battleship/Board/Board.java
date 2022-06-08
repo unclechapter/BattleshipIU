@@ -85,7 +85,7 @@ public class Board
     /** Checks if ship at certain position is outside the border or overlaps with other ships
      * @param ship ship to check
      */
-    public boolean checkOK(ShipType type, Point point, boolean horizontal){
+    private boolean checkOK(ShipType type, Point point, boolean horizontal){
         Point orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
 
         if (point.x < 0 || point.x + orientation.x * type.getSize() > BOARD_SIZE

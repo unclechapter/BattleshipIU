@@ -18,7 +18,7 @@ public abstract class BoardController {
         return board;
     }
 
-    public ShotState fireAtPos(Point point) {
+    protected ShotState fireAtPos(Point point) {
         return board.fireAtPos(point);
     }
 

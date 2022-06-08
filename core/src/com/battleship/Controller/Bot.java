@@ -2,13 +2,20 @@ package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.battleship.Controller.BoardController;
 import com.battleship.MyBattleshipGame;
+import com.battleship.Ship;
 import com.battleship.ShipType;
+import com.battleship.ShotState;
 
 import java.awt.*;
+import java.util.Random;
+
+import static com.battleship.Board.Board.BOARD_SIZE;
 
 public class Bot extends BoardController {
+    Array<Array<Integer>> map;
     /**
      * Constructor for creating a Board class object
      *
@@ -19,6 +26,15 @@ public class Bot extends BoardController {
      */
     public Bot(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge) {
         super(txBg, txMiss, txCenter, txEdge, MyBattleshipGame.playerBoardOffset);
+
+        map = new Array<>();
+        for (int i = 0; i < boardSize; i++){
+            Array<Integer> temp = new Array();
+            temp.setSize(BOARD_SIZE);
+            map.add(temp);
+        }
+
+        System.out.println(map);
     }
 
     public void placeShipRandom(){
@@ -45,5 +61,12 @@ public class Bot extends BoardController {
             System.out.println();
             System.out.println();
         }
+    }
+
+    public ShotState attack(BoardController opponent) {
+        System.out.println("Bot attacking");
+
+        opponent.fireAtPos(new Point(MathUtils.random(0, boardSize - 1), MathUtils.random(0, boardSize - 1)));
+        return null;
     }
 }

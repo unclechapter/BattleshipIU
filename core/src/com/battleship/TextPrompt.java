@@ -29,14 +29,9 @@ public class TextPrompt {
      * @param       sMsg     Message to write to screen
      */
     public void drawLgText(String sMsg) {
-        if(sMsg == null) {
-            System.out.println("message is null");
-            return;
-        }
-        if(sMsg.isEmpty())
-            return;
+        if(sMsg != null)
+            TextPrompt.sMsg = sMsg;
 
-        TextPrompt.sMsg = sMsg;
 
         final int iTextOffset = 15;  //Used to center textbox around gameover text
 
@@ -47,7 +42,7 @@ public class TextPrompt {
 
         m_rShapeRenderer.setColor(0, 0, 0, 0.65f);  //Set the color to a lower-alpha black
         m_ftTextFont.getData().setScale(GAMEOVER_STR_PT);
-        m_rShapeRenderer.rect(0, Gdx.graphics.getHeight() / 4 - iTextOffset, 900, m_ftTextFont.getLineHeight());    //Draw behind where the text will be
+        m_rShapeRenderer.rect(0, Gdx.graphics.getHeight() / 4 - iTextOffset, 975, m_ftTextFont.getLineHeight());    //Draw behind where the text will be
 
         m_rShapeRenderer.end(); //Done rendering shapes
         Gdx.gl.glDisable(GL20.GL_BLEND);    //Disable OpenGL blending to get back to previous OpenGL state
@@ -56,7 +51,7 @@ public class TextPrompt {
         //Draw gameover text larger and higher up
         m_ftTextFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         m_ftTextFont.getData().setScale(GAMEOVER_STR_PT);
-        m_ftTextFont.draw(m_bBatch, sMsg, 0, Gdx.graphics.getHeight() / 4, 900, Align.center, false);
+        m_ftTextFont.draw(m_bBatch, TextPrompt.sMsg, 0, Gdx.graphics.getHeight() / 4, 975, Align.center, false);
     }
 
     public static void updateMessage(String message) {

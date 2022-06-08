@@ -5,6 +5,7 @@ import com.battleship.Board.BoardPlayer;
 import com.battleship.Controller.BoardController;
 import com.battleship.MyBattleshipGame;
 import com.battleship.ShipType;
+import com.battleship.ShotState;
 
 import java.awt.*;
 
@@ -50,5 +51,9 @@ public class Player extends BoardController {
 
     public void rotateShip() {
             playerBoard.rotateShip(ShipType.values()[m_iPlacing]);
+    }
+
+    public ShotState fireAtOpponent(BoardController opponent, Point point) {
+        return opponent.fireAtPos(point);
     }
 }

@@ -121,45 +121,7 @@ public class GameManager implements Observer{
             }
         }
         else if(currentMode == GameMode.BOTTURN)  //Enemy turn
-        {
-            if(m_iEnemyGuessTimer > 0)  //If we're waiting for the enemy firing animation
-            {
-                if(System.nanoTime() >= m_iEnemyGuessTimer) //If we've waited long enough
-                {
-                    //EnemyAI.Guess gHit = m_aiEnemy.guess(m_bPlayerBoard); //Make enemy AI fire at their guessed position
-
-                    //Play the appropriate sound
-                    //if(gHit == EnemyAI.Guess.HIT)
-                    m_sHitSound.play();
-                    //else if(gHit == EnemyAI.Guess.MISS)
-                    m_sMissSound.play();
-                    /*else*/ if(!playerBoard.boardCleared())
-                    m_sSunkSound.play();
-
-                    m_iModeCountdown = (long)(System.nanoTime() + MODESWITCHTIME * MyBattleshipGame.NANOSEC);    //Start countdown for switching to player's turn
-                    m_iEnemyGuessTimer = 0; //Stop counting down
-                }
-            }
-            else if(m_iModeCountdown > 0)   //If we're waiting until countdown is done for player's turn
-            {
-                if(System.nanoTime() >= m_iModeCountdown)  //Countdown is done
-                {
-                    m_iModeCountdown = 0;   //Reset timer
-                    if(playerBoard.boardCleared())   //Game over; enemy won
-                    {
-                        currentMode = GameMode.GAMEOVER;
-                        m_iCharWon = ENEMY_WON;
-                        //Play losing sound
-                        m_mPlayingMusic.stop();
-                        m_sLoseSound.play();
-                    }
-                    else
-                    {
-                        currentMode = GameMode.PLAYERTURN;  //Switch to player's turn
-                    }
-                }
-            }
-        }
+            botTurn();
     }
 
     public void updateMouse(Point mouseTile){
@@ -234,9 +196,10 @@ public class GameManager implements Observer{
 
     private void playerTurn() {
         if (!botBoard.alreadyFired(mouseCursorTile)) {   //If we haven't fired here already
-            ShotState shipState = bot.fireAtPos(mouseCursorTile);    //Fire!
+            ShotState shipState = player.fireAtOpponent(bot, mouseCursorTile);    //Fire!
             if (shipState != ShotState.MISS) {   //If we hit a ship
-                if (sunkShip != null) {  //Sunk a ship
+                System.out.println(sunkShip);
+                if (sunkShip.size != 0) {  //Sunk a ship
                     if (!bot.getBoard().boardCleared())
                         m_sSunkSound.play();
 
@@ -257,11 +220,61 @@ public class GameManager implements Observer{
     }
 
     private void botTurn() {
+        if(m_iEnemyGuessTimer > 0)  //If we're waiting for the enemy firing animation
+        {
+            if(System.nanoTime() >= m_iEnemyGuessTimer) //If we've waited long enough
+            {
+                bot.attack(player);
 
+                //Play the appropriate sound
+                //if(gHit == EnemyAI.Guess.HIT)
+                m_sHitSound.play();
+                //else if(gHit == EnemyAI.Guess.MISS)
+                m_sMissSound.play();
+                /*else*/ if(!playerBoard.boardCleared())
+                m_sSunkSound.play();
+
+                m_iModeCountdown = (long)(System.nanoTime() + MODESWITCHTIME * MyBattleshipGame.NANOSEC);    //Start countdown for switching to player's turn
+                m_iEnemyGuessTimer = 0; //Stop counting down
+            }
+        }
+        else if(m_iModeCountdown > 0)   //If we're waiting until countdown is done for player's turn
+        {
+            if(System.nanoTime() >= m_iModeCountdown)  //Countdown is done
+            {
+                m_iModeCountdown = 0;   //Reset timer
+                if(playerBoard.boardCleared())   //Game over; enemy won
+                {
+                    currentMode = GameMode.GAMEOVER;
+                    m_iCharWon = ENEMY_WON;
+                    //Play losing sound
+                    m_mPlayingMusic.stop();
+                    m_sLoseSound.play();
+                }
+                else
+                {
+                    currentMode = GameMode.PLAYERTURN;  //Switch to player's turn
+                }
+            }
+        }
     }
 
     @Override
     public void updateSunkShip(ShipType shipType){
         sunkShip.addLast(shipType);
+    }
+
+    public void dispose(){
+        m_sMissSound.dispose();
+        m_sHitSound.dispose();
+        m_sSunkSound.dispose();
+        m_sWinSound.dispose();
+        m_sLoseSound.dispose();
+        m_mPlacingMusic.dispose();
+        m_mPlayingMusic.dispose();
+        m_txShipCenterImage.dispose();
+        m_txShipEdgeImage.dispose();
+        m_txMissImage.dispose();
+        m_txBoardBg.dispose();
     }
 }

@@ -23,7 +23,7 @@ public class BoardPlayer extends Board {
     }
 
     public boolean playerPlace(ShipType type, Point point) {
-        return this.placeShip(point, type, m_lShips.get(type).isHorizontal());
+        return placeShip(point, type, m_lShips.get(type).isHorizontal());
     }
 
     /**

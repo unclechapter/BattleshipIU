@@ -129,7 +129,6 @@ public class MyBattleshipGame extends Game implements Screen {
      */
     @Override
 	public void create() {
-        textPrompt = new TextPrompt(m_bBatch, m_rShapeRenderer, m_ftTextFont, GAMEOVER_STR_PT);
         //Tell GDX inputHandler will be handling input
         manager = GameManager.createGameManager();
         inputHandler = new InputHandler(manager);
@@ -209,6 +208,8 @@ public class MyBattleshipGame extends Game implements Screen {
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
         mouseCursorTile = new Point(-1,-1);
+
+        textPrompt = new TextPrompt(m_bBatch, m_rShapeRenderer, m_ftTextFont, GAMEOVER_STR_PT);
 
 
 
@@ -345,19 +346,9 @@ public class MyBattleshipGame extends Game implements Screen {
 	public void dispose()
 	{
 		//Clean up resources
-//		m_txShipCenterImage.dispose();
-//		m_txShipEdgeImage.dispose();
-//        m_txMissImage.dispose();
-//        m_txBoardBg.dispose();
+        manager.dispose();
         m_txFireCursorSm.dispose();
         m_txFireCursorLg.dispose();
-//		m_sMissSound.dispose();
-//        m_sHitSound.dispose();
-//        m_sSunkSound.dispose();
-//        m_sWinSound.dispose();
-//        m_sLoseSound.dispose();
-//		m_mPlacingMusic.dispose();
-//        m_mPlayingMusic.dispose();
         m_bBatch.dispose();
         m_rShapeRenderer.dispose();
         m_ftTextFont.dispose();
