@@ -148,12 +148,20 @@ public class Bot extends BoardController {
         } else if(currentMode == ATTACK_STATE.DESTROY) {
             switch (result) {
                 case HIT:
-                    shipLength ++;
                     lastHit = firePos;
+
+                    int x = firePos.x + direction.get(destroyDirection).x;
+                    int y = firePos.y + direction.get(destroyDirection).y;
+                    if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
+                        lastHit = firstHit;
+                        destroyDirection = (destroyDirection + 2) % 4;
+                    }
                     break;
                 case MISS:
                     if(lastHit.equals(firstHit)) {
-                        destroyDirection = (destroyDirection + 1) % 4;
+                        do {
+                            destroyDirection = (destroyDirection + 1) % 4;
+                        } while (checkValid(firePos.x + direction.get(destroyDirection).x, firePos.y + direction.get(destroyDirection).y));
                     } else {
                         lastHit = firstHit;
                         destroyDirection = (destroyDirection + 2) % 4;
