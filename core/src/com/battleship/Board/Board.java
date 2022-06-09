@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.HashMap;
 
 /**
- * Created by Mark on 1/15/2016.
+ *
  *
  * Defines a class for handling how ships are placed on the Battleship board, and for causing interactions
  * (such as firing at a ship, placing ships randomly on the board, etc)

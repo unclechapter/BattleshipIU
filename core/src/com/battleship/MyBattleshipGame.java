@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.battleship.Board.Board;
+import com.battleship.Controller.Bot;
 import com.battleship.Manager.Game.GameManager;
 import com.battleship.Manager.Game.GameMode;
 import com.battleship.Manager.InputHandler;
@@ -73,7 +74,6 @@ public class MyBattleshipGame extends Game implements Screen {
 
     private OrthographicCamera m_cCamera;
     private BitmapFont m_ftTextFont;
-    private String m_sOverlayTxt;
 
 
 
@@ -275,7 +275,7 @@ public class MyBattleshipGame extends Game implements Screen {
                     m_bBatch.setColor(Color.WHITE); //Reset color to default
             }
             else
-                textPrompt.drawLgText(m_sOverlayTxt);  //Draw text overlay for hit/miss
+                textPrompt.drawLgText();  //Draw text overlay for hit/miss
         }
         else if(currentMode == GameMode.BOTTURN)  //On enemy's turn, draw player's board and crosshair animation if applicable
         {
@@ -290,6 +290,8 @@ public class MyBattleshipGame extends Game implements Screen {
                 //Draw the crosshair centered on the position where the enemy will be guessing
                 //m_bBatch.draw(m_txFireCursorLg, (float)(xCrosshairCenter - fDrawSize / 2.0), (float)(yCrosshairCenter - fDrawSize / 2.0), (float)fDrawSize, (float)fDrawSize);
             }
+            if(Bot.attackMode == 1)
+                textPrompt.drawLgText();
         }
         else if(currentMode == GameMode.PLACESHIP)  //If we're placing ships, just draw board as normal
         {
@@ -302,7 +304,8 @@ public class MyBattleshipGame extends Game implements Screen {
             else
                 playerBoard.draw(false, m_bBatch);
 
-            textPrompt.drawLgText(GAMEOVER_STR);
+            TextPrompt.updateMessage(GAMEOVER_STR);
+            textPrompt.drawLgText();
 
             //Draw player won/lost text green, slightly smaller, and lower down
             if(m_iCharWon == 0){

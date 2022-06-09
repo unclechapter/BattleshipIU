@@ -88,9 +88,9 @@ Battleship is a classic strategy 2-players game. This game is the product of the
 ## Features
 <div style="text-align:justify">
 Our game implements 3 new features including:
-- Shield: player is able to put a shield over a grid to prevent it being shot. The shield is broken after it is shot.
-- Sonar: The player is able to place a 3x3 sonar on the map. The sonar will tell the player of there is a ship in the area that it was placed
-- Bomb: the bomb allows the player to fire 4 consecutive shots either vertically or horizontally to their opponent's board.
+<br>- Shield: player is able to put a shield over a grid to prevent it being shot. The shield is broken after it is shot.
+<br><br>- Sonar: The player is able to place a 3x3 sonar on the map. The sonar will tell the player of there is a ship in the area that it was placed
+<br><br>- Bomb: the bomb allows the player to fire 4 consecutive shots either vertically or horizontally to their opponent's board.
 <div>
 
 <br />

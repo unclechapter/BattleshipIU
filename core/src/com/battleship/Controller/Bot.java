@@ -25,6 +25,7 @@ public class Bot extends BoardController {
     Array<Point> direction;
     int shipLength;
     Array<Integer> sizesOfDestroyedShips;
+    public static int attackMode;
     /**
      * Constructor for creating a Board class object
      *
@@ -72,6 +73,7 @@ public class Bot extends BoardController {
     }
 
     public ShotState attack(BoardController opponent) {
+        attackMode = 1;
         Point firePos;
         if(currentMode == ATTACK_STATE.SEEK)
             firePos = seek();

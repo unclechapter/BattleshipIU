@@ -28,11 +28,7 @@ public class TextPrompt {
      *
      * @param       sMsg     Message to write to screen
      */
-    public void drawLgText(String sMsg) {
-        if(sMsg != null)
-            TextPrompt.sMsg = sMsg;
-
-
+    public void drawLgText() {
         final int iTextOffset = 15;  //Used to center textbox around gameover text
 
         //Draw black box behind text so it shows up better
@@ -51,10 +47,13 @@ public class TextPrompt {
         //Draw gameover text larger and higher up
         m_ftTextFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         m_ftTextFont.getData().setScale(GAMEOVER_STR_PT);
-        m_ftTextFont.draw(m_bBatch, TextPrompt.sMsg, 0, Gdx.graphics.getHeight() / 4, 975, Align.center, false);
+        m_ftTextFont.draw(m_bBatch, sMsg, 0, Gdx.graphics.getHeight() / 4, 975, Align.center, false);
     }
 
     public static void updateMessage(String message) {
+        System.out.println("message updated: " + message);
         sMsg = message;
+
+
     }
 }

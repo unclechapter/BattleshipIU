@@ -10,6 +10,7 @@ import com.battleship.Board.Board;
 import com.battleship.Board.BoardPlayer;
 import com.battleship.Board.Ship.ShipType;
 import com.battleship.Board.Ship.ShotState;
+import com.battleship.Controller.BoardController;
 import com.battleship.Controller.Bot;
 import com.battleship.Controller.Player;
 import com.battleship.Interface.Observer;
@@ -200,25 +201,12 @@ public class GameManager implements Observer {
     }
 
     private void playerTurn() {
+        Bot.attackMode = 0;
         if (!botBoard.alreadyFired(mouseCursorTile)) {   //If we haven't fired here already
             ShotState shipState = player.fireAtOpponent(bot, mouseCursorTile);    //Fire!
-            if (shipState != ShotState.MISS) {   //If we hit a ship
-                if (sunkShip.size != 0) {  //Sunk a ship
-                    if (!bot.getBoard().boardCleared())
-                        m_sSunkSound.play();
 
-                    for (ShipType type : sunkShip) {
-                        TextPrompt.updateMessage(SUNK_STR + type.getName());
-                        sunkShip.removeFirst();
-                    }
-                } else {    //Hit a ship
-                    m_sHitSound.play();
-                    TextPrompt.updateMessage(HIT_STR);
-                }
-            } else {   //Missed a ship
-                m_sMissSound.play();
-                TextPrompt.updateMessage(MISS_STR);
-            }
+            updatePrompt(shipState, bot);
+
             m_iModeCountdown = (long) (System.nanoTime() + PLAYERHITPAUSE * MyBattleshipGame.NANOSEC);    //Start countdown timer for the start of the enemy turn
         }
     }
@@ -228,15 +216,7 @@ public class GameManager implements Observer {
         {
             if(System.nanoTime() >= m_iEnemyGuessTimer) //If we've waited long enough
             {
-                bot.attack(player);
-
-                //Play the appropriate sound
-                //if(gHit == EnemyAI.Guess.HIT)
-                m_sHitSound.play();
-                //else if(gHit == EnemyAI.Guess.MISS)
-                m_sMissSound.play();
-                /*else*/ if(!playerBoard.boardCleared())
-                m_sSunkSound.play();
+                updatePrompt(bot.attack(player), player);
 
                 m_iModeCountdown = (long)(System.nanoTime() + MODESWITCHTIME * MyBattleshipGame.NANOSEC);    //Start countdown for switching to player's turn
                 m_iEnemyGuessTimer = 0; //Stop counting down
@@ -260,6 +240,27 @@ public class GameManager implements Observer {
                     currentMode = GameMode.PLAYERTURN;  //Switch to player's turn
                 }
             }
+        }
+    }
+
+    public void updatePrompt(ShotState result, BoardController opponent) {
+        if (result != ShotState.MISS) {   //If we hit a ship
+            if (sunkShip.size != 0) {  //Sunk a ship
+                System.out.println("Sunk a ship");
+                if (!opponent.getBoard().boardCleared())
+                    m_sSunkSound.play();
+
+                for (ShipType type : sunkShip) {
+                    TextPrompt.updateMessage(SUNK_STR + type.getName());
+                    sunkShip.removeFirst();
+                }
+            } else {    //Hit a ship
+                m_sHitSound.play();
+                TextPrompt.updateMessage(HIT_STR);
+            }
+        } else {   //Missed a ship
+            m_sMissSound.play();
+            TextPrompt.updateMessage(MISS_STR);
         }
     }
 
