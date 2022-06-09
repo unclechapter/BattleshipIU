@@ -20,8 +20,10 @@ import com.battleship.Board.Board;
 import com.battleship.Manager.Game.GameManager;
 import com.battleship.Manager.Game.GameMode;
 import com.battleship.Manager.InputHandler;
+import com.battleship.Screen.LoseScreen;
 import com.battleship.Screen.MainScreen;
 import com.battleship.Screen.StartScreen;
+import com.battleship.Screen.WinScreen;
 import com.battleship.UI.TextPrompt;
 
 import java.awt.*;
@@ -55,6 +57,8 @@ public class MyBattleshipGame extends Game implements Screen {
     //Screens
     private StartScreen startScreen;
     private MainScreen mainScreen;
+    private WinScreen winScreen;
+    private LoseScreen loseScreen;
 
     //Variables for image/sound resources
     //Images
@@ -139,6 +143,8 @@ public class MyBattleshipGame extends Game implements Screen {
         manager = GameManager.createGameManager();
         inputHandler = new InputHandler(manager);
         startScreen = new StartScreen(this, mainScreen);
+        winScreen = new WinScreen();
+        loseScreen = new LoseScreen();
         setScreen(startScreen);
         stage = startScreen.getStage();
         InputMultiplexer im = new InputMultiplexer(stage, inputHandler);
@@ -301,11 +307,13 @@ public class MyBattleshipGame extends Game implements Screen {
             //Draw player won/lost text green, slightly smaller, and lower down
             if(m_iCharWon == 0){
                 m_ftTextFont.setColor(0.25f, 1.0f, 0.25f, 1.0f);    //Green if won
-             //   m_bBatch.draw(new Texture(Gdx.files.internal("win.png")),0,0,1200,975);
+            //    m_bBatch.draw(new Texture(Gdx.files.internal("win.png")),0,0);
+                setScreen(winScreen);
             }
             else {
                 m_ftTextFont.setColor(1.0f, 0.1f, 0.1f, 1.0f);      //Red if lost
-             //   m_bBatch.draw(new Texture(Gdx.files.internal("game-over.png")),0,0,1200,975);
+            //    m_bBatch.draw(new Texture(Gdx.files.internal("game-over.png")),0,0);
+                setScreen(loseScreen);
         }
                 m_ftTextFont.getData().setScale(GAMEOVER_SUBSTR_PT);
                 m_ftTextFont.draw(m_bBatch, (m_iCharWon == 0) ? (PLAYER_WON_STR) : (ENEMY_WON_STR), 0, Gdx.graphics.getHeight() / 2, 900, Align.center, false);
@@ -329,12 +337,12 @@ public class MyBattleshipGame extends Game implements Screen {
         ScissorStack.popScissors();
         m_bBatch.begin();
         m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,975);
-/*        if (currentMode==GameMode.GAMEOVER){
+        if (currentMode==GameMode.GAMEOVER){
             if (m_iCharWon==0){
-                m_bBatch.draw(new Texture(Gdx.files.internal("win.png")),0,0);
+                setScreen(winScreen);
             }
-            else m_bBatch.draw(new Texture(Gdx.files.internal("game-over.png")),0,0);
-        }*/
+            else setScreen(loseScreen);
+        }
         m_bBatch.end();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
