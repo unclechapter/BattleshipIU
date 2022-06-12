@@ -24,7 +24,6 @@ public class GameManager implements Observer {
     private static GameManager manager;
     public static Point mouseCursorTile;
     public static GameMode currentMode;
-
     private Player player;
     private Bot bot;
     private final int PLAYER_WON = 0;
@@ -65,10 +64,10 @@ public class GameManager implements Observer {
     }
 
     private GameManager(){
-        m_txShipCenterImage = new Texture("hit.png");
-        m_txShipEdgeImage = new Texture("ship_edge.png");
-        m_txMissImage = new Texture("miss.png");
-        m_txBoardBg = new Texture("map.png");
+        m_txShipCenterImage = new Texture("Sprite/hit.png");
+        m_txShipEdgeImage = new Texture("Sprite/ship_edge.png");
+        m_txMissImage = new Texture("Sprite/miss.png");
+        m_txBoardBg = new Texture("Sprite/map.png");
         //Create game logic classes
         player = new Player(m_txBoardBg, m_txMissImage, m_txShipCenterImage, m_txShipEdgeImage);
         playerBoard = (BoardPlayer) player.getBoard();
@@ -78,14 +77,14 @@ public class GameManager implements Observer {
 
         sunkShip = new Queue<>();
 
-        m_sHitSound = Gdx.audio.newSound(Gdx.files.internal("hit.ogg"));
-        m_sSunkSound = Gdx.audio.newSound(Gdx.files.internal("sunk.ogg"));
-        m_sMissSound = Gdx.audio.newSound(Gdx.files.internal("miss.ogg"));
-        m_sWinSound = Gdx.audio.newSound(Gdx.files.internal("youWin.mp3"));
-        m_sLoseSound = Gdx.audio.newSound(Gdx.files.internal("youLose.mp3"));
+        m_sHitSound = Gdx.audio.newSound(Gdx.files.internal("Sound/hit.ogg"));
+        m_sSunkSound = Gdx.audio.newSound(Gdx.files.internal("Sound/sunk.ogg"));
+        m_sMissSound = Gdx.audio.newSound(Gdx.files.internal("Sound/miss.ogg"));
+        m_sWinSound = Gdx.audio.newSound(Gdx.files.internal("Sound/youWin.mp3"));
+        m_sLoseSound = Gdx.audio.newSound(Gdx.files.internal("Sound/youLose.mp3"));
 
-        m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("beginningMusic.mp3"));
-        m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("mainTheme.mp3"));
+        m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("Sound/beginningMusic.mp3"));
+        m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("Sound/mainTheme.mp3"));
 
         mouseCursorTile = new Point(0, 0);
 
@@ -195,8 +194,8 @@ public class GameManager implements Observer {
     private void playerPlacing() {
         if (player.placeShip(mouseCursorTile)) {
             currentMode = GameMode.PLAYERTURN;//Done placing ships; start playing now. Player always goes first
-//                m_mPlacingMusic.stop();
-//                m_mPlayingMusic.play();
+                m_mPlacingMusic.stop();
+                m_mPlayingMusic.play();
         }
     }
 
@@ -267,6 +266,10 @@ public class GameManager implements Observer {
     @Override
     public void updateSunkShip(ShipType shipType){
         sunkShip.addLast(shipType);
+    }
+
+    public void placeSonar(){
+
     }
 
     public void dispose(){

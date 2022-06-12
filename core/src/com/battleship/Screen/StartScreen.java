@@ -47,12 +47,12 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
     public StartScreen(final MyBattleshipGame app, final MainScreen mainScreen){
         this.mainScreen=mainScreen;
         this.app=app;
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("Font/uiskin.json"));
         stage = new Stage();
         table = new Table();
         batch = new SpriteBatch();
-        sprite = new Sprite(new Texture(Gdx.files.internal("mainscreen - no button.png")));
-        startMusic = Gdx.audio.newMusic(Gdx.files.internal("titlemusic.mp3"));
+        sprite = new Sprite(new Texture(Gdx.files.internal("Sprite/mainscreen - no button.png")));
+        startMusic = Gdx.audio.newMusic(Gdx.files.internal("Sound/titlemusic.mp3"));
         startMusic.setLooping(true);
         startMusic.play();
         table.setWidth(stage.getWidth());
@@ -60,10 +60,10 @@ public class StartScreen extends MyBattleshipGame implements Screen, InputProces
 
         table.setPosition(0,Gdx.graphics.getHeight()-150);
 
-        Drawable playDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("play button.png"))));
+        Drawable playDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Sprite/play button.png"))));
         startButton = new ImageButton(playDraw);
 
-        Drawable menuDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("menu button.png"))));
+        Drawable menuDraw = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Sprite/menu button.png"))));
         menuButton = new ImageButton(menuDraw);
 
         startButton.addListener(new ClickListener(){

@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.battleship.Board.Board;
 import com.battleship.Controller.Bot;
+import com.battleship.Manager.AssetManager;
 import com.battleship.Manager.Game.GameManager;
 import com.battleship.Manager.Game.GameMode;
 import com.battleship.Manager.InputHandler;
@@ -139,6 +140,7 @@ public class MyBattleshipGame extends Game implements Screen {
      */
     @Override
 	public void create() {
+        AssetManager.createManager();
         //Tell GDX inputHandler will be handling input
         manager = GameManager.createGameManager();
         inputHandler = new InputHandler(manager);
@@ -152,17 +154,17 @@ public class MyBattleshipGame extends Game implements Screen {
 
 		//Load the game resources
         m_ftTextFont = new BitmapFont(true);
-        m_txFireCursorSm = new Texture("crosshair.png");
-        m_txFireCursorLg = new Texture("crosshair_lg.png");
+        m_txFireCursorSm = new Texture("Sprite/crosshair.png");
+        m_txFireCursorLg = new Texture("Sprite/crosshair_lg.png");
 
         //Set the camera origin 0,0 to be upper-left, not bottom-left like the gdx default (makes math easier)
         m_cCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         m_cCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("Font/uiskin.json"));
         table = new Table();
-        sprite = new Sprite(new Texture(Gdx.files.internal("pkmblack.png")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("Sprite/pkmblack.png")));
 
         table.setWidth(stage.getWidth());
         table.align(Align.right | Align.center);
@@ -182,7 +184,7 @@ public class MyBattleshipGame extends Game implements Screen {
         sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                manager.placeSonar();
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -339,7 +341,7 @@ public class MyBattleshipGame extends Game implements Screen {
         m_bBatch.flush();
         ScissorStack.popScissors();
         m_bBatch.begin();
-        m_bBatch.draw(new Texture(Gdx.files.internal("menu-pane.png")),Gdx.graphics.getWidth()-225,0,300,975);
+        m_bBatch.draw(new Texture("Sprite/menu-pane.png"),Gdx.graphics.getWidth()-225,0,300,975);
         if (currentMode==GameMode.GAMEOVER){
             if (m_iCharWon==0){
                 setScreen(winScreen);
@@ -370,8 +372,7 @@ public class MyBattleshipGame extends Game implements Screen {
      * Called by LibGDX on app exit when it's a good time to clean up game resources
      */
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		//Clean up resources
         manager.dispose();
         m_txFireCursorSm.dispose();

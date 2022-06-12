@@ -60,7 +60,7 @@ public class Board
 
         //Create ships and add them to our list
         for(int i = 0; i < 5; i ++)
-            m_lShips.put(ShipType.values()[i], new Ship(new Sprite(txCenter), new Sprite(txEdge), ShipType.values()[i]));
+            m_lShips.put(ShipType.values()[i], new Ship(ShipType.values()[i]));
     }
 
     /**To place a ship at a certain position. It checks if the position is placeable then save the position of the ship
@@ -68,7 +68,6 @@ public class Board
      * @param horizontal ship orientation
      */
     public boolean placeShip(Point point, ShipType type, boolean horizontal){
-
         if (checkOK(type, point, horizontal)){
             Ship ship = m_lShips.get(type);
             ship.updatePosition(point, horizontal);
@@ -168,7 +167,7 @@ public class Board
     }*/
     public boolean boardCleared() {
         for(Ship ship : m_lShips.values())
-            if (ship.isSunk() == null)
+            if (ship.isSunk() == false)
                     return false;
 
         return true;
@@ -181,7 +180,7 @@ public class Board
      * @param horizontal new orientation
     */
     public void teleport(Point point, Ship ship, boolean horizontal){
-        if (ship.beenHit = false){
+        if (ship.beenHit() == false){
             if (!alreadyFired(point)){
                 placeShip(point, ship.getType(), horizontal);
             }

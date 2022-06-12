@@ -46,6 +46,10 @@ public class BoardPlayer extends Board {
 
         if(checkOK(type, point, sPlace.isHorizontal()))
             sPlace.updatePosition(point, sPlace.isHorizontal());
+//        else if(checkOK(type, new Point(point.x, sPlace.getPosition().y), sPlace.isHorizontal()))
+//            sPlace.updatePosition(new Point(point.x, sPlace.getPosition().y), sPlace.isHorizontal());
+//        else if(checkOK(type, new Point(sPlace.getPosition().x, point.y), sPlace.isHorizontal()))
+//            sPlace.updatePosition(new Point(sPlace.getPosition().x, point.y), sPlace.isHorizontal());
 
         return point;
     }

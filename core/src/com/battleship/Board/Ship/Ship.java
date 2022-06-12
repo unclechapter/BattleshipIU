@@ -6,44 +6,57 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.battleship.Board.Board;
+import com.battleship.Manager.AssetManager;
 import com.battleship.Manager.Game.GameManager;
 import com.battleship.Interface.Observer;
 
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
- * Created by Mark on 1/15/2016.
  *
  * Abstract class for ships that handles interactions between ships, facilitates launching missiles at ships, etc
  * See Ship_* classes for implementations of this class that contain ship-specific info (such as size, name, etc)
  */
-public class Ship
-{
-    protected ShipType type;
-    private Sprite m_sShipHitSprite;    //Image for the ship being hit (inner image)
+public class Ship {
+    private static final HashMap<String, Sprite> spriteAsset = setupAsset(AssetManager.getManager().requestAsset(Ship.class));
+    private static Sprite hitSprite;    //Image for the ship being hit (inner image)
+    private ShipType type;
     private Sprite m_sShipOKSprite; //Image for the ship being ok (outer image)
     private Array<Point> m_iHitPositions; //Array of positions that have been hit
-    private Array<Point> pointsOfShip; //Array of the all the points of the ship
-    private Point position; // the start position of the ship
+    private Array<Point> shipPoints; //Array of the all the points of the ship
     private Point orientation; // orientation vector
-    public boolean beenHit; //if ship has been hit by a bomb
-    public Observer observer;
-    private int pointCount=0;
+    private Observer observer;
 
     //How faded out a sunk ship looks
     public static final float SHIP_SUNK_ALPHA = 0.65f;
 
     /**
      * Constructor. Requires a sprite for the hit image and one for the non-hit image
-     * @param sShipHit  LibGDX sprite to use when drawing the center part of the ship (hit image)
-     * @param sShipOK   LibGDX sprite to use when drawing the outside edge of the ship
      */
-    public Ship(Sprite sShipHit, Sprite sShipOK, ShipType type) {
-        m_sShipHitSprite = sShipHit;
-        m_sShipOKSprite = sShipOK;
+    public Ship(ShipType type) {
         this.type = type;
+        m_sShipOKSprite = type.getSprite();
+        m_sShipOKSprite.setOrigin(37, 37);
+
         reset();    //Set default values
+    }
+
+    /**
+     * Resets this ship to default state (off board and not hit)
+     */
+    public void reset() {
+        m_iHitPositions = new Array<>();
+        shipPoints = new Array<>();
+        orientation =  new Point(1, 0);
+    }
+
+    private static HashMap<String, Sprite> setupAsset(HashMap<String, Sprite> sprites) {
+        hitSprite = sprites.get("hitSprite");
+
+        return sprites;
     }
 
     //Getter/setter methods
@@ -51,61 +64,53 @@ public class Ship
         return orientation;
     }
 
-    public boolean isHorizontal(){
-        return orientation.x == 1;
-    }
-
-    //Returns true if this ship has been sunk, false otherwise
-    public ShotState isSunk() {
-        if (m_iHitPositions.size == type.size)
-            return ShotState.SUNK;
-
-        else return null;  
-    }
-
     public Point getPosition() {
-        return position;
+        if(!shipPoints.isEmpty())
+            return shipPoints.get(0);
+        else
+            return null;
     }
 
     public ShipType getType() {
         return type;
     }
 
+    public boolean isHorizontal(){
+        return orientation.x == 1;
+    }
+
+    //Returns true if this ship has been sunk, false otherwise
+    public boolean isSunk() {
+        return m_iHitPositions.size == type.getSize();
+    }
+
+    public boolean beenHit() {
+        return m_iHitPositions.size > 0;
+    }
+
     public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
         attachObserver();
-        this.position = position;
 
         this.orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
 
-        pointsOfShip= new Array<>();
-        for (int i = 0; i < type.size; i++)
-            pointsOfShip.add(new Point(this.position.x + this.orientation.x * i, this.position.y + this.orientation.y * i));
+        shipPoints = new Array<>();
+        for (int i = 0; i < type.getSize(); i++)
+            shipPoints.add(new Point(position.x + this.orientation.x * i, position.y + this.orientation.y * i));
     }
 
-
-    /**
-     * Resets this ship to default state (off board and not hit)
-     */
-    public void reset() {
-        beenHit = false;
-        m_iHitPositions = new Array<>();
-        position = new Point();
-        pointsOfShip = new Array<>();
-        orientation =  new Point(1, 0);
-    }
 
     /**
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
      * @return  true on hit, false on miss
      */
     public ShotState fireAtShip(Point point) {
-        beenHit = true;
         m_iHitPositions.add(new Point(point));
 
-        if(isSunk() == ShotState.SUNK)
+        if(isSunk()) {
             notifyObserver();
-
-        return isSunk();
+            return ShotState.SUNK;
+        } else
+            return ShotState.HIT;
 }
 
     public void attachObserver(){
@@ -121,190 +126,38 @@ public class Ship
      * @param bBatch    LibGDX batch to draw the ship to
      */
     public void draw(boolean bHidden, Batch bBatch, Point offset) {
-        if(position == null || m_sShipHitSprite == null || m_sShipOKSprite == null) return; //Don't draw if no sprite textures
+        if(getPosition() == null || hitSprite == null || m_sShipOKSprite == null)
+            return;
+
+        int tileSize = Board.TILE_SIZE;
+        Point drawPosition = new Point(getPosition().x * tileSize + offset.x, getPosition().y * tileSize + offset.y);
+
+        m_sShipOKSprite.setRotation(isHorizontal() ? 0 : 90);
 
         //Change ship's appearance slightly if it's been sunk
-        if(isSunk() == ShotState.SUNK) {
-            m_sShipHitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
+        if(isSunk()) {
+            hitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
             m_sShipOKSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
+
+            m_sShipOKSprite.setPosition(drawPosition.x, drawPosition.y);
+            m_sShipOKSprite.draw(bBatch);
         }
 
         //Only draw ship tiles that have been hit (enemy board generally)
-        if(bHidden) {
-            for(Point point : m_iHitPositions) {
-                //Draw both center and edge for hit tiles
-                float x = point.x * m_sShipHitSprite.getWidth() + offset.x;
-                float y = point.y * m_sShipHitSprite.getHeight() + offset.y;
-                if (m_iHitPositions.size == type.size) {
-                    if (type.id==6) {
-                        //Draw horizontally or vertically depending on our rotation
-                        if (!isHorizontal()){
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-vertical.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+2) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(1,5);
-                        }
-                        else{
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-horizontal.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+2) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(5,1);
-                        }
-                        m_sShipOKSprite.draw(bBatch);
-                        break;
-                    }
-                    if (type.id==5) {
-                        if (!isHorizontal()){
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-vertical.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((pointsOfShip.get(0).y+1.5) * m_sShipOKSprite.getHeight() + offset.y));
-                            m_sShipOKSprite.setScale(1,4);
-                        }
-                        else{
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-horizontal.png")));
-                            m_sShipOKSprite.setPosition((float) ((pointsOfShip.get(0).x+1.5) * m_sShipOKSprite.getWidth() + offset.x), (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(4,1);
-                        }
-                        m_sShipOKSprite.draw(bBatch);
-                        break;
-                    }
-                    if (type.id==4) {
-                        //Draw horizontally or vertically depending on our rotation
-                        if (!isHorizontal()){
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-vertical.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(1,3);
-                        }
-                        else{
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-horizontal.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(3,1);
-                        }
-                        m_sShipOKSprite.draw(bBatch);
-                        break;
-                    }
-                    if (type.id==3) {
-                        //Draw horizontally or vertically depending on our rotation
-                        if (!isHorizontal()){
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-vertical.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y+1) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(1,3);
-                        }
-                        else{
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-horizontal.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x+1) * m_sShipOKSprite.getWidth() + offset.x, (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(3,1);
-                        }
-                        m_sShipOKSprite.draw(bBatch);
-                        break;
-                    }
-                    if (type.id==2) {
-                        //Draw horizontally or vertically depending on our rotation
-                        if (!isHorizontal()){
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-vertical.png")));
-                            m_sShipOKSprite.setPosition((pointsOfShip.get(0).x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((pointsOfShip.get(0).y+0.5) * m_sShipOKSprite.getHeight() + offset.y));
-                            m_sShipOKSprite.setScale(1,2);
-                        }
-                        else{
-                            m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-horizontal.png")));
-                            m_sShipOKSprite.setPosition((float) ((pointsOfShip.get(0).x+0.5) * m_sShipOKSprite.getWidth() + offset.x), (pointsOfShip.get(0).y) * m_sShipOKSprite.getHeight() + offset.y);
-                            m_sShipOKSprite.setScale(2,1);
-                        }
-                        m_sShipOKSprite.draw(bBatch);
-                        break;
-                    }
-                }
-                m_sShipHitSprite.setPosition(x, y);
-                m_sShipHitSprite.draw(bBatch);
-            }
-        }
-        //Draw all tiles, including ones that haven't been hit (generally player board)
-        else {
+        if(!bHidden) {
             //Draw all ship tiles first
-            for (Point point : pointsOfShip) {
-                if (type.id==6) {
-                    //Draw horizontally or vertically depending on our rotation
-                    if (!isHorizontal()){
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-vertical.png")));
-                        m_sShipOKSprite.setPosition((point.x) * m_sShipOKSprite.getWidth() + offset.x, (point.y+2) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(1,5);
-                    }
-                    else{
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("carrier-horizontal.png")));
-                        m_sShipOKSprite.setPosition((point.x+2) * m_sShipOKSprite.getWidth() + offset.x, (point.y) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(5,1);
-                    }
-                    m_sShipOKSprite.draw(bBatch);
-                    break;
-                }
-                if (type.id==5) {
-                    if (!isHorizontal()){
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-vertical.png")));
-                        m_sShipOKSprite.setPosition((point.x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((point.y+1.5) * m_sShipOKSprite.getHeight() + offset.y));
-                        m_sShipOKSprite.setScale(1,4);
-                    }
-                    else{
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("battleship-horizontal.png")));
-                        m_sShipOKSprite.setPosition((float) ((point.x+1.5) * m_sShipOKSprite.getWidth() + offset.x), (point.y) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(4,1);
-                    }
-                    m_sShipOKSprite.draw(bBatch);
-                    break;
-                }
-                if (type.id==4) {
-                    //Draw horizontally or vertically depending on our rotation
-                    if (!isHorizontal()){
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-vertical.png")));
-                        m_sShipOKSprite.setPosition((point.x) * m_sShipOKSprite.getWidth() + offset.x, (point.y+1) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(1,3);
-                    }
-                    else{
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("cruiser-horizontal.png")));
-                        m_sShipOKSprite.setPosition((point.x+1) * m_sShipOKSprite.getWidth() + offset.x, (point.y) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(3,1);
-                    }
-                    m_sShipOKSprite.draw(bBatch);
-                    break;
-                }
-                if (type.id==3) {
-                    //Draw horizontally or vertically depending on our rotation
-                    if (!isHorizontal()){
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-vertical.png")));
-                        m_sShipOKSprite.setPosition((point.x) * m_sShipOKSprite.getWidth() + offset.x, (point.y+1) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(1,3);
-                    }
-                    else{
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("submarine-horizontal.png")));
-                        m_sShipOKSprite.setPosition((point.x+1) * m_sShipOKSprite.getWidth() + offset.x, (point.y) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(3,1);
-                    }
-                    m_sShipOKSprite.draw(bBatch);
-                    break;
-                }
-                if (type.id==2) {
-                    //Draw horizontally or vertically depending on our rotation
-                    if (!isHorizontal()){
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-vertical.png")));
-                        m_sShipOKSprite.setPosition((point.x) * m_sShipOKSprite.getWidth() + offset.x, (float) ((point.y+0.5) * m_sShipOKSprite.getHeight() + offset.y));
-                        m_sShipOKSprite.setScale(1,2);
-                    }
-                    else{
-                        m_sShipOKSprite.setTexture(new Texture(Gdx.files.internal("destroyer-horizontal.png")));
-                        m_sShipOKSprite.setPosition((float) ((point.x+0.5) * m_sShipOKSprite.getWidth() + offset.x), (point.y) * m_sShipOKSprite.getHeight() + offset.y);
-                        m_sShipOKSprite.setScale(2,1);
-                    }
-                    m_sShipOKSprite.draw(bBatch);
-                    break;
-                }
-            }
-            //Draw image for tiles on the ship that have been hit
-            for(Point point : m_iHitPositions) {
-
-                m_sShipHitSprite.setPosition(point.x * m_sShipHitSprite.getWidth() + offset.x, point.y * m_sShipHitSprite.getHeight() + offset.y);
-                m_sShipHitSprite.draw(bBatch);
-            }
+                m_sShipOKSprite.setPosition(drawPosition.x, drawPosition.y);
+                m_sShipOKSprite.draw(bBatch);
         }
 
-        if(isSunk() == ShotState.SUNK) {
-            m_sShipOKSprite.setColor(Color.WHITE);  //Reset to default color since other ships share this sprite
-            m_sShipHitSprite.setColor(Color.WHITE);
+        for(Point point : m_iHitPositions) {
+            hitSprite.setPosition(point.x * tileSize + offset.x, point.y * tileSize + offset.y);
+            hitSprite.draw(bBatch);
+        }
+
+        if(isSunk()) {
+            //Reset to default color since other ships share this sprite
+            hitSprite.setColor(Color.WHITE);
         }
     }
 }

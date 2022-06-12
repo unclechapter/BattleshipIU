@@ -30,9 +30,9 @@ public class WinScreen extends MyBattleshipGame implements Screen {
     private MainScreen mainScreen;
 
     public WinScreen(){
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("Font/uiskin.json"));
         batch = new SpriteBatch();
-        sprite = new Sprite(new Texture(Gdx.files.internal("win.png")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("Sprite/win.png")));
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     }
 

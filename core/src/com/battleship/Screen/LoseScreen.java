@@ -19,9 +19,9 @@ public class LoseScreen extends MyBattleshipGame implements Screen {
     private MainScreen mainScreen;
 
     public LoseScreen(){
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = new Skin(Gdx.files.internal("Font/uiskin.json"));
         batch = new SpriteBatch();
-        sprite = new Sprite(new Texture(Gdx.files.internal("game-over.png")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("Sprite/game-over.png")));
         sprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     }
 

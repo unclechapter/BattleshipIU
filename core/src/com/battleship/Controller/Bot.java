@@ -66,7 +66,7 @@ public class Bot extends BoardController {
 
         for(int i = 0; i < 12 ; i ++) {
             for (int j = 0; j < 12; j++) {
-                System.out.print((board.shipPositions.get(j).get(i) == null ? "*" : board.shipPositions.get(j).get(i).getType().id) + " ");
+                System.out.print((board.shipPositions.get(j).get(i) == null ? "*" : board.shipPositions.get(j).get(i).getType().getId()) + " ");
             }
             System.out.println();
         }

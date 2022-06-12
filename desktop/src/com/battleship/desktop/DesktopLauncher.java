@@ -24,10 +24,10 @@ public class DesktopLauncher
         //config.width = 640;
         config.setWindowedMode(1200,975);
         config.setResizable(false);
-        config.setWindowIcon(Files.FileType.Internal, "icon_128.png");
-        config.setWindowIcon(Files.FileType.Internal, "icon_64.png");
-        config.setWindowIcon(Files.FileType.Internal, "icon_32.png");
-        config.setWindowIcon(Files.FileType.Internal, "icon_16.png");
+        config.setWindowIcon(Files.FileType.Internal, "Sprite/icon_128.png");
+        config.setWindowIcon(Files.FileType.Internal, "Sprite/icon_64.png");
+        config.setWindowIcon(Files.FileType.Internal, "Sprite/icon_32.png");
+        config.setWindowIcon(Files.FileType.Internal, "Sprite/icon_16.png");
         new Lwjgl3Application(new MyBattleshipGame(), config);
     }
 }
