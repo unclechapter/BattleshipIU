@@ -3,6 +3,7 @@ package com.battleship.specialAttack;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.Board.Board;
 
@@ -10,14 +11,14 @@ import java.awt.*;
 
 public class Bomb {
     private Sprite bombSprite;
-    public Array<Point> bomb;
+    public Array<Vector2> bomb;
     private Point orientation;
     private Point position;
     private static final int BOMB_SIZE = 4;
 
     public Bomb(Sprite bombSprite){
         this.bombSprite = bombSprite;
-        this.bomb = new Array<Point>();
+        this.bomb = new Array<Vector2>();
     }
 
 
@@ -50,13 +51,13 @@ public class Bomb {
     public void updateBombPosition(Point point){
         bomb.clear();
         for (int i = 0; i < BOMB_SIZE; i++) {
-            bomb.add(new Point(point.x + orientation.x*i, point.y + orientation.y*i));
+            bomb.add(new Vector2(point.x + orientation.x*i, point.y + orientation.y*i));
         }
     }
     public void draw(boolean bHidden, Batch bBatch, Point offset){
         if(position == null || bombSprite == null) return;
         if(bHidden){
-            for (Point point : bomb){
+            for (Vector2 point : bomb){
                 if(!isHorizontal()) {
                     bombSprite.setTexture(new Texture("verticalBomb.png"));
                     bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, (float) ((point.y+1.5) * bombSprite.getHeight() + offset.y));
@@ -72,7 +73,7 @@ public class Bomb {
             }
         }
         else{
-            for (Point point : bomb){
+            for (Vector2 point : bomb){
                 if(!isHorizontal()) {
                     bombSprite.setTexture(new Texture("verticalBomb.png"));
                     bombSprite.setPosition(point.x * bombSprite.getWidth() + offset.x, (float) ((point.y+1.5) * bombSprite.getHeight() + offset.y));

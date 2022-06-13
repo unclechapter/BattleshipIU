@@ -3,6 +3,7 @@ package com.battleship.Board;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.Board.Ship.Ship;
 import com.battleship.Board.Ship.ShipType;
@@ -24,12 +25,12 @@ public class Board
 {
     public static final int BOARD_SIZE = 12;    //X and Y size of the board, in tiles 12
     public static final int TILE_SIZE = 75;     //Size of each tile, in pixels 64
-    public final Point offset;
+    public final Vector2 offset;
 
     private Texture m_txBoardBg;    //Texture for the board background
     private Texture m_txMissImage;  //Image to draw when we've guessed somewhere and missed
     protected HashMap<ShipType, Ship> m_lShips;   //Ships on this board
-    private Array<Point> guessPos;   //Places on the map that have been guessed already, and were misses
+    private Array<Vector2> guessPos;   //Places on the map that have been guessed already, and were misses
     public Array<Array<Ship>> shipPositions;
     public Shield shield;
     public Sonar sonar;
@@ -41,14 +42,14 @@ public class Board
      * @param txBg     Background board texture to use as the backdrop when drawing the board
      * @param txMiss   Texture used for drawing guesses that missed
      */
-    public Board(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Point offset) {
+    public Board(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Vector2 offset) {
         this.offset = offset;
         //Hang onto the board background and miss tile textures
         m_txBoardBg = txBg;
         m_txMissImage = txMiss;
 
         //Create arrays
-        guessPos = new Array<Point>();
+        guessPos = new Array<Vector2>();
         m_lShips = new HashMap<>();
 
         shipPositions = new Array<>();
@@ -67,13 +68,13 @@ public class Board
      * @param ship ship to place
      * @param horizontal ship orientation
      */
-    public boolean placeShip(Point point, ShipType type, boolean horizontal){
+    public boolean placeShip(Vector2 point, ShipType type, boolean horizontal){
         if (checkOK(type, point, horizontal)){
             Ship ship = m_lShips.get(type);
             ship.updatePosition(point, horizontal);
 
             for(int i = 0; i < ship.getType().getSize(); i++)
-                shipPositions.get(point.x + ship.getOrientation().x * i).set(point.y + ship.getOrientation().y * i, ship);
+                shipPositions.get((int) (point.x + ship.getOrientation().x * i)).set((int) (point.y + ship.getOrientation().y * i), ship);
 
             return true;
         }
@@ -84,7 +85,7 @@ public class Board
     /** Checks if ship at certain position is outside the border or overlaps with other ships
      * @param ship ship to check
      */
-    protected boolean checkOK(ShipType type, Point point, boolean horizontal){
+    protected boolean checkOK(ShipType type, Vector2 point, boolean horizontal){
         Point orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
 
         if (point.x < 0 || point.x + orientation.x * type.getSize() > BOARD_SIZE
@@ -94,8 +95,8 @@ public class Board
         } else for (int i = 0; i < type.getSize(); i++)
             for(int j = -1; j <= 1; j++)
                 for(int k = -1; k <= 1; k++) {
-                    int x = point.x + orientation.x * i + k;
-                    int y = point.y + orientation.y * i + j;
+                    int x = (int) (point.x + orientation.x * i + k);
+                    int y = (int) (point.y + orientation.y * i + j);
 
                     if (x < 0) x = 0;
                     if (x >= BOARD_SIZE) x = BOARD_SIZE - 1;
@@ -116,9 +117,9 @@ public class Board
      * @param       point     position to fire to
      * @return      Ship that was hit or null on miss
      */
-    public ShotState fireAtPos(Point point) {
-        Ship ship = shipPositions.get(point.x).get(point.y);
-        guessPos.add(new Point(point)); //Miss; add to our miss positions and return nothing
+    public ShotState fireAtPos(Vector2 point) {
+        Ship ship = shipPositions.get((int) point.x).get((int) point.y);
+        guessPos.add(new Vector2(point)); //Miss; add to our miss positions and return nothing
         if(ship != null) {
             if (ship.fireAtShip(point) == ShotState.SUNK){
                 return ShotState.SUNK;
@@ -131,7 +132,7 @@ public class Board
 
     public Array<ShotState> fireBomb(){
         Array<ShotState> fireResult = new Array<ShotState>();
-        for (Point bombPoint : bomb.bomb){
+        for (Vector2 bombPoint : bomb.bomb){
             fireResult.add(fireAtPos(bombPoint));
         }
         return fireResult;
@@ -140,7 +141,7 @@ public class Board
     /** Test if we've already fired a missile at this position
      * @return  true if we have fired at this position already, false if not
      */
-    public boolean alreadyFired(Point point) {
+    public boolean alreadyFired(Vector2 point) {
         return guessPos.contains(point, false);
     }
 
@@ -179,7 +180,7 @@ public class Board
      * @param ship the ship to teleport
      * @param horizontal new orientation
     */
-    public void teleport(Point point, Ship ship, boolean horizontal){
+    public void teleport(Vector2 point, Ship ship, boolean horizontal){
         if (ship.beenHit() == false){
             if (!alreadyFired(point)){
                 placeShip(point, ship.getType(), horizontal);
@@ -209,7 +210,7 @@ public class Board
         bg.setPosition(0, 0);
         bg.draw(bBatch);
         //Draw misses
-        for(Point p : guessPos)
+        for(Vector2 p : guessPos)
             bBatch.draw(m_txMissImage, p.x * TILE_SIZE + offset.x, p.y * TILE_SIZE + offset.y);
         //Draw ships
         for(Ship s : m_lShips.values())

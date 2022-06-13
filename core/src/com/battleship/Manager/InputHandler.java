@@ -3,6 +3,7 @@ package com.battleship.Manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
 import com.battleship.Board.Board;
 import com.battleship.Manager.Game.GameManager;
 import com.battleship.MyBattleshipGame;
@@ -10,13 +11,15 @@ import com.battleship.MyBattleshipGame;
 import java.awt.*;
 
 public class InputHandler implements InputProcessor {
-    private Point mouseCursorTile;
-    private Point offset = MyBattleshipGame.playerBoardOffset;
+    private Vector2 mouseCursorTile;
+    private Vector2 offset = MyBattleshipGame.playerBoardOffset;
     private GameManager game;
 
-    public InputHandler(GameManager game) {
-        this.game = game;
-        mouseCursorTile = new Point();
+    public InputHandler() {
+        this.game = GameManager.getManager();
+        mouseCursorTile = new Vector2(1, 1);
+
+        game.setMouseCursor(mouseCursorTile);
     }
 
     /**
@@ -69,10 +72,10 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         //Find the tile the player moved the mouse to
-        mouseCursorTile.x = screenX < offset.x ? 0 : (screenX - offset.x) / Board.TILE_SIZE;
-        mouseCursorTile.y = screenY < offset.y ? 0 : (screenY - offset.y) / Board.TILE_SIZE;
-
-        GameManager.getManager().updateMouse(mouseCursorTile);
+        int x = screenX < offset.x ? 0 : (int) ((screenX - offset.x) / Board.TILE_SIZE);
+        int y = screenY < offset.y ? 0 : (int) ((screenY - offset.y) / Board.TILE_SIZE);
+        mouseCursorTile.set(x, y);
+        game.setMouseCursor(mouseCursorTile);
 
         return true;
     }

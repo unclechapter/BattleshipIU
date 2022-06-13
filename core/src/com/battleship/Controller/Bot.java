@@ -2,6 +2,7 @@ package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.MyBattleshipGame;
 import com.battleship.Board.Ship.ShipType;
@@ -19,8 +20,8 @@ public class Bot extends BoardController {
     Array<Array<Boolean>> map;
     ATTACK_STATE currentMode;
     int checkLength;
-    Point lastHit;
-    Point firstHit;
+    Vector2 lastHit;
+    Vector2 firstHit;
     int destroyDirection;
     Array<Point> direction;
     int shipLength;
@@ -61,7 +62,7 @@ public class Bot extends BoardController {
                 xPos = MathUtils.random(0, boardSize - (horizontal ? 1 : 0) * type.getSize() - 1);
                 yPos = MathUtils.random(0, boardSize - (horizontal ? 0 : 1) * type.getSize() - 1);
 
-            }while(!board.placeShip(new Point(xPos, yPos), type, horizontal));
+            }while(!board.placeShip(new Vector2(xPos, yPos), type, horizontal));
         }
 
         for(int i = 0; i < 12 ; i ++) {
@@ -74,7 +75,7 @@ public class Bot extends BoardController {
 
     public ShotState attack(BoardController opponent) {
         attackMode = 1;
-        Point firePos;
+        Vector2 firePos;
         if(currentMode == ATTACK_STATE.SEEK)
             firePos = seek();
         else
@@ -96,7 +97,7 @@ public class Bot extends BoardController {
         return result;
     }
 
-    private Point seek() {
+    private Vector2 seek() {
         int x, y;
         do {
             x = MathUtils.random(0, BOARD_SIZE - 1);
@@ -107,17 +108,17 @@ public class Bot extends BoardController {
         } while (!checkValid(x, y));
 
         map.get(x).set(y, true);
-        return new Point(x, y);
+        return new Vector2(x, y);
     }
 
-    private Point destroy() {
+    private Vector2 destroy() {
         System.out.println("Destroy");
 
-        int x = lastHit.x + direction.get(destroyDirection).x;
-        int y = lastHit.y + direction.get(destroyDirection).y;
+        int x = (int) (lastHit.x + direction.get(destroyDirection).x);
+        int y = (int) (lastHit.y + direction.get(destroyDirection).y);
 
         map.get(x).set(y, true);
-        return new Point(x, y);
+        return new Vector2(x, y);
     }
 
     private boolean checkValid(int x, int y){
@@ -127,12 +128,12 @@ public class Bot extends BoardController {
         return false;
     }
 
-    private void updateAlgo(ShotState result, Point firePos) {
+    private void updateAlgo(ShotState result, Vector2 firePos) {
         if(result == ShotState.HIT) {
             for(int i = -1 ; i <= 1; i++)
                 for(int j = -1; j <= 1; j++)
-                    if(checkValid(firePos.x + j, firePos.y + i))
-                        map.get(firePos.x + j).set(firePos.y + i, true);
+                    if(checkValid((int) (firePos.x + j), (int) (firePos.y + i)))
+                        map.get((int) (firePos.x + j)).set((int) (firePos.y + i), true);
 
         }
 
@@ -146,14 +147,14 @@ public class Bot extends BoardController {
             destroyDirection = -1;
             do {
                 destroyDirection = (destroyDirection + 1) % 4;
-            }while (checkValid(lastHit.x + direction.get(destroyDirection).x, lastHit.y + direction.get(destroyDirection).x));
+            }while (checkValid((int) (lastHit.x + direction.get(destroyDirection).x), (int) (lastHit.y + direction.get(destroyDirection).x)));
         } else if(currentMode == ATTACK_STATE.DESTROY) {
             switch (result) {
                 case HIT:
                     lastHit = firePos;
 
-                    int x = firePos.x + direction.get(destroyDirection).x;
-                    int y = firePos.y + direction.get(destroyDirection).y;
+                    int x = (int) (firePos.x + direction.get(destroyDirection).x);
+                    int y = (int) (firePos.y + direction.get(destroyDirection).y);
                     if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
                         lastHit = firstHit;
                         destroyDirection = (destroyDirection + 2) % 4;
@@ -163,14 +164,13 @@ public class Bot extends BoardController {
                     if(lastHit.equals(firstHit)) {
                         do {
                             destroyDirection = (destroyDirection + 1) % 4;
-                        } while (checkValid(firePos.x + direction.get(destroyDirection).x, firePos.y + direction.get(destroyDirection).y));
+                        } while (checkValid((int) (firePos.x + direction.get(destroyDirection).x), (int) (firePos.y + direction.get(destroyDirection).y)));
                     } else {
                         lastHit = firstHit;
                         destroyDirection = (destroyDirection + 2) % 4;
                     }
                     break;
                 case SUNK:
-                    System.out.println("Ship destroyed");
                     currentMode = ATTACK_STATE.SEEK;
                     break;
             }

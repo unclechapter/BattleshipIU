@@ -1,13 +1,14 @@
 package com.battleship.Board;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.battleship.Board.Ship.Ship;
 import com.battleship.Board.Ship.ShipType;
 
 import java.awt.*;
 
 public class BoardPlayer extends Board {
-    private Point m_ptCurPos;   //Hold onto the current position of the ship we're placing
+    private Vector2 m_ptCurPos;   //Hold onto the current position of the ship we're placing
 
     /**
      * Constructor for creating a Board class object
@@ -18,11 +19,11 @@ public class BoardPlayer extends Board {
      * @param txEdge
      * @param offset
      */
-    public BoardPlayer(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Point offset) {
+    public BoardPlayer(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Vector2 offset) {
         super(txBg, txMiss, txCenter, txEdge, offset);
     }
 
-    public boolean playerPlace(ShipType type, Point point) {
+    public boolean playerPlace(ShipType type, Vector2 point) {
         return placeShip(point, type, m_lShips.get(type).isHorizontal());
     }
 
@@ -31,7 +32,7 @@ public class BoardPlayer extends Board {
      * @param xPos  x board position to move the upper left of the ship to
      * @param yPos  y board position to move the upper left of the ship to
      */
-    public Point previewShip(ShipType type, Point point) {
+    public Vector2 previewShip(ShipType type, Vector2 point) {
         m_ptCurPos = point;
 
         //Check and be sure we're not off the edge of the map.
@@ -46,10 +47,6 @@ public class BoardPlayer extends Board {
 
         if(checkOK(type, point, sPlace.isHorizontal()))
             sPlace.updatePosition(point, sPlace.isHorizontal());
-//        else if(checkOK(type, new Point(point.x, sPlace.getPosition().y), sPlace.isHorizontal()))
-//            sPlace.updatePosition(new Point(point.x, sPlace.getPosition().y), sPlace.isHorizontal());
-//        else if(checkOK(type, new Point(sPlace.getPosition().x, point.y), sPlace.isHorizontal()))
-//            sPlace.updatePosition(new Point(sPlace.getPosition().x, point.y), sPlace.isHorizontal());
 
         return point;
     }

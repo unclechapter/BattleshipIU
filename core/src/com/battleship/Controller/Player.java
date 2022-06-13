@@ -1,6 +1,7 @@
 package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.battleship.Board.BoardPlayer;
 import com.battleship.MyBattleshipGame;
 import com.battleship.Board.Ship.ShipType;
@@ -37,14 +38,14 @@ public class Player extends BoardController {
         m_iPlacing = 0;
     }   //Init ship placement by placing ship 0 (first ship)
 
-    public boolean placeShip(Point point){
+    public boolean placeShip(Vector2 point){
         if (playerBoard.playerPlace(ShipType.values()[m_iPlacing], point))
             m_iPlacing++;
 
         return !(m_iPlacing >= 0 && m_iPlacing < ShipType.values().length);
     }
 
-    public void previewShip(Point point) {
+    public void previewShip(Vector2 point) {
             playerBoard.previewShip(ShipType.values()[m_iPlacing], point);
     }
 
@@ -52,7 +53,7 @@ public class Player extends BoardController {
             playerBoard.rotateShip(ShipType.values()[m_iPlacing]);
     }
 
-    public ShotState fireAtOpponent(BoardController opponent, Point point) {
+    public ShotState fireAtOpponent(BoardController opponent, Vector2 point) {
         return opponent.fireAtPos(point);
     }
 }

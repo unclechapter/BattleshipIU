@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -42,7 +43,6 @@ public class MyBattleshipGame extends Game implements Screen {
     //The game
     private static MyBattleshipGame game;
     private InputHandler inputHandler;
-    private GameManager manager;
     private TextPrompt textPrompt;
 
     //The menu pane on the right side
@@ -79,7 +79,7 @@ public class MyBattleshipGame extends Game implements Screen {
 
 
     //Classes that hold game information
-    public final static Point playerBoardOffset = new Point(76, 76);
+    public final static Vector2 playerBoardOffset = new Vector2(76, 76);
 
 
     //private EnemyAI m_aiEnemy;                  //Enemy player AI
@@ -142,8 +142,8 @@ public class MyBattleshipGame extends Game implements Screen {
 	public void create() {
         AssetManager.createManager();
         //Tell GDX inputHandler will be handling input
-        manager = GameManager.createGameManager();
-        inputHandler = new InputHandler(manager);
+        GameManager.createGameManager();
+        inputHandler = new InputHandler();
         startScreen = new StartScreen(this, mainScreen);
         winScreen = new WinScreen();
         loseScreen = new LoseScreen();
@@ -184,7 +184,7 @@ public class MyBattleshipGame extends Game implements Screen {
         sonarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                manager.placeSonar();
+                GameManager.getManager().placeSonar();
             }
         });
         quitButton.addListener(new ClickListener(){
@@ -217,11 +217,10 @@ public class MyBattleshipGame extends Game implements Screen {
         m_rShapeRenderer = new ShapeRenderer();
 
         //Initialize game state
-        manager.reset();
+        GameManager.getManager().reset();
         currentMode = GameMode.PLACESHIP;
         m_iModeCountdown = 0;
         m_iEnemyGuessTimer = 0;
-        mouseCursorTile = new Point(-1,-1);
 
         textPrompt = new TextPrompt(m_bBatch, m_rShapeRenderer, m_ftTextFont, GAMEOVER_STR_PT);
 
@@ -234,7 +233,7 @@ public class MyBattleshipGame extends Game implements Screen {
     }
 
     public void update() {
-        manager.update();
+        GameManager.getManager().update();
     }
 
     /**
@@ -374,7 +373,7 @@ public class MyBattleshipGame extends Game implements Screen {
 	@Override
 	public void dispose() {
 		//Clean up resources
-        manager.dispose();
+        GameManager.getManager().dispose();
         m_txFireCursorSm.dispose();
         m_txFireCursorLg.dispose();
         m_bBatch.dispose();

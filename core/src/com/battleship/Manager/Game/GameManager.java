@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Queue;
 import com.battleship.*;
 import com.battleship.Board.Board;
@@ -22,7 +23,7 @@ import static com.battleship.MyBattleshipGame.*;
 
 public class GameManager implements Observer {
     private static GameManager manager;
-    public static Point mouseCursorTile;
+    public static Vector2 mouseCursorTile;
     public static GameMode currentMode;
     private Player player;
     private Bot bot;
@@ -55,12 +56,12 @@ public class GameManager implements Observer {
 
     private Queue<ShipType> sunkShip;
 
-    public static GameManager createGameManager() {
+    public static void createGameManager() {
         if(manager == null) {
             manager = new GameManager();
-            return manager;
-        }
-        else return null;
+            System.out.println("Game manager created.");
+        } else
+            System.out.println("Game manager has been created.");
     }
 
     private GameManager(){
@@ -86,8 +87,6 @@ public class GameManager implements Observer {
         m_mPlacingMusic = Gdx.audio.newMusic(Gdx.files.internal("Sound/beginningMusic.mp3"));
         m_mPlayingMusic = Gdx.audio.newMusic(Gdx.files.internal("Sound/mainTheme.mp3"));
 
-        mouseCursorTile = new Point(0, 0);
-
         //Start music
         m_mPlayingMusic.setLooping(true);
         m_mPlacingMusic.setLooping(true);
@@ -99,6 +98,10 @@ public class GameManager implements Observer {
 
     public Music getM_mPlacingMusic(){
         return m_mPlacingMusic;
+    }
+
+    public void setMouseCursor(Vector2 mouseCursorTile) {
+        this.mouseCursorTile = mouseCursorTile;
     }
 
     public void update(){
@@ -129,9 +132,6 @@ public class GameManager implements Observer {
             botTurn();
     }
 
-    public void updateMouse(Point mouseTile){
-        mouseCursorTile = mouseTile;
-    }
     public void reset() {
         //Reset boards and game state
         currentMode = GameMode.PLACESHIP;

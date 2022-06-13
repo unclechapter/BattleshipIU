@@ -1,6 +1,7 @@
 package com.battleship.Controller;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.battleship.Board.Board;
 import com.battleship.Board.Ship.ShotState;
 
@@ -10,7 +11,7 @@ public abstract class BoardController {
     protected Board board;
     protected int boardSize = Board.BOARD_SIZE;
 
-    public BoardController(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Point boardOffset) {
+    public BoardController(Texture txBg, Texture txMiss, Texture txCenter, Texture txEdge, Vector2 boardOffset) {
         board = new Board(txBg, txMiss, txCenter, txEdge, boardOffset);
     }
 
@@ -18,7 +19,7 @@ public abstract class BoardController {
         return board;
     }
 
-    protected ShotState fireAtPos(Point point) {
+    protected ShotState fireAtPos(Vector2 point) {
         return board.fireAtPos(point);
     }
 

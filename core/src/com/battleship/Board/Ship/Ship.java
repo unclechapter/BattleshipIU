@@ -1,10 +1,9 @@
 package com.battleship.Board.Ship;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.battleship.Board.Board;
 import com.battleship.Manager.AssetManager;
@@ -12,7 +11,6 @@ import com.battleship.Manager.Game.GameManager;
 import com.battleship.Interface.Observer;
 
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
@@ -21,13 +19,13 @@ import java.util.HashMap;
  * See Ship_* classes for implementations of this class that contain ship-specific info (such as size, name, etc)
  */
 public class Ship {
-    private static final HashMap<String, Sprite> spriteAsset = setupAsset(AssetManager.getManager().requestAsset(Ship.class));
+    private static final HashMap<String, Sprite> spriteAsset = setupAsset(AssetManager.getManager().requestAsset((Ship) null));
     private static Sprite hitSprite;    //Image for the ship being hit (inner image)
-    private ShipType type;
-    private Sprite m_sShipOKSprite; //Image for the ship being ok (outer image)
-    private Array<Point> m_iHitPositions; //Array of positions that have been hit
-    private Array<Point> shipPoints; //Array of the all the points of the ship
-    private Point orientation; // orientation vector
+    private final ShipType type;
+    private final Sprite shipSprite; //Image for the ship being ok (outer image)
+    private Array<Vector2> hitPositions; //Array of positions that have been hit
+    private Array<Vector2> shipPoints; //Array of the all the points of the ship
+    private Vector2 orientation;
     private Observer observer;
 
     //How faded out a sunk ship looks
@@ -38,8 +36,8 @@ public class Ship {
      */
     public Ship(ShipType type) {
         this.type = type;
-        m_sShipOKSprite = type.getSprite();
-        m_sShipOKSprite.setOrigin(37, 37);
+        shipSprite = type.getSprite();
+        shipSprite.setOrigin((float) Board.TILE_SIZE / 2, (float) Board.TILE_SIZE / 2);
 
         reset();    //Set default values
     }
@@ -48,9 +46,9 @@ public class Ship {
      * Resets this ship to default state (off board and not hit)
      */
     public void reset() {
-        m_iHitPositions = new Array<>();
-        shipPoints = new Array<>();
-        orientation =  new Point(1, 0);
+        orientation = new Vector2(1, 0);
+        hitPositions = new Array();
+        shipPoints = new Array();
     }
 
     private static HashMap<String, Sprite> setupAsset(HashMap<String, Sprite> sprites) {
@@ -60,13 +58,14 @@ public class Ship {
     }
 
     //Getter/setter methods
-    public Point getOrientation(){
+    public Vector2 getOrientation(){
         return orientation;
     }
 
-    public Point getPosition() {
-        if(!shipPoints.isEmpty())
-            return shipPoints.get(0);
+    public Vector2 getPosition() {
+        if(isPlaced()) {
+            return shipPoints.get(0).cpy();
+        }
         else
             return null;
     }
@@ -75,27 +74,34 @@ public class Ship {
         return type;
     }
 
+    public boolean isPlaced() {
+        if (shipPoints.isEmpty()) {
+            return false;
+        } else
+            return true;
+    }
+
     public boolean isHorizontal(){
-        return orientation.x == 1;
+        return getOrientation().x == 1;
     }
 
     //Returns true if this ship has been sunk, false otherwise
     public boolean isSunk() {
-        return m_iHitPositions.size == type.getSize();
+        return hitPositions.size == type.getSize();
     }
 
     public boolean beenHit() {
-        return m_iHitPositions.size > 0;
+        return hitPositions.size > 0;
     }
 
-    public void updatePosition(Point position, boolean horizontal) { //Sets the ship position
-        attachObserver();
+    public void updatePosition(Vector2 position, boolean horizontal) { //Sets the ship position
+        if(!position.equals(getPosition()) || horizontal != isHorizontal()) {
+            orientation = horizontal ? new Vector2(1, 0) : new Vector2(0, 1);
 
-        this.orientation = horizontal ? new Point(1, 0) : new Point(0, 1);
-
-        shipPoints = new Array<>();
-        for (int i = 0; i < type.getSize(); i++)
-            shipPoints.add(new Point(position.x + this.orientation.x * i, position.y + this.orientation.y * i));
+            shipPoints.clear();
+            for (int i = 0; i < type.getSize(); i++)
+                shipPoints.add(position.cpy().mulAdd(orientation, i));
+        }
     }
 
 
@@ -103,8 +109,10 @@ public class Ship {
      * Fires at this ship. Returns true and marks as hit if hit, returns false on miss
      * @return  true on hit, false on miss
      */
-    public ShotState fireAtShip(Point point) {
-        m_iHitPositions.add(new Point(point));
+    public ShotState fireAtShip(Vector2 point) {
+        attachObserver();
+
+        hitPositions.add(point.cpy());
 
         if(isSunk()) {
             notifyObserver();
@@ -125,38 +133,40 @@ public class Ship {
      * @param bHidden   if ship should be considered "hidden," that is only tiles that have previously been hit should be drawn
      * @param bBatch    LibGDX batch to draw the ship to
      */
-    public void draw(boolean bHidden, Batch bBatch, Point offset) {
-        if(getPosition() == null || hitSprite == null || m_sShipOKSprite == null)
+    public void draw(boolean bHidden, Batch bBatch, Vector2 offset) {
+        if(getPosition() == null || hitSprite == null || shipSprite == null)
             return;
 
         int tileSize = Board.TILE_SIZE;
-        Point drawPosition = new Point(getPosition().x * tileSize + offset.x, getPosition().y * tileSize + offset.y);
+        Vector2 drawPosition = getPosition().scl(tileSize).add(offset);
 
-        m_sShipOKSprite.setRotation(isHorizontal() ? 0 : 90);
+        shipSprite.setRotation(isHorizontal() ? 0 : 90);
 
         //Change ship's appearance slightly if it's been sunk
         if(isSunk()) {
             hitSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA); //Draw at half alpha
-            m_sShipOKSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
+            shipSprite.setColor(1, 1, 1, SHIP_SUNK_ALPHA);
 
-            m_sShipOKSprite.setPosition(drawPosition.x, drawPosition.y);
-            m_sShipOKSprite.draw(bBatch);
+            shipSprite.setPosition(drawPosition.x, drawPosition.y);
+            shipSprite.draw(bBatch);
         }
 
         //Only draw ship tiles that have been hit (enemy board generally)
         if(!bHidden) {
             //Draw all ship tiles first
-                m_sShipOKSprite.setPosition(drawPosition.x, drawPosition.y);
-                m_sShipOKSprite.draw(bBatch);
+                shipSprite.setPosition(drawPosition.x, drawPosition.y);
+                shipSprite.draw(bBatch);
         }
 
-        for(Point point : m_iHitPositions) {
-            hitSprite.setPosition(point.x * tileSize + offset.x, point.y * tileSize + offset.y);
+        for(Vector2 point : hitPositions) {
+            drawPosition = offset.cpy().mulAdd(point, tileSize);
+            hitSprite.setPosition(drawPosition.x, drawPosition.y);
             hitSprite.draw(bBatch);
         }
 
         if(isSunk()) {
             //Reset to default color since other ships share this sprite
+            shipSprite.setColor(Color.WHITE);
             hitSprite.setColor(Color.WHITE);
         }
     }
